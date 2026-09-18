@@ -1,0 +1,7 @@
+# 빈 이슈 대신 항상 템플릿을 거치게 한다.
+blank_issues_enabled: false
+
+contact_links:
+  - name: 📖 프로젝트 문서 먼저 보기
+    url: https://github.com/ShinhanDSProject/bank-bank#readme
+    about: 개발 환경 세팅, 실행 방법, 배포 방법은 README에 정리되어 있습니다.
