@@ -1,1 +1,10 @@
+plugins {
+    // build.gradle이 요구하는 JDK(toolchain)가 로컬에 없으면 자동으로 내려받는다.
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
 rootProject.name = 'bank-bank'
+
+// 모노레포의 JVM 모듈만 Gradle이 관리한다.
+// 프론트엔드(apps/web)는 npm workspaces가 관리하므로 여기에 포함하지 않는다.
+include 'apps:api'

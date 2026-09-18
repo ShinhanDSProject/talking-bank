@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: bank-bank
+  profiles:
+    # 프로필을 지정하지 않고 실행하면 로컬 개발 설정을 쓴다.
+    default: local
+  datasource:
+    url: ${DB_URL:jdbc:mariadb://localhost:3308/bankbank}
+    username: ${DB_USERNAME:bankbank}
+    password: ${DB_PASSWORD:bankbank}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  cors:
+    # apps/web의 Vite dev 서버. 배포 시 CORS_ALLOWED_ORIGINS로 교체한다.
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    com.example.bankbank: debug
