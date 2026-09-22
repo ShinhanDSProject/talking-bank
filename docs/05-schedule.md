@@ -1,6 +1,6 @@
 # 05. 진행 순서
 
-> Phase의 순서와 원칙, 전체 시연 시나리오, 리스크만 다룬다. 각 Phase 안의 Step과 완료 조건은 [`domains/`](domains/) 아래 도메인 문서에 있다. 날짜는 팀 회의에서 정해 GitHub 마일스톤에 붙인다.
+> Phase의 순서와 진입·완료 조건만 다룬다. 각 Phase 안의 Step과 시연 장면은 [`domains/`](domains/) 아래 도메인 문서에 있다. 날짜는 팀 회의에서 정해 GitHub 마일스톤에 붙인다.
 
 ## Phase 진행
 
