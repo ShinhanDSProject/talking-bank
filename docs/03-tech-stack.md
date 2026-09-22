@@ -52,30 +52,27 @@ flowchart TB
             transfer[transfer] --> account[account]
             transfer --> transaction[transaction]
         end
-        subgraph ext["Phase 2~7 · 확장 도메인"]
+        subgraph p2["Phase 2 · 리스크"]
             direction TB
-            subgraph p2["Phase 2 · 리스크"]
-                direction TB
-                fds[fds]
-                admin[admin]
-            end
-            subgraph p3["Phase 3 · 여신/수신 상품"]
-                direction TB
-                product[product]
-                batch["batch (3~)"]
-            end
-            subgraph p4["Phase 4 · 오픈뱅킹"]
-                openbanking[openbanking]
-            end
-            subgraph p5["Phase 5 · 카드"]
-                card[card]
-            end
-            subgraph p6["Phase 6 · 증권"]
-                securities[securities]
-            end
-            subgraph p7["Phase 7 · 보험"]
-                insurance[insurance]
-            end
+            fds[fds]
+            admin[admin]
+        end
+        subgraph p3["Phase 3 · 여신/수신 상품"]
+            direction TB
+            product[product]
+            batch["batch (3~)"]
+        end
+        subgraph p4["Phase 4 · 오픈뱅킹"]
+            openbanking[openbanking]
+        end
+        subgraph p5["Phase 5 · 카드"]
+            card[card]
+        end
+        subgraph p6["Phase 6 · 증권"]
+            securities[securities]
+        end
+        subgraph p7["Phase 7 · 보험"]
+            insurance[insurance]
         end
         transfer -. 출금 평가 훅 .-> fds
         product --> transfer
