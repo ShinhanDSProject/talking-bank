@@ -10,6 +10,7 @@ bank-bank/
 │   ├── api/                 # Spring Boot 4 · Java 21 · JPA · Security
 │   └── web/                 # Vite · React 19 · TypeScript · TanStack Query
 ├── packages/                # 앱 사이에서 공유할 코드 (아직 비어 있음)
+├── docs/                    # 기획·범위·스펙·일정·개발 규칙
 ├── build.gradle             # 루트: 플러그인 버전만 선언
 ├── settings.gradle          # Gradle 멀티프로젝트 (:apps:api)
 ├── package.json             # npm workspaces (apps/*, packages/*)
@@ -23,6 +24,15 @@ JVM 모듈은 Gradle 멀티프로젝트가, 프론트엔드는 npm workspaces가
 | ---------- | ----------------------- | ---------------------------- |
 | `apps/api` | `http://localhost:8080` | `apps/api/build/libs/*.jar`  |
 | `apps/web` | `http://localhost:5173` | `apps/web/dist/` (정적 파일) |
+
+## 프로젝트 문서
+
+주제·범위·기술 스펙·일정·개발 규칙은 [`docs/`](docs/01-overview.md)에 있습니다. 처음 합류했다면 이 순서로 읽으세요.
+
+1. [01-overview](docs/01-overview.md) — 무엇을 만드는지
+2. [02-scope](docs/02-scope.md) — 범위와 **향후 확장 후보**
+3. [06-conventions](docs/06-conventions.md) — 브랜치·커밋·PR·코드 규칙
+4. 구현할 Phase의 [docs/domains/](docs/domains/) 문서 — 그 도메인의 범위·명세·모델·진행
 
 ## 시작하기
 
