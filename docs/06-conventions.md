@@ -118,7 +118,7 @@ GitHub 이슈 번호(#N)와 작업 ID는 다르다. 문서와 대화에서는 �
 
 - 화면 목록·정책 수치·요구사항은 **요구사항 정의서가 주인**이고, 흐름·데이터·규칙·API는 **PRD가 주인**이고, 색·간격·폰트는 **`DESIGN.md`가 주인**이다. UI 브리프는 그것을 화면 언어로 옮긴 것이고, 여기서 필드나 화면을 새로 만들지 않는다.
 - 어긋나면 요구사항 정의서 → PRD 순으로 먼저 고치고 나머지를 따라 고친다.
-- 요구사항 정의서: [requirements/01-core.md](requirements/01-core.md). 템플릿: [templates/prd.md](templates/prd.md), [templates/ui-brief.md](templates/ui-brief.md). 화면 규칙: [DESIGN.md](../DESIGN.md). Claude Code가 읽는 요약: [CLAUDE.md](../CLAUDE.md)
+- 요구사항 정의서: [requirements/01-core.md](requirements/01-core.md). 템플릿: [templates/prd.md](templates/prd.md), [templates/ui-brief.md](templates/ui-brief.md). 화면 규칙: [DESIGN.md](../DESIGN.md). AI 코딩 도구 공통 지침: [AGENTS.md](../AGENTS.md)
 
 ## API 계약
 
