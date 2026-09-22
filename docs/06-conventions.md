@@ -208,7 +208,7 @@ src/
 - 테이블·컬럼은 `snake_case`. 테이블은 단수(`account`, `transfer`) — 지금 `account`가 그렇다.
 - PK는 `id BIGINT AUTO_INCREMENT`.
 - 금액은 `DECIMAL(19,2)`. 시각은 `DATETIME(6)`.
-- 로컬은 `ddl-auto: update`. 배포 서버는 `validate` + 스키마 SQL 수동 적용(마이그레이션 도구는 범위 밖).
+- 로컬은 `ddl-auto: update`. 배포 서버는 `validate` + 스키마 SQL 수동 적용(마이그레이션 도구는 향후 후보).
 
 ## 테스트
 

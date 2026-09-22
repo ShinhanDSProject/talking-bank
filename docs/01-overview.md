@@ -34,14 +34,14 @@
 
 **전체**
 
-| 문서                                   | 내용                                             |
-| -------------------------------------- | ------------------------------------------------ |
-| [01-overview.md](01-overview.md)       | 이 문서. 주제·구조                               |
-| [02-scope.md](02-scope.md)             | 범위 원칙, Phase 개요, 안 하는 것, 미확정 스코프 |
-| [03-tech-stack.md](03-tech-stack.md)   | 기술 스택, 아키텍처, 버전 결정                   |
-| [04-domain.md](04-domain.md)           | 모든 도메인이 따르는 용어·금액·송금·동시성 규칙  |
-| [05-schedule.md](05-schedule.md)       | Phase 순서와 원칙, 시연 시나리오, 리스크         |
-| [06-conventions.md](06-conventions.md) | Git·이슈·API·코드 규칙                           |
+| 문서                                   | 내용                                                     |
+| -------------------------------------- | -------------------------------------------------------- |
+| [01-overview.md](01-overview.md)       | 이 문서. 주제·구조                                       |
+| [02-scope.md](02-scope.md)             | 범위 원칙, Phase 개요, 향후 확장 후보, 설계 전 결정 사항 |
+| [03-tech-stack.md](03-tech-stack.md)   | 기술 스택, 아키텍처, 버전 결정                           |
+| [04-domain.md](04-domain.md)           | 모든 도메인이 따르는 용어·금액·송금·동시성 규칙          |
+| [05-schedule.md](05-schedule.md)       | Phase 순서와 원칙, 시연 시나리오, 리스크                 |
+| [06-conventions.md](06-conventions.md) | Git·이슈·API·코드 규칙                                   |
 
 **도메인별** — 각 Phase의 범위·기능 명세·모델·진행. 틀이 같다.
 
