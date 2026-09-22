@@ -1,6 +1,6 @@
-# 06. 개발 규칙
+# 06. 개발 규칙 — 공통
 
-> 이 문서의 규칙은 초안이다. 팀이 확정하면 그대로 따르고, 바꾸면 이 문서를 먼저 고친다. 백엔드 코드 구조의 상세는 별도 문서로 두고 여기서는 링크한다.
+> 팀 전체가 따르는 규칙이다. 백엔드·프론트엔드 전용 규칙은 [conventions/backend.md](conventions/backend.md), [conventions/frontend.md](conventions/frontend.md)에 있다. 규칙은 초안이며 팀이 확정하면 그대로 따르고, 바꾸면 문서를 먼저 고친다.
 
 ## Git
 
@@ -94,7 +94,9 @@ GitHub 이슈 번호(#N)와 작업 ID는 다르다. 문서와 대화에서는 �
 
 **하루 안에 끝나는 크기**로 쪼갠다. 3일 넘게 열려 있는 Task는 쪼개거나 막힌 이유를 댓글로 남긴다.
 
-## API
+## API 계약
+
+프론트엔드와 백엔드가 **함께** 지키는 규칙이다. 한쪽이 바꾸면 반드시 다른 쪽과 맞춘다.
 
 ### URL
 
@@ -158,69 +160,12 @@ A를 권장한다. 에러 응답만 통일(아래)하면 성공 응답은 래퍼
 | 서명                 | HS256, 시크릿 32자 이상, 환경 변수 주입                      |
 | 시크릿 공유          | <!-- TODO: 결정 -->                                          |
 
-## 코드
+## 테스트 원칙
 
-### 백엔드 (Java)
-
-패키지는 **도메인별**로 나눈다. 계층별(`controller/`, `service/`)로 나누지 않는다. 지금 `account/`, `config/`가 이 방식이다.
-
-```
-com.example.bankbank
-├── auth/         User, AuthController, AuthService, JwtProvider ...     Phase 1
-├── account/      Account, AccountController, AccountService, Repository Phase 1
-├── transfer/     Transfer, TransferService, TransferController          Phase 1
-├── transaction/  Transaction, TransactionRepository                     Phase 1
-├── common/       예외, 에러 응답, 공통 설정                             Phase 1
-├── fds/          출금 평가 훅 구현체, 규칙들, FdsAlert                  Phase 2
-└── admin/        AdminController                                        Phase 2
-```
-
-- 엔티티에 `@Setter`를 두지 않는다. 상태 변경은 의미 있는 메서드로 (`account.withdraw(amount)`).
-- DTO는 `record`. 요청은 `XxxRequest`, 응답은 `XxxResponse`.
-- `@Transactional`은 Service에. Controller와 Repository에는 두지 않는다.
-- 금액은 `BigDecimal`. [04-domain.md 금액 규칙](04-domain.md#금액-규칙).
-- Lombok은 `@Getter`, `@Builder`, `@NoArgsConstructor(access = PROTECTED)` 정도만.
-- 포매터: <!-- TODO: Spotless + Google Java Format 등 결정 -->
-
-코드 구조·네이밍의 상세는 <!-- TODO: 백엔드 컨벤션 문서 링크 -->.
-
-### 프론트엔드 (TypeScript)
-
-지금 `features/` 방식이 시작점이다.
-
-```
-src/
-├── features/     기능별. accounts/, transfers/, auth/ ... 각각 api.ts + 화면 + 테스트
-├── pages/        라우트에 붙는 페이지
-├── components/   여러 기능이 쓰는 UI 컴포넌트 (디자인 시스템)
-├── lib/          api 클라이언트, queryClient 등
-└── test-utils.tsx
-```
-
-- 서버 상태는 TanStack Query. `useEffect` + `fetch` 조합을 쓰지 않는다.
-- API 호출은 `lib/api.ts`의 `apiFetch`만 쓴다. 컴포넌트에서 `fetch`를 직접 부르지 않는다.
-- 타입은 서버 응답 DTO와 이름·필드를 맞춘다. (`AccountResponse` ↔ `Account`)
-- ESLint·Prettier 설정은 저장소에 있다. PR 전에 `npm run lint`, `npm run typecheck`.
-- 금액 표시는 `Intl.NumberFormat('ko-KR')`. 문자열 연산으로 콤마를 넣지 않는다.
-
-### DB
-
-- 테이블·컬럼은 `snake_case`. 테이블은 단수(`account`, `transfer`) — 지금 `account`가 그렇다.
-- PK는 `id BIGINT AUTO_INCREMENT`.
-- 금액은 `DECIMAL(19,2)`. 시각은 `DATETIME(6)`.
-- 로컬은 `ddl-auto: update`. 배포 서버는 `validate` + 스키마 SQL 수동 적용(마이그레이션 도구는 향후 후보).
-
-## 테스트
-
-| 대상               | 최소 기준                                                        |
-| ------------------ | ---------------------------------------------------------------- |
-| 송금               | 성공, 잔액 부족, 동일 계좌, 동시성, 롤백, 멱등성 — **전부 필수** |
-| FDS 규칙 (Phase 2) | 규칙마다 걸리는 케이스 1 + 안 걸리는 케이스 1                    |
-| API                | 인증 없이 401, 남의 계좌 403, 정상 200                           |
-| 프론트             | 핵심 화면(로그인·송금·거래내역)의 로딩·성공·에러 상태            |
-
-- 백엔드 테스트는 H2로 돈다. MariaDB를 띄우지 않아도 `npm test`가 통과해야 한다.
-- 테스트 이름은 한국어 `@DisplayName`으로 무엇을 검증하는지 쓴다.
+- 테스트가 없는 PR은 왜 없어도 되는지 본문에 적는다.
+- 백엔드·프론트엔드 테스트가 `npm test` 한 번으로, 인프라 없이 통과해야 한다.
+- 테스트 이름은 무엇을 검증하는지 한국어로 쓴다.
+- 영역별 최소 기준은 [backend.md](conventions/backend.md#테스트), [frontend.md](conventions/frontend.md#테스트)에 있다.
 
 ## 시크릿과 환경 변수
 
