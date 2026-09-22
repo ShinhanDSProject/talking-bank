@@ -2,19 +2,19 @@
 
 ## 한눈에 보기
 
-| 영역        | 선택                                              | 비고                                               |
-| ----------- | ------------------------------------------------- | -------------------------------------------------- |
-| 백엔드      | **Spring Boot 3.5.x (LTS)** · Java 21             | 아래 "버전 결정" 참고                              |
-| 보안        | Spring Security 6 · JWT (HS256)                   | 정책은 [06-conventions.md](06-conventions.md)      |
-| 데이터      | Spring Data JPA (Hibernate) · **MariaDB 11.4**    |                                                    |
-| 캐시/토큰   | Redis (Refresh Token 저장소)                      | **미확정** — 인증 설계 때 결정                     |
-| 배치        | Spring Batch                                      | **Phase 3부터** 도입. 자동이체·정산·결제·만기 처리 |
-| 프론트엔드  | **React 19 · TypeScript · Vite**                  |                                                    |
-| 라우팅/상태 | React Router · TanStack Query                     | 전역 상태 라이브러리는 필요해질 때 추가            |
-| 테스트      | JUnit 5 + MockMvc (H2) · Vitest + Testing Library |                                                    |
-| 코드 품질   | ESLint · Prettier                                 | 백엔드 포매터는 미정 (Spotless 등 검토)            |
-| 인프라      | Docker Compose                                    | 로컬: MariaDB(+Redis). 배포: 서버 1대              |
-| 빌드        | Gradle 9 (멀티프로젝트) · npm workspaces          | 두 빌드는 결합하지 않는다                          |
+| 영역     | 선택                                                | 비고                                         |
+|--------|---------------------------------------------------|--------------------------------------------|
+| 백엔드    | **Spring Boot 3.5.x (LTS)** · Java 21             | 아래 "버전 결정" 참고                              |
+| 보안     | Spring Security 6 · JWT (HS256)                   | 정책은 [06-conventions.md](06-conventions.md) |
+| 데이터    | Spring Data JPA (Hibernate) · **MariaDB 11.4**    |                                            |
+| 캐시/토큰  | Redis (Refresh Token 저장소)                         | **미확정** — 인증 설계 때 결정                       |
+| 배치     | Spring Batch                                      | **Phase 3부터** 도입. 자동이체·정산·결제·만기 처리         |
+| 프론트엔드  | **React 19 · TypeScript · Vite**                  |                                            |
+| 라우팅/상태 | React Router · TanStack Query                     | 전역 상태 라이브러리는 필요해질 때 추가                     |
+| 테스트    | JUnit 5 + MockMvc (H2) · Vitest + Testing Library |                                            |
+| 코드 품질  | ESLint · Prettier                                 | 백엔드 포매터는 미정 (Spotless 등 검토)                |
+| 인프라    | Docker Compose                                    | 로컬: MariaDB(+Redis). 배포: 서버 1대             |
+| 빌드     | Gradle 9 (멀티프로젝트) · npm workspaces                | 두 빌드는 결합하지 않는다                             |
 
 ## 모노레포 구조
 
@@ -33,7 +33,8 @@ bank-bank/
 
 JVM 모듈은 Gradle이, 프론트엔드는 npm workspaces가 관리한다.
 
-확장 도메인(Phase 2~7)은 별도 앱이 아니라 **`apps/api` 안의 패키지**로 들어간다. 도메인마다 서비스를 쪼개면 트랜잭션이 서비스 경계를 넘게 된다(카드 승인 → 계좌 출금). 하나의 DB, 하나의 트랜잭션 안에서 처리한다.
+확장 도메인(Phase 2~7)은 별도 앱이 아니라 **`apps/api` 안의 패키지**로 들어간다. 도메인마다 서비스를 쪼개면 트랜잭션이 서비스 경계를 넘게 된다(카드 승인 → 계좌 출금). 하나의 DB, 하나의
+트랜잭션 안에서 처리한다.
 
 ## 아키텍처
 
@@ -75,12 +76,12 @@ MariaDB     Redis (Refresh Token, 미확정)
 
 ## 포트와 환경
 
-| 서비스  | 개발 포트 | 환경 변수                                                                      |
-| ------- | --------- | ------------------------------------------------------------------------------ |
-| web     | 5173      | `VITE_API_BASE_URL`, `VITE_API_PROXY_TARGET`                                   |
-| api     | 8080      | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `CORS_ALLOWED_ORIGINS`, `JPA_DDL_AUTO` |
-| MariaDB | **3308**  | 호스트 3306·3307이 다른 서비스와 겹쳐서 3308                                   |
-| Redis   | 6379      | 도입 확정 시                                                                   |
+| 서비스     | 개발 포트    | 환경 변수                                                                          |
+|---------|----------|--------------------------------------------------------------------------------|
+| web     | 5173     | `VITE_API_BASE_URL`, `VITE_API_PROXY_TARGET`                                   |
+| api     | 8080     | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `CORS_ALLOWED_ORIGINS`, `JPA_DDL_AUTO` |
+| MariaDB | **3308** | 호스트 3306·3307이 다른 서비스와 겹쳐서 3308                                                |
+| Redis   | 6379     | 도입 확정 시                                                                        |
 
 JWT 시크릿 등 인증 관련 변수는 인증 설계 때 정한다. 시크릿은 저장소에 커밋하지 않는다.
 
@@ -88,27 +89,29 @@ JWT 시크릿 등 인증 관련 변수는 인증 설계 때 정한다. 시크릿
 
 저장소는 Spring Boot **4.1.1**로 시작했지만 **3.5.x LTS로 내렸다.** (2026-09-22 결정, PR #28)
 
-이유: Boot 4 / Security 7은 **검색되는 자료와 튜토리얼이 거의 Boot 3 기준**이고, 스타터 이름과 테스트 자동설정 패키지 경로가 Boot 3와 다르다. 검색 자료가 그대로 동작하는 쪽을 택했다.
+이유: Boot 4 / Security 7은 **검색되는 자료와 튜토리얼이 거의 Boot 3 기준**이고, 스타터 이름과 테스트 자동설정 패키지 경로가 Boot 3와 다르다. 검색 자료가 그대로 동작하는 쪽을
+택했다.
 
 전환으로 바뀐 것:
 
-| 항목             | 4.1.1                                                | 3.5.x                                                     |
-| ---------------- | ---------------------------------------------------- | --------------------------------------------------------- |
-| 웹 스타터        | `spring-boot-starter-webmvc`                         | `spring-boot-starter-web`                                 |
-| 테스트 스타터    | `*-test` 스타터가 모듈별로 분리                      | `spring-boot-starter-test` 하나                           |
-| MockMvc 자동설정 | `org.springframework.boot.webmvc.test.autoconfigure` | `org.springframework.boot.test.autoconfigure.web.servlet` |
-| Spring Security  | 7.x                                                  | 6.x                                                       |
-| Hibernate        | 7.x                                                  | 6.x                                                       |
+| 항목              | 4.1.1                                                | 3.5.x                                                     |
+|-----------------|------------------------------------------------------|-----------------------------------------------------------|
+| 웹 스타터           | `spring-boot-starter-webmvc`                         | `spring-boot-starter-web`                                 |
+| 테스트 스타터         | `*-test` 스타터가 모듈별로 분리                                | `spring-boot-starter-test` 하나                             |
+| MockMvc 자동설정    | `org.springframework.boot.webmvc.test.autoconfigure` | `org.springframework.boot.test.autoconfigure.web.servlet` |
+| Spring Security | 7.x                                                  | 6.x                                                       |
+| Hibernate       | 7.x                                                  | 6.x                                                       |
 
-같은 PR에서 **Gradle 데몬 JVM을 21로 고정**했다(`gradle/gradle-daemon-jvm.properties`). 호스트 JDK 버전과 무관하게 Gradle이 JDK 21을 스스로 받아 빌드한다.
+같은 PR에서 **Gradle 데몬 JVM을 21로 고정**했다(`gradle/gradle-daemon-jvm.properties`). 호스트 JDK 버전과 무관하게 Gradle이 JDK 21을 스스로 받아
+빌드한다.
 
 ## 선택하지 않은 것
 
-| 후보                    | 안 쓴 이유                                                                                        |
-| ----------------------- | ------------------------------------------------------------------------------------------------- |
-| Next.js                 | SSR이 필요 없다. API 서버가 따로 있어 SPA가 단순하다                                              |
-| 단일 JAR에 프론트 포함  | 분리 배포가 각자 빌드·배포하기 쉽고 역할 경계가 분명하다                                          |
-| 도메인별 마이크로서비스 | 카드 승인 → 계좌 출금 같은 흐름이 서비스 경계를 넘으면 분산 트랜잭션이 필요해진다. 한 앱으로 간다 |
-| Drools 룰 엔진          | 규칙 3~4개에 룰 엔진은 과하다. 평범한 Java 클래스로 충분                                          |
-| Testcontainers          | Docker 의존이 생긴다. H2로 충분하다                                                               |
-| Kotlin                  | 팀이 Java에 익숙하다                                                                              |
+| 후보             | 안 쓴 이유                                                    |
+|----------------|-----------------------------------------------------------|
+| Next.js        | SSR이 필요 없다. API 서버가 따로 있어 SPA가 단순하다                       |
+| 단일 JAR에 프론트 포함 | 분리 배포가 각자 빌드·배포하기 쉽고 역할 경계가 분명하다                          |
+| 도메인별 마이크로서비스   | 카드 승인 → 계좌 출금 같은 흐름이 서비스 경계를 넘으면 분산 트랜잭션이 필요해진다. 한 앱으로 간다 |
+| Drools 룰 엔진    | 규칙 3~4개에 룰 엔진은 과하다. 평범한 Java 클래스로 충분                      |
+| Testcontainers | Docker 의존이 생긴다. H2로 충분하다                                  |
+| Kotlin         | 팀이 Java에 익숙하다                                             |
