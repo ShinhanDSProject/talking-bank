@@ -105,16 +105,17 @@ GitHub 이슈 번호(#N)와 작업 ID는 다르다. 문서와 대화에서는 �
   → ERD          데이터가 어떻게 생겼나
 ```
 
-| 이름      | 주인         | 같아야 하는 곳                                     |
-| --------- | ------------ | -------------------------------------------------- |
-| 화면 이름 | PRD 3절 흐름 | UI 브리프 4절 제목 · Figma 프레임 이름             |
-| 필드명    | PRD 5절 API  | UI 브리프 "보이는 데이터" · 프론트 타입 · 응답 DTO |
-| 에러 코드 | PRD 5절 API  | UI 브리프 상태 표 · `common/` 예외 · 프론트 분기   |
-| 작업 ID   | PRD 7절 진행 | 이슈 제목 · 브랜치 이름                            |
+| 이름        | 주인         | 같아야 하는 곳                                     |
+| ----------- | ------------ | -------------------------------------------------- |
+| 화면 이름   | PRD 3절 흐름 | UI 브리프 4절 제목 · Figma 프레임 이름             |
+| 필드명      | PRD 5절 API  | UI 브리프 "보이는 데이터" · 프론트 타입 · 응답 DTO |
+| 에러 코드   | PRD 5절 API  | UI 브리프 상태 표 · `common/` 예외 · 프론트 분기   |
+| 작업 ID     | PRD 7절 진행 | 이슈 제목 · 브랜치 이름                            |
+| 디자인 토큰 | `DESIGN.md`  | UI 브리프 · Figma 변수 · CSS 변수                  |
 
-- 흐름·데이터·규칙·API는 **PRD가 주인**이다. UI 브리프는 그것을 화면 언어로 옮긴 것이고, 여기서 필드나 화면을 새로 만들지 않는다.
+- 흐름·데이터·규칙·API는 **PRD가 주인**이고, 색·간격·폰트는 **`DESIGN.md`가 주인**이다. UI 브리프는 그것을 화면 언어로 옮긴 것이고, 여기서 필드나 화면을 새로 만들지 않는다.
 - 어긋나면 PRD를 먼저 고치고 나머지를 따라 고친다.
-- 템플릿: [templates/prd.md](templates/prd.md), [templates/ui-brief.md](templates/ui-brief.md)
+- 템플릿: [templates/prd.md](templates/prd.md), [templates/ui-brief.md](templates/ui-brief.md). 화면 규칙: [DESIGN.md](../DESIGN.md). Claude Code가 읽는 요약: [CLAUDE.md](../CLAUDE.md)
 
 ## API 계약
 
@@ -188,6 +189,7 @@ A를 권장한다. 에러 응답만 통일(아래)하면 성공 응답은 래퍼
 - 백엔드·프론트엔드 테스트가 `npm test` 한 번으로, 인프라 없이 통과해야 한다.
 - 테스트 이름은 무엇을 검증하는지 한국어로 쓴다.
 - 영역별 최소 기준은 [backend.md](conventions/backend.md#테스트), [frontend.md](conventions/frontend.md#테스트)에 있다.
+- **E2E**: 각 도메인 문서의 시연 장면을 Playwright로 자동화한다. selector는 `data-testid` 또는 role 기반 — CSS 클래스로 잡지 않는다. Phase의 안정화 Step에서 붙인다.
 
 ## 시크릿과 환경 변수
 

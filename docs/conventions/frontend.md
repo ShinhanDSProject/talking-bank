@@ -26,6 +26,12 @@ src/
 - 금액 표시는 `Intl.NumberFormat('ko-KR')`. 문자열 연산으로 콤마를 넣지 않는다.
 - ESLint·Prettier 설정은 저장소에 있다. PR 전에 `npm run lint`, `npm run typecheck`.
 
+## Mock → API
+
+- 백엔드 API가 준비되기 전에는 `features/<기능>/api.ts`가 mock 데이터를 돌려준다. 화면·상태·테스트를 먼저 만든다.
+- API가 준비되면 `api.ts`만 실제 호출로 바꾼다. 컴포넌트는 손대지 않는다.
+- mock의 응답 모양은 PRD 5절 API 표와 같아야 한다.
+
 ## 테스트
 
 | 대상      | 최소 기준                                      |
