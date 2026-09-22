@@ -100,22 +100,25 @@ GitHub 이슈 번호(#N)와 작업 ID는 다르다. 문서와 대화에서는 �
 
 ```
 기능 X가 궁금하다
-  → PRD X        무엇을 · 왜 · 어떤 규칙 · API · 어떤 작업으로 쪼개지나   (docs/domains/<phase>/<ID>.md)
-  → UI 브리프    어떤 화면에 · 어떤 데이터가 · 어떤 상태로 보이나         (docs/domains/<phase>/ui-brief.md)
-  → ERD          데이터가 어떻게 생겼나
+  → 요구사항 정의서  이 Phase에 어떤 화면 · 정책 수치 · 요구사항(REQ) · 제외가 있나   (docs/requirements/<phase>.md)
+  → PRD X            무엇을 · 왜 · 어떤 규칙 · API · 어떤 작업으로 쪼개지나           (docs/domains/<phase>/<ID>.md)
+  → UI 브리프        어떤 화면에 · 어떤 데이터가 · 어떤 상태로 보이나                 (docs/domains/<phase>/ui-brief.md)
+  → ERD              데이터가 어떻게 생겼나
 ```
 
-| 이름        | 주인         | 같아야 하는 곳                                     |
-| ----------- | ------------ | -------------------------------------------------- |
-| 화면 이름   | PRD 3절 흐름 | UI 브리프 4절 제목 · Figma 프레임 이름             |
-| 필드명      | PRD 5절 API  | UI 브리프 "보이는 데이터" · 프론트 타입 · 응답 DTO |
-| 에러 코드   | PRD 5절 API  | UI 브리프 상태 표 · `common/` 예외 · 프론트 분기   |
-| 작업 ID     | PRD 7절 진행 | 이슈 제목 · 브랜치 이름                            |
-| 디자인 토큰 | `DESIGN.md`  | UI 브리프 · Figma 변수 · CSS 변수                  |
+| 이름                           | 주인                    | 같아야 하는 곳                                        |
+| ------------------------------ | ----------------------- | ----------------------------------------------------- |
+| 화면 ID · 화면 이름            | 요구사항 정의서 1절     | PRD 3절 흐름 · UI 브리프 4절 제목 · Figma 프레임 이름 |
+| 정책 수치 (한도 · 만료 · 길이) | 요구사항 정의서 2절 POL | PRD 4절 · 코드 설정값 · 화면 안내 문구                |
+| 요구사항 ID (REQ)              | 요구사항 정의서 3절     | PRD 4절 · 이슈 본문 · 테스트 이름                     |
+| 필드명                         | PRD 5절 API             | UI 브리프 "보이는 데이터" · 프론트 타입 · 응답 DTO    |
+| 에러 코드                      | PRD 5절 API             | UI 브리프 상태 표 · `common/` 예외 · 프론트 분기      |
+| 작업 ID                        | PRD 7절 진행            | 이슈 제목 · 브랜치 이름                               |
+| 디자인 토큰                    | `DESIGN.md`             | UI 브리프 · Figma 변수 · CSS 변수                     |
 
-- 흐름·데이터·규칙·API는 **PRD가 주인**이고, 색·간격·폰트는 **`DESIGN.md`가 주인**이다. UI 브리프는 그것을 화면 언어로 옮긴 것이고, 여기서 필드나 화면을 새로 만들지 않는다.
-- 어긋나면 PRD를 먼저 고치고 나머지를 따라 고친다.
-- 템플릿: [templates/prd.md](templates/prd.md), [templates/ui-brief.md](templates/ui-brief.md). 화면 규칙: [DESIGN.md](../DESIGN.md). Claude Code가 읽는 요약: [CLAUDE.md](../CLAUDE.md)
+- 화면 목록·정책 수치·요구사항은 **요구사항 정의서가 주인**이고, 흐름·데이터·규칙·API는 **PRD가 주인**이고, 색·간격·폰트는 **`DESIGN.md`가 주인**이다. UI 브리프는 그것을 화면 언어로 옮긴 것이고, 여기서 필드나 화면을 새로 만들지 않는다.
+- 어긋나면 요구사항 정의서 → PRD 순으로 먼저 고치고 나머지를 따라 고친다.
+- 요구사항 정의서: [requirements/01-core.md](requirements/01-core.md). 템플릿: [templates/prd.md](templates/prd.md), [templates/ui-brief.md](templates/ui-brief.md). 화면 규칙: [DESIGN.md](../DESIGN.md). Claude Code가 읽는 요약: [CLAUDE.md](../CLAUDE.md)
 
 ## API 계약
 
