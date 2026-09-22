@@ -38,35 +38,60 @@ JVM 모듈은 Gradle이, 프론트엔드는 npm workspaces가 관리한다.
 
 ## 아키텍처
 
+```mermaid
+flowchart TB
+    browser[브라우저] --> web["apps/web<br/>React · :5173"]
+    web -->|"개발: Vite 프록시 /api<br/>배포: VITE_API_BASE_URL"| api
+
+    subgraph api["apps/api · Spring Boot · :8080"]
+        direction TB
+        subgraph core["Phase 1 · 은행 코어"]
+            auth[auth]
+            common[common]
+            transfer[transfer] --> account[account]
+            transfer --> transaction[transaction]
+        end
+        subgraph ext["Phase 2~7 · 확장 도메인"]
+            fds["fds · 2"]
+            admin["admin · 2"]
+            product["product · 3"]
+            batch["batch · 3~"]
+            openbanking["openbanking · 4"]
+            card["card · 5"]
+            securities["securities · 6"]
+            insurance["insurance · 7"]
+        end
+        transfer -. 출금 평가 훅 .-> fds
+        product --> transfer
+        card --> transfer
+        securities --> transfer
+        insurance --> transfer
+        openbanking --> account
+        admin --> transaction
+        batch --> product
+    end
+
+    api --> db[(MariaDB)]
+    api -.-> redis[(Redis · 미확정)]
 ```
-브라우저
-  │
-  ▼
-apps/web (React, :5173)
-  │  개발: Vite 프록시 /api → :8080   배포: VITE_API_BASE_URL로 직접 호출
-  ▼
-apps/api (Spring Boot, :8080)
-  │
-  │  Phase 1 — 은행 코어
-  ├── auth         회원·JWT
-  ├── account      계좌·잔액
-  ├── transfer     송금 (트랜잭션·락)  ──▶ 출금 평가 훅 (Phase 1은 항상 통과)
-  ├── transaction  거래내역
-  ├── common       예외·에러 응답·설정
-  │
-  │  Phase 2~7 — 확장 도메인 (모두 account·transfer를 호출한다)
-  ├── fds          규칙 평가 (훅 구현체)      (Phase 2)
-  ├── admin        관리자 조회                (Phase 2)
-  ├── product      예금·대출 상품            (Phase 3)
-  ├── batch        Spring Batch Job들         (Phase 3~)
-  ├── openbanking  OAuth 인가 서버·오픈 API   (Phase 4)
-  ├── card         승인·매입·정산             (Phase 5)
-  ├── securities   주문·체결·T+2              (Phase 6)
-  └── insurance    청약·납입·만기             (Phase 7)
-  │            │
-  ▼            ▼
-MariaDB     Redis (Refresh Token, 미확정)
-```
+
+확장 도메인 넷(product·card·securities·insurance)이 전부 `transfer` 하나로 모인다. 돈이 움직이는 길은 이것뿐이다.
+
+| 패키지        | 역할                              | Phase |
+|---------------|-----------------------------------|-------|
+| `auth`        | 회원·JWT                          | 1     |
+| `account`     | 계좌·잔액                         | 1     |
+| `transfer`    | 송금 — 트랜잭션·락·출금 평가 훅   | 1     |
+| `transaction` | 거래내역                          | 1     |
+| `common`      | 예외·에러 응답·설정               | 1     |
+| `fds`         | 규칙 평가 (출금 평가 훅의 구현체) | 2     |
+| `admin`       | 관리자 조회                       | 2     |
+| `product`     | 예금·대출 상품                    | 3     |
+| `batch`       | Spring Batch Job                  | 3~    |
+| `openbanking` | OAuth 인가 서버·오픈 API          | 4     |
+| `card`        | 승인·매입·정산                    | 5     |
+| `securities`  | 주문·체결·T+2                     | 6     |
+| `insurance`   | 청약·납입·만기                    | 7     |
 
 원칙 세 가지.
 
