@@ -69,7 +69,7 @@
 
 ### XFER — 송금
 
-처리 순서와 동시성·멱등성 규칙은 [04-domain.md 송금 규칙](../04-domain.md#송금-규칙)을 따른다. Phase 5~7의 카드 출금·예수금 이체·보험료 납입이 전부 이 로직을 재사용한다.
+처리 순서와 동시성·멱등성 규칙은 [04-domain.md 송금 규칙](../04-domain.md#송금-규칙)을 따른다.
 
 - 출금 계좌(내 계좌) · 입금 계좌번호 · 금액 · 메모를 입력한다.
 - 확인 화면에서 수취인 이름을 보여준 뒤 실행한다.
@@ -96,100 +96,7 @@
 
 ## 도메인 모델
 
-엔티티 이름과 상태값은 여기 적힌 것을 쓴다.
-
-```
-User 1 ──── N Account 1 ──── N Transaction
-                │                   ▲
-                │                   │ 이체 1건 = 출금 거래 1 + 입금 거래 1
-                │                   │
-                └──── N Transfer ───┘
-```
-
-### User
-
-| 필드      | 타입     | 비고                      |
-| --------- | -------- | ------------------------- |
-| id        | Long     |                           |
-| email     | String   | unique, 로그인 ID         |
-| password  | String   | BCrypt 해시               |
-| name      | String   | 수취인 확인 화면에 보여줌 |
-| phone     | String   | unique                    |
-| role      | enum     | `USER`, `ADMIN`           |
-| createdAt | DateTime |                           |
-
-세부 컬럼(생년월일, 약관 동의 등)은 `AUTH-00` 이슈의 결정에 따른다.
-
-### Account
-
-| 필드          | 타입           | 비고                                                |
-| ------------- | -------------- | --------------------------------------------------- |
-| id            | Long           |                                                     |
-| accountNumber | String         | unique. 형식은 `110-123-456789` 같은 하이픈 포함    |
-| user          | User           |                                                     |
-| accountType   | enum           | 지금은 `CHECKING` 하나. Phase 3·6에서 값이 늘어난다 |
-| productName   | String         | "주거래 입출금통장" 등. 상품 마스터는 Phase 3에서   |
-| balance       | **BigDecimal** | precision 19, scale 2. 음수 불가                    |
-| currency      | String         | 항상 `KRW`. 컬럼만 유지                             |
-| status        | enum           | `ACTIVE`, `DORMANT`, `CLOSED`                       |
-| openedAt      | Date           |                                                     |
-
-이미 `apps/api`에 구현되어 있다. `user` 연관과 `accountType`을 추가하면 된다.
-
-계좌 상태:
-
-| 상태      | 조회 | 출금 | 입금 | 비고                    |
-| --------- | ---- | ---- | ---- | ----------------------- |
-| `ACTIVE`  | O    | O    | O    | 정상                    |
-| `DORMANT` | O    | X    | O    | 휴면. 시연용으로만 존재 |
-| `CLOSED`  | O    | X    | X    | 해지. 시연용으로만 존재 |
-
-상태를 바꾸는 기능은 향후 후보다. 지금은 시드 데이터로만 만든다.
-
-### Transaction (거래)
-
-| 필드                      | 타입       | 비고                                                    |
-| ------------------------- | ---------- | ------------------------------------------------------- |
-| id                        | Long       |                                                         |
-| account                   | Account    | 이 거래로 잔액이 바뀐 계좌                              |
-| type                      | enum       | `DEPOSIT`(입금), `WITHDRAWAL`(출금)                     |
-| sourceType                | enum       | 지금은 `TRANSFER` 하나. Phase 3·5·6·7에서 값이 늘어난다 |
-| amount                    | BigDecimal | 항상 양수. 방향은 `type`이 정한다                       |
-| balanceAfter              | BigDecimal | 거래 직후 잔액. 내역 화면에 보여주고 정합성 검증에 씀   |
-| counterpartyAccountNumber | String     | 상대 계좌번호                                           |
-| transfer                  | Transfer   | 어느 이체에서 생긴 거래인지                             |
-| memo                      | String     |                                                         |
-| createdAt                 | DateTime   |                                                         |
-
-**불변이다.** UPDATE·DELETE 하지 않는다.
-
-### Transfer (이체)
-
-| 필드           | 타입       | 비고                                            |
-| -------------- | ---------- | ----------------------------------------------- |
-| id             | Long       |                                                 |
-| idempotencyKey | String     | unique. 클라이언트가 생성(UUID). 중복 요청 방지 |
-| fromAccount    | Account    |                                                 |
-| toAccount      | Account    |                                                 |
-| amount         | BigDecimal |                                                 |
-| memo           | String     |                                                 |
-| status         | enum       | 아래 상태 참고                                  |
-| failureReason  | String     | 실패·차단 사유                                  |
-| requestedAt    | DateTime   |                                                 |
-| completedAt    | DateTime   |                                                 |
-
-상태 전이:
-
-```
-REQUESTED ──▶ COMPLETED          정상 완료
-    │
-    ├──────▶ PENDING_AUTH ──▶ COMPLETED   FDS 보류 → 추가 인증 통과   (Phase 2)
-    │              └────────▶ FAILED      추가 인증 실패 또는 만료     (Phase 2)
-    ├──────▶ BLOCKED                      FDS 차단                     (Phase 2)
-    └──────▶ FAILED                       잔액 부족, 계좌 상태 이상 등
-```
-
-`COMPLETED`, `BLOCKED`, `FAILED`는 종료 상태다. 다시 바뀌지 않는다. `PENDING_AUTH`·`BLOCKED`는 Phase 2에서 쓰이지만 enum 값은 지금 정의한다.
+ERD는 별도 문서에서 관리한다. <!-- TODO: ERD 문서 링크 --> 코어 설계 때 지킬 컬럼·훅은 [04-domain.md 열어둘 자리](../04-domain.md#이후-phase를-위해-코어가-열어둘-자리)를 따른다.
 
 ## 시드 데이터
 
