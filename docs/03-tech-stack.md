@@ -44,7 +44,7 @@ flowchart TB
     web -->|"개발: Vite 프록시 /api<br/>배포: VITE_API_BASE_URL"| api
 
     subgraph api["apps/api · Spring Boot · :8080"]
-        direction LR
+        direction TB
         subgraph core["Phase 1 · 은행 코어"]
             direction TB
             auth[auth]
