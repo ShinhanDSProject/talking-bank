@@ -65,14 +65,17 @@ flowchart TB
         subgraph p4["Phase 4 · 오픈뱅킹"]
             openbanking[openbanking]
         end
-        subgraph p5["Phase 5 · 카드"]
-            card[card]
-        end
-        subgraph p6["Phase 6 · 증권"]
-            securities[securities]
-        end
-        subgraph p7["Phase 7 · 보험"]
-            insurance[insurance]
+        subgraph later["Phase 5~7 · 순서 자유"]
+            direction LR
+            subgraph p5["Phase 5 · 카드"]
+                card[card]
+            end
+            subgraph p6["Phase 6 · 증권"]
+                securities[securities]
+            end
+            subgraph p7["Phase 7 · 보험"]
+                insurance[insurance]
+            end
         end
         transfer -. 출금 평가 훅 .-> fds
         product --> transfer
