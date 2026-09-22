@@ -13,7 +13,6 @@
 | 라우팅/상태 | React Router · TanStack Query                     | 전역 상태 라이브러리는 필요해질 때 추가            |
 | 테스트      | JUnit 5 + MockMvc (H2) · Vitest + Testing Library |                                                    |
 | 코드 품질   | ESLint · Prettier                                 | 백엔드 포매터는 미정 (Spotless 등 검토)            |
-| AI          | Python (LangChain / LangGraph / Dify 중 미정)     | 기능 확정 후 결정. `apps/ai`로 들어갈 예정         |
 | 인프라      | Docker Compose                                    | 로컬: MariaDB(+Redis). 배포: 서버 1대              |
 | 빌드        | Gradle 9 (멀티프로젝트) · npm workspaces          | 두 빌드는 결합하지 않는다                          |
 
@@ -23,8 +22,7 @@
 bank-bank/
 ├── apps/
 │   ├── api/          # Spring Boot — 계좌·송금과 확장 도메인. 돈을 다루는 쪽
-│   ├── web/          # React — 고객 화면 + 관리자 화면
-│   └── ai/           # (예정) Python — LLM 기능. 설명·요약·검색만
+│   └── web/          # React — 고객 화면 + 관리자 화면
 ├── packages/         # 앱 사이 공유 코드 (아직 비어 있음)
 ├── docs/             # 이 문서들
 ├── build.gradle      # 플러그인 버전만 선언
@@ -33,7 +31,7 @@ bank-bank/
 └── docker-compose.yml
 ```
 
-JVM 모듈은 Gradle이, 프론트엔드는 npm workspaces가 관리한다. Python 서비스가 들어오면 `apps/ai`에 자체 `pyproject.toml`을 두고 루트 `package.json` 스크립트에서 함께 띄운다.
+JVM 모듈은 Gradle이, 프론트엔드는 npm workspaces가 관리한다.
 
 확장 도메인(Phase 2~7)은 별도 앱이 아니라 **`apps/api` 안의 패키지**로 들어간다. 도메인마다 서비스를 쪼개면 트랜잭션이 서비스 경계를 넘게 된다(카드 승인 → 계좌 출금). 하나의 DB, 하나의 트랜잭션 안에서 처리한다.
 
@@ -67,16 +65,13 @@ apps/api (Spring Boot, :8080)
   │            │
   ▼            ▼
 MariaDB     Redis (Refresh Token, 미확정)
-
-apps/ai (Python, 예정) ◀── api가 HTTP로 호출. 타임아웃 시 설명 없이 진행
 ```
 
-원칙 네 가지.
+원칙 세 가지.
 
 1. **돈은 `account`·`transfer` 패키지에서만 움직인다.** 카드 출금, 예수금 이체, 보험료 납입은 전부 `transfer`의 이체 로직을 호출한다. 각 도메인이 잔액을 직접 고치지 않는다.
-2. **AI 서비스는 읽기만 하고, 죽어도 송금은 되어야 한다.**
-3. **프론트와 API는 따로 배포한다.** 그래서 CORS 설정(`app.cors.allowed-origins`)이 있다. 개발 중에는 Vite 프록시를 타서 CORS가 필요 없다.
-4. **테스트는 인프라 없이 돈다.** 백엔드 테스트는 H2 인메모리, 프론트 테스트는 `fetch` 목킹. `npm test` 한 번으로 양쪽이 돈다.
+2. **프론트와 API는 따로 배포한다.** 그래서 CORS 설정(`app.cors.allowed-origins`)이 있다. 개발 중에는 Vite 프록시를 타서 CORS가 필요 없다.
+3. **테스트는 인프라 없이 돈다.** 백엔드 테스트는 H2 인메모리, 프론트 테스트는 `fetch` 목킹. `npm test` 한 번으로 양쪽이 돈다.
 
 ## 포트와 환경
 

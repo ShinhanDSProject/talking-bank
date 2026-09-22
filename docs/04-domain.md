@@ -103,15 +103,15 @@ REQUESTED ──▶ COMPLETED          정상 완료
 
 ### FdsAlert (이상거래 판정) — Phase 2
 
-| 필드      | 타입     | 비고                                     |
-| --------- | -------- | ---------------------------------------- |
-| id        | Long     |                                          |
-| transfer  | Transfer |                                          |
-| ruleName  | String   | 걸린 규칙. 여러 개면 가장 심각한 것      |
-| score     | int      | 규칙별 점수 합. 임계값과 비교            |
-| decision  | enum     | `ALLOW`, `HOLD`(보류), `BLOCK`(차단)     |
-| detail    | String   | 판정 근거. (AI가 붙으면 여기를 자연어로) |
-| createdAt | DateTime |                                          |
+| 필드      | 타입     | 비고                                 |
+| --------- | -------- | ------------------------------------ |
+| id        | Long     |                                      |
+| transfer  | Transfer |                                      |
+| ruleName  | String   | 걸린 규칙. 여러 개면 가장 심각한 것  |
+| score     | int      | 규칙별 점수 합. 임계값과 비교        |
+| decision  | enum     | `ALLOW`, `HOLD`(보류), `BLOCK`(차단) |
+| detail    | String   | 판정 근거                            |
+| createdAt | DateTime |                                      |
 
 `ALLOW`도 기록한다. 나중에 오탐/미탐 비율을 볼 수 있어야 한다.
 
