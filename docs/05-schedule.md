@@ -52,7 +52,7 @@
 - README·docs 최신화
 - 회고 — 잘 된 것, 안 된 것, 다시 한다면
 
-**완료 조건**: [01-overview.md 성공 기준](01-overview.md#성공-기준) 전부 체크.
+**완료 조건**: [02-scope.md Phase 1 기능 명세](02-scope.md#phase-1-기능-명세)의 AC 전부 체크. 시연 시나리오 Phase 1이 끊기지 않고 돈다.
 
 > Phase 1이 프로젝트의 마지막 Phase라면 Step 1-3이 발표 전 마무리다(발표 자료·데모 영상 백업 포함). Phase 2 이상을 진행한다면 Step 1-3은 짧게 끝내고, 마무리 Step은 마지막 Phase 끝에 둔다.
 

@@ -29,7 +29,7 @@ JVM 모듈은 Gradle 멀티프로젝트가, 프론트엔드는 npm workspaces가
 
 주제·범위·기술 스펙·일정·개발 규칙은 [`docs/`](docs/01-overview.md)에 있습니다. 처음 합류했다면 이 순서로 읽으세요.
 
-1. [01-overview](docs/01-overview.md) — 무엇을, 왜 만드는지
+1. [01-overview](docs/01-overview.md) — 무엇을 만드는지
 2. [02-scope](docs/02-scope.md) — 하는 것과 **안 하는 것**
 3. [06-conventions](docs/06-conventions.md) — 브랜치·커밋·PR·코드 규칙
 
