@@ -118,30 +118,3 @@ flowchart TB
 | Redis   | 6379     | 도입 확정 시                                                                        |
 
 프론트와 API는 따로 배포한다. 개발 중에는 Vite 프록시(`/api` → `:8080`)를 타고, 배포 시에는 `VITE_API_BASE_URL`과 `CORS_ALLOWED_ORIGINS`를 서로 맞춘다.
-
-## 기술 결정
-
-### Spring Boot 3.5.x
-
-Spring Boot **4.1.1 → 3.5.x LTS** (PR #28). 검색되는 자료·튜토리얼이 대부분 Boot 3 기준이라 그쪽을 택했다. 전환으로 바뀐 것:
-
-| 항목              | 4.1.1                                                | 3.5.x                                                     |
-|-----------------|------------------------------------------------------|-----------------------------------------------------------|
-| 웹 스타터           | `spring-boot-starter-webmvc`                         | `spring-boot-starter-web`                                 |
-| 테스트 스타터         | `*-test` 스타터가 모듈별로 분리                                | `spring-boot-starter-test` 하나                             |
-| MockMvc 자동설정    | `org.springframework.boot.webmvc.test.autoconfigure` | `org.springframework.boot.test.autoconfigure.web.servlet` |
-| Spring Security | 7.x                                                  | 6.x                                                       |
-| Hibernate       | 7.x                                                  | 6.x                                                       |
-
-같은 PR에서 Gradle 데몬 JVM을 21로 고정했다(`gradle/gradle-daemon-jvm.properties`) — 호스트 JDK 버전과 무관하게 빌드된다.
-
-### 검토한 대안
-
-| 후보             | 지금 쓰지 않는 이유                                                    |
-|----------------|-----------------------------------------------------------|
-| Next.js        | SSR이 필요 없다. API 서버가 따로 있어 SPA가 단순하다                       |
-| 단일 JAR에 프론트 포함 | 분리 배포가 각자 빌드·배포하기 쉽고 역할 경계가 분명하다                          |
-| 도메인별 마이크로서비스   | 카드 승인 → 계좌 출금 같은 흐름이 서비스 경계를 넘으면 분산 트랜잭션이 필요해진다. 한 앱으로 간다 |
-| Drools 룰 엔진    | 규칙 3~4개에 룰 엔진은 과하다. 평범한 Java 클래스로 충분                      |
-| Testcontainers | Docker 의존이 생긴다. H2로 충분하다                                  |
-| Kotlin         | 팀이 Java에 익숙하다                                             |
