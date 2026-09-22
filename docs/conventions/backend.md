@@ -1,6 +1,6 @@
 # 개발 규칙 — 백엔드
 
-> 공통 규칙(Git·이슈·API 계약·인증·시크릿)은 [06-conventions.md](../06-conventions.md)에 있다. 이 문서는 `apps/api` 코드에만 적용된다. 코드 구조·네이밍의 상세는 <!-- TODO: 백엔드 코드 구조 상세 문서 링크 -->.
+> 공통 규칙(Git·이슈·API 계약·인증·시크릿)은 [06-conventions.md](../06-conventions.md)에 있다. 이 문서는 `apps/api` 코드에만 적용된다. 패키지 배치·계층 역할·네이밍의 상세는 [CONVENTION.md](../CONVENTION.md)에 있다. 이 문서와 어긋나면 이 문서를 먼저 고친다.
 
 ## 패키지 구조
 
