@@ -49,19 +49,7 @@
 
 ## 도메인 모델
 
-### FdsAlert (이상거래 판정)
-
-| 필드      | 타입     | 비고                                 |
-| --------- | -------- | ------------------------------------ |
-| id        | Long     |                                      |
-| transfer  | Transfer |                                      |
-| ruleName  | String   | 걸린 규칙. 여러 개면 가장 심각한 것  |
-| score     | int      | 규칙별 점수 합. 임계값과 비교        |
-| decision  | enum     | `ALLOW`, `HOLD`(보류), `BLOCK`(차단) |
-| detail    | String   | 판정 근거                            |
-| createdAt | DateTime |                                      |
-
-`Transfer 1 ──── 0..1 FdsAlert`. Transfer의 `PENDING_AUTH`·`BLOCKED` 상태는 ERD 문서에 정의한다. <!-- TODO: ERD 문서 링크 -->
+`FdsAlert`(이상거래 판정)의 필드, `Transfer 1 ──── 0..1 FdsAlert` 관계, Transfer의 `PENDING_AUTH`·`BLOCKED` 상태는 ERD 문서에서 관리한다. <!-- TODO: ERD 문서 링크 -->
 
 ## 시드 데이터
 
