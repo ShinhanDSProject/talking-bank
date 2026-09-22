@@ -84,20 +84,6 @@ flowchart TB
         batch --> product
     end
 
-    click auth "domains/01-core.md" "Phase 1 — 은행 코어"
-    click account "domains/01-core.md" "Phase 1 — 은행 코어"
-    click transfer "domains/01-core.md" "Phase 1 — 은행 코어"
-    click transaction "domains/01-core.md" "Phase 1 — 은행 코어"
-    click common "domains/01-core.md" "Phase 1 — 은행 코어"
-    click fds "domains/02-risk.md" "Phase 2 — 리스크"
-    click admin "domains/02-risk.md" "Phase 2 — 리스크"
-    click product "domains/03-product.md" "Phase 3 — 여신/수신 상품"
-    click batch "domains/03-product.md" "Phase 3 — 여신/수신 상품"
-    click openbanking "domains/04-openbanking.md" "Phase 4 — 오픈뱅킹"
-    click card "domains/05-card.md" "Phase 5 — 카드"
-    click securities "domains/06-securities.md" "Phase 6 — 증권"
-    click insurance "domains/07-insurance.md" "Phase 7 — 보험"
-
     api --> db[(MariaDB)]
     api -.-> redis[(Redis · 미확정)]
 ```
