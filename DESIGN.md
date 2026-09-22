@@ -11,7 +11,9 @@
 | **파랑 하나로**     | 브랜드 색은 신한 블루 `#0046FF` 하나. 행동을 이끄는 곳에만 쓴다        |
 | **말은 짧게**       | 제목은 질문형("누구에게 보낼까요?"), 버튼은 동사형("송금하기"), 존댓말 |
 
-**웹사이트**다. 기준 프레임 **1440 × 900**(데스크톱), 콘텐츠 최대 폭 1200, 768 미만은 한 열로 접힌다. 서체는 Inter(숫자·영문) + Pretendard(한글 대체).
+**웹사이트**다. 기준 프레임 **1440 × 1024**(데스크톱), 콘텐츠 최대 폭 1200, 768 미만은 한 열로 접힌다. 서체는 Inter(숫자·영문) + Pretendard(한글 대체).
+
+정보구조·절차(메뉴 체계, 이체 3단계, 조회 조건, 비밀번호 확인)는 **기존 은행 인터넷뱅킹**을 따르고, 색·컴포넌트·말투는 이 문서를 따른다.
 
 ## 1. Foundation
 
@@ -112,15 +114,17 @@
 
 레이아웃
 
-| 브레이크포인트 | 폭         | 구성                                                      |
-| -------------- | ---------- | --------------------------------------------------------- |
-| `desktop`      | ≥ 1024px   | GNB 64 → 페이지(위아래 `2xl`) → 컨테이너 1200 가운데      |
-| `tablet`       | 768 ~ 1023 | 컨테이너 폭 100% − 좌우 `lg`, 카드 2열 → 1열              |
-| `mobile`       | < 768      | 좌우 `md`, 모든 열이 한 열, 표는 목록(TransactionRow)으로 |
+| 브레이크포인트 | 폭         | 구성                                                          |
+| -------------- | ---------- | ------------------------------------------------------------- |
+| `desktop`      | ≥ 1024px   | GNB 64 → 페이지(위아래 `2xl`) → 컨테이너 1200 가운데 → Footer |
+| `tablet`       | 768 ~ 1023 | 컨테이너 폭 100% − 좌우 `lg`, LNB는 드롭다운, 카드 2열 → 1열  |
+| `mobile`       | < 768      | 좌우 `md`, 모든 열이 한 열, 표는 목록(TransactionRow)으로     |
 
+- 컨테이너 1200 = **LNB 220 + 간격 `xl` + 콘텐츠 948**. 로그인처럼 LNB가 없는 페이지는 콘텐츠를 가운데 둔다
+- 콘텐츠 세로 순서: Breadcrumb → PageHeader → (StepIndicator) → 본체 → Notice
 - 페이지 배경 `bg-secondary`, 그 위에 흰 카드(`bg-primary`, radius `lg`, 그림자 `card`)
-- 폼(송금·가입)은 **폼 카드 560px**, 컨테이너 왼쪽 정렬. 안쪽 패딩 `xl`, 요소 간격 `lg`
-- 표·계좌 카드는 컨테이너 폭 1200을 채운다
+- 폼(이체·가입)은 **폼 카드 560px**, 콘텐츠 왼쪽 정렬. 안쪽 패딩 `xl`, 요소 간격 `lg`
+- 표·조회 조건은 콘텐츠 폭 948을 채운다
 - 스크롤은 페이지 전체. GNB는 상단 고정
 
 ### 1.4 Radius · Elevation · Icon · Motion
@@ -187,19 +191,37 @@
 
 - 구조: 라벨(`small`) → 필드(52px, 값 오른쪽 정렬 `amount` + 접미 "원" `body` `text-secondary`) → 도움말(잔액)
 - 상태: Empty(`0` `text-tertiary`) · Filled(`text-primary`) · Error(`border-danger` 2px, 라벨·도움말 `text-danger`, "잔액이 부족해요 (잔액 350,000원)") · Disabled
-- 규칙: 콤마 자동, 소수 없음. 잔액·한도 초과는 입력 중 즉시 Error. 단위 버튼(+1만 · +10만 · 전액)은 선택
+- 규칙: 콤마 자동, 소수 없음. 잔액·한도 초과는 입력 중 즉시 Error. 필드 아래 Chip 행(+1만 · +10만 · +100만 · 전액)으로 더한다
+
+### Select · PinField
+
+- Select 52px: TextField Box와 같은 틀 + 우측 chevron 24 `icon-secondary`. `State` Default(플레이스홀더) / Filled / Error / Disabled. 열리면 아래 목록(ListRow 44px, 최대 6개 스크롤, 선택 항목 `bg-brand-soft`). 출금계좌는 "계좌명 계좌번호 (잔액 n원)" 한 줄, 입금은행은 은행명, 조회 조건은 거래구분·정렬
+- PinField: 라벨 → 칸 4개(56×52, 간격 `sm`, radius `md`) → 도움말. `State` Empty / Filled(칸마다 ● `body-strong`) / Error(`border-danger` 2px, "비밀번호가 맞지 않아요 (2/5회)"). 이체 확인 단계에서 이체 비밀번호. 5회 오류 잠금은 Dialog Alert
+
+### Notice · FilterBar
+
+- Notice: `bg-secondary` · radius `md` · 패딩 `md` · 줄마다 "※ " + `caption` `text-secondary`. 폼·표 아래, 한 상자 3줄까지. 한도·수수료·되돌리기 어려움 같은 사실만 적는다
+- FilterBar(콘텐츠 폭): `bg-secondary` · radius `lg` · 패딩 `lg`. 1행 조회기간 Chip 5개 + 시작 ~ 종료 날짜(TextField 150), 2행 거래구분 Select 160 · 정렬 Select 160 · 우측 "조회" Button MD. 기본값 1개월 · 전체 · 최신순
 
 ### Checkbox · Switch
 
 - Checkbox 24px radius `sm`: Checked `bg-brand` + 흰 체크 / Unchecked `border-strong` 1.5px. 약관 동의·표 행 선택. 클릭 영역은 라벨까지
 - Switch 48×28 radius `full`: On `bg-brand` / Off `border-strong`, 손잡이 24 흰색. 즉시 반영되는 설정(알림, 자동이체)에만. 저장 버튼이 따로 있으면 Checkbox
 
-### GNB · PageHeader · Tab · Pagination
+### GNB · LNB · Breadcrumb · PageHeader · Footer
 
-- GNB 64px, 아래 `border-default` 1px, 상단 고정: 로고 `h2` `text-brand` · 메뉴(`body-strong`, 현재 `text-primary`, 나머지 `text-secondary`, hover `text-primary`) · 우측 사용자명 `body` + "로그아웃" TextButton. 안쪽은 컨테이너 1200. 768 미만은 햄버거
-- PageHeader: 제목 `h1` + 부제 `caption`, 우측 슬롯(보조 버튼). 컨테이너 폭, 아래 `lg`. 제목은 질문형으로 다음 행동을 안내
+- GNB 64px, 아래 `border-default` 1px, 상단 고정: 로고 `h2` `text-brand` · 1depth 메뉴 8개(`body-strong`, 현재 `text-primary`, 나머지 `text-secondary`) · 우측 "인증센터" "고객센터" TextButton SM + 사용자명 + "로그아웃". `State` Open = hover 시 **메가메뉴**(컨테이너 폭, 1depth마다 한 열, 2depth `caption`, 아래 radius `lg`, 그림자 `modal`). 768 미만은 햄버거
+- LNB 220px: 머리글(1depth `h3`, 아래 선) + 2depth 항목 44px `body`. 현재 항목 `bg-brand-soft` + `text-brand` `body-strong`, hover `bg-pressed`. 카드 모양(radius `lg`, 그림자 `card`)
+- Breadcrumb: `small`, "홈 › 1depth › 2depth", 구분자 `text-tertiary`, 마지막만 `text-primary`. PageHeader 위 `sm`
+- PageHeader: 제목 `h1` + 부제 `caption`, 우측 슬롯(보조 버튼). 콘텐츠 폭, 아래 `lg`
+- Footer: 위 `border-default` 1px, 위아래 `lg`. 링크(이용약관 · 개인정보처리방침 · 보안센터 · 고객센터 1599-8000 · 사이트맵) `small` `text-secondary` + 저작권 `label` `text-tertiary`
+
+### Tab · StepIndicator · Pagination · Chip
+
 - Tab: `Size` LG 48px(`body-strong`) / SM 40px(`small`). 선택 = `text-primary` + 2px `bg-brand` 밑줄, 아래 `border-default` 1px. 4개 이하 폭 균등
+- StepIndicator: `Step` 1 / 2 / 3 = 입력 → 확인 → 완료. 원 28 + 라벨, 사이 선 1px. 현재 `bg-brand`/`text-inverse` + 라벨 `body-strong`, 지난 단계 `bg-brand-soft`/`text-brand` + 선 `bg-brand`, 다음 단계 `bg-tertiary`/`text-secondary`. 폼 카드 맨 위
 - Pagination: 32px 칸, 간격 `xs`, 현재 `bg-brand-soft`/`text-brand`, 나머지 `text-secondary`. 표 아래 가운데. 한 페이지 20행
+- Chip 32px: 좌우 `md`, radius `full`, `small`. `State` Default(`bg-primary` + `border-default`) / Selected(`bg-brand-soft` + `border-brand` + `text-brand`). 금액 단위(+1만 · +10만 · +100만 · 전액), 조회기간(오늘 · 1주일 · 1개월 · 3개월 · 직접입력)
 
 ### Card · AccountCard
 
@@ -207,8 +229,9 @@
 - AccountCard: 패딩 `lg` · 계좌명 `body` `text-secondary` · 번호 `caption` `text-tertiary` · 잔액 `amount-lg` · 행동 2개(Weak "거래내역" + Fill "송금", MD, 1:1). 홈에서 2열, 768 미만 1열
 - 폼 카드: 폭 560 · 패딩 `xl` · 요소 간격 `lg`. 입력·확인·결과 화면의 본체
 
-### Table · ListRow · TransactionRow
+### AccountTable · Table · ListRow · TransactionRow
 
+- AccountTable(콘텐츠 폭): 머리글 44px · 행 60px. 열: 계좌명(나머지) · 계좌번호 180 `text-secondary` · 잔액 160(우, `body-strong`) · 출금가능금액 160(우) · 관리 150("거래내역" Neutral · "이체" Primary TextButton SM). 계좌 종류별 섹션은 Divider Thick
 - Table(컨테이너 폭): 머리글 44px `bg-secondary` `small` `text-secondary` · 행 52px · 좌우 `lg` · 행 사이 `border-default` 1px · 바깥 radius `lg` + 테두리. 열: 일시 200 · 내용(나머지) · 구분 120 · 금액 200(우) · 잔액 200(우). 금액 열 `body-strong` tabular, 입금 `text-success`. 행 hover `bg-pressed`, 빈 상태는 가운데 `caption` "거래가 없어요"
 - ListRow 64px, 좌우 `md`: 좌 아이콘 40(`bg-brand-soft` 원) + 제목 `body` / 부제 `caption` · `Right` Arrow(› 이동) / Text(값) / None. 확인·결과 화면의 요약 행(아이콘·부제 숨김, 제목 `text-secondary`, 값 `body-strong`)과 설정 메뉴에 쓴다
 - TransactionRow 64px: 768 미만에서 Table 대신. 제목=상대방, 부제=일시, 우측 금액 `amount` — `Type` Deposit `+1,250,000원` `text-success` / Withdrawal `-50,000원` `text-primary`
@@ -229,7 +252,7 @@
 
 - 폼 카드 하단, 위 `xl` 간격, 폼 폭 채움
 - `Type` Single(Fill Primary LG) / Double(Weak Dark "취소" + Fill Primary, 1:1, 간격 `sm`)
-- 규칙: 확인 버튼은 항상 오른쪽. 취소는 입력값이 있으면 Confirm Dialog를 거친다. Enter = 확인
+- 규칙: 확인 버튼은 항상 오른쪽. 취소는 입력값이 있으면 Confirm Dialog를 거친다. Enter = 확인. 확인 단계의 왼쪽 버튼은 "이전"(입력값 유지)
 
 ### Dialog
 
@@ -248,17 +271,36 @@
 - 흐름 종료 화면 상단: 아이콘 72(원 `bg-success-soft`/`bg-danger-soft` + 점 32) → 제목 `h1` → 설명 `body` `text-secondary`, 가운데 정렬, 위아래 `2xl`
 - `Type` Success / Failure. 같은 폼 카드 안에 요약 행(받는 분·금액·일시) + FormActions("확인")
 
-## 3. 패턴 — 송금 흐름
+## 3. 정보구조 · 화면 패턴
 
-모든 화면: GNB → PageHeader → 폼 카드 560(컨테이너 왼쪽).
+### 정보구조
 
-| 화면        | 본체                                                                                 | FormActions                                             |
-| ----------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------- |
-| 홈          | AccountCard 2열 · "최근 거래" 섹션(제목 `h2` + "전체 보기") · Table · Pagination     | —                                                       |
-| 송금 입력   | TextField 받는 계좌 · AmountField                                                    | Double "취소" / "다음" (금액 0이면 Disabled)            |
-| 수취인 확인 | 금액 `amount-lg` · 요약 행(받는 분·계좌·출금 계좌·수수료)                            | Double "취소" / "송금하기"                              |
-| 송금 결과   | Result · 요약 행(받는 분·계좌·금액·일시)                                             | Single "확인" / 실패는 Double "닫기" / "금액 다시 입력" |
-| 상태        | 잔액 부족 → AmountField Error 즉시 · 취소 → Confirm Dialog · 서버 오류 → Toast Error | —                                                       |
+GNB 1depth는 Phase(도메인)와 같다. LNB·메가메뉴의 2depth는 아래 표가 주인이고, 화면 이름은 PRD가 주인이다.
+
+| 1depth    | 2depth                                            | Phase |
+| --------- | ------------------------------------------------- | ----- |
+| 조회      | 전체계좌조회 · 거래내역조회 · 이체결과조회        | 1     |
+| 이체      | 계좌이체 · 자주쓰는계좌 · 이체한도관리 · 자동이체 | 1 · 2 |
+| 예금·대출 | 예금 가입 · 예금 조회 · 대출 신청 · 대출 조회     | 3     |
+| 오픈뱅킹  | 계좌 등록 · 타행 잔액조회 · 타행 이체             | 4     |
+| 카드      | 카드 신청 · 이용내역 · 청구서                     | 5     |
+| 증권      | 계좌 개설 · 매수·매도 · 보유 종목                 | 6     |
+| 보험      | 상품 안내 · 가입 · 청구                           | 7     |
+| 뱅킹관리  | 이체 비밀번호 변경 · 보안매체 · 알림 설정         | 1     |
+
+### 화면 패턴
+
+모든 페이지: GNB → Breadcrumb → LNB + 콘텐츠(PageHeader → 본체 → Notice) → Footer. 로그인만 LNB 없이 가운데 카드.
+
+| 화면                | 본체                                                                                                                                                        | FormActions                                             |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| 로그인              | 카드 480 가운데: Tab(아이디 · 인증서) · TextField 아이디 · 비밀번호 · Checkbox 아이디 저장                                                                  | Single "로그인" + "회원가입" · "아이디 찾기" TextButton |
+| 조회 › 전체계좌조회 | AccountTable · Notice                                                                                                                                       | —                                                       |
+| 조회 › 거래내역조회 | FilterBar · Table · Pagination                                                                                                                              | —                                                       |
+| 이체 › 1단계 입력   | StepIndicator 1 · Select 출금계좌 · Select 입금은행 · TextField 계좌번호 · AmountField + Chip · TextField 받는 분 통장표시 · Notice                         | Double "취소" / "다음" (금액 0이면 Disabled)            |
+| 이체 › 2단계 확인   | StepIndicator 2 · 금액 `amount-lg` · 요약 행(출금계좌 · 받는 분 · 입금계좌 · 수수료) · PinField                                                             | Double "이전" / "이체 실행"                             |
+| 이체 › 3단계 완료   | StepIndicator 3 · Result · 요약 행(받는 분 · 금액 · 일시 · 거래번호) · "이체확인증 인쇄" TextButton                                                         | Double "계좌조회" / "추가 이체"                         |
+| 상태                | 잔액 부족 → AmountField Error 즉시 · 취소 → Confirm Dialog · 비밀번호 오류 → PinField Error · 서버 오류 → Toast Error · 실패 → Result Failure + "다시 입력" | —                                                       |
 
 ## 4. 표시 형식
 
