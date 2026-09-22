@@ -46,12 +46,14 @@ flowchart TB
     subgraph api["apps/api · Spring Boot · :8080"]
         direction LR
         subgraph core["Phase 1 · 은행 코어"]
+            direction TB
             auth[auth]
             common[common]
             transfer[transfer] --> account[account]
             transfer --> transaction[transaction]
         end
         subgraph ext["Phase 2~7 · 확장 도메인"]
+            direction TB
             fds["fds · 2"]
             admin["admin · 2"]
             product["product · 3"]
