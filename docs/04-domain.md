@@ -166,6 +166,20 @@ REQUESTED ──▶ COMPLETED          정상 완료
 
 상태를 바꾸는 기능은 범위 밖이다. 시드 데이터로만 만든다.
 
+## 이후 Phase를 위해 코어가 열어둘 자리
+
+Phase 2~6의 도메인은 전부 `Account`·`Transfer`·`Transaction` 위에 올라간다. 코어를 만들 때 아래만 지키면 나중에 구조를 뜯지 않아도 된다.
+
+| 코어 모델     | 열어둘 자리                                                                                                         | 어느 Phase가 쓰나 |
+| ------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `Account`     | `accountType` 컬럼 — 지금은 `CHECKING`(입출금) 하나. 뒤에 `DEPOSIT`, `LOAN`, `SECURITIES` 추가                      | Phase 2, 5        |
+| `Transaction` | `sourceType` 컬럼 — 이 거래가 어디서 왔는지. `TRANSFER`, `CARD`, `SECURITIES`, `INSURANCE`, `INTEREST`              | Phase 2, 4, 5, 6  |
+| `Transfer`    | 이체 로직을 **서비스 메서드 하나**(`TransferService.execute`)로 노출. 카드 출금·예수금 이체·보험료 납입이 이걸 호출 | Phase 4, 5, 6     |
+| `FdsRule`     | 평가 대상을 `Transfer`가 아니라 **"출금 요청" 인터페이스**로 받는다. 카드 승인도 같은 규칙을 탄다                   | Phase 4           |
+| `User`        | 생년월일 컬럼 자리 — 대출 심사·보험 청약에서 필요                                                                   | Phase 2, 6        |
+
+`accountType`과 `sourceType`은 Phase 1에서 값이 하나뿐이라도 **컬럼은 지금 만든다.** 나중에 컬럼을 추가하면 기존 거래내역 전체를 마이그레이션해야 한다.
+
 ## 시드 데이터
 
 로컬 개발과 시연을 위해 `local` 프로필에서 자동 생성한다.
