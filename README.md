@@ -34,6 +34,8 @@ JVM 모듈은 Gradle 멀티프로젝트가, 프론트엔드는 npm workspaces가
 3. [06-conventions](docs/06-conventions.md) — 브랜치·커밋·PR·API 계약 등 공통 규칙, 그리고 맡은 쪽의 [backend](docs/conventions/backend.md) 또는 [frontend](docs/conventions/frontend.md) 규칙
 4. 구현할 Phase의 [docs/domains/](docs/domains/) 문서 — 그 도메인의 범위·명세·모델·진행
 
+루트의 [CLAUDE.md](CLAUDE.md)는 Claude Code가 읽는 요약(문서 위치·작업 절차·절대 규칙), [DESIGN.md](DESIGN.md)는 화면 규칙(색·타이포·간격·컴포넌트)입니다.
+
 ## 시작하기
 
 사전 준비: JDK 21+ (없으면 Gradle이 자동으로 내려받습니다), Node.js 20+, Docker.
