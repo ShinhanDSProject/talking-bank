@@ -84,6 +84,20 @@ flowchart TB
         batch --> product
     end
 
+    click auth "domains/01-core.md" "Phase 1 — 은행 코어"
+    click account "domains/01-core.md" "Phase 1 — 은행 코어"
+    click transfer "domains/01-core.md" "Phase 1 — 은행 코어"
+    click transaction "domains/01-core.md" "Phase 1 — 은행 코어"
+    click common "domains/01-core.md" "Phase 1 — 은행 코어"
+    click fds "domains/02-risk.md" "Phase 2 — 리스크"
+    click admin "domains/02-risk.md" "Phase 2 — 리스크"
+    click product "domains/03-product.md" "Phase 3 — 여신/수신 상품"
+    click batch "domains/03-product.md" "Phase 3 — 여신/수신 상품"
+    click openbanking "domains/04-openbanking.md" "Phase 4 — 오픈뱅킹"
+    click card "domains/05-card.md" "Phase 5 — 카드"
+    click securities "domains/06-securities.md" "Phase 6 — 증권"
+    click insurance "domains/07-insurance.md" "Phase 7 — 보험"
+
     api --> db[(MariaDB)]
     api -.-> redis[(Redis · 미확정)]
 ```
@@ -92,19 +106,19 @@ flowchart TB
 
 | 패키지        | 역할                              | Phase |
 |---------------|-----------------------------------|-------|
-| `auth`        | 회원·JWT                          | 1     |
-| `account`     | 계좌·잔액                         | 1     |
-| `transfer`    | 송금 — 트랜잭션·락·출금 평가 훅   | 1     |
-| `transaction` | 거래내역                          | 1     |
-| `common`      | 예외·에러 응답·설정               | 1     |
-| `fds`         | 규칙 평가 (출금 평가 훅의 구현체) | 2     |
-| `admin`       | 관리자 조회                       | 2     |
-| `product`     | 예금·대출 상품                    | 3     |
-| `batch`       | Spring Batch Job                  | 3~    |
-| `openbanking` | OAuth 인가 서버·오픈 API          | 4     |
-| `card`        | 승인·매입·정산                    | 5     |
-| `securities`  | 주문·체결·T+2                     | 6     |
-| `insurance`   | 청약·납입·만기                    | 7     |
+| `auth`        | 회원·JWT                          | [1](domains/01-core.md) |
+| `account`     | 계좌·잔액                         | [1](domains/01-core.md) |
+| `transfer`    | 송금 — 트랜잭션·락·출금 평가 훅   | [1](domains/01-core.md) |
+| `transaction` | 거래내역                          | [1](domains/01-core.md) |
+| `common`      | 예외·에러 응답·설정               | [1](domains/01-core.md) |
+| `fds`         | 규칙 평가 (출금 평가 훅의 구현체) | [2](domains/02-risk.md) |
+| `admin`       | 관리자 조회                       | [2](domains/02-risk.md) |
+| `product`     | 예금·대출 상품                    | [3](domains/03-product.md) |
+| `batch`       | Spring Batch Job                  | [3~](domains/03-product.md) |
+| `openbanking` | OAuth 인가 서버·오픈 API          | [4](domains/04-openbanking.md) |
+| `card`        | 승인·매입·정산                    | [5](domains/05-card.md) |
+| `securities`  | 주문·체결·T+2                     | [6](domains/06-securities.md) |
+| `insurance`   | 청약·납입·만기                    | [7](domains/07-insurance.md) |
 
 원칙 세 가지.
 
