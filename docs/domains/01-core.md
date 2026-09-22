@@ -203,7 +203,7 @@ REQUESTED ──▶ COMPLETED          정상 완료
 세 Step을 순서대로 간다. 화살표 위가 그 Step의 완료 조건이다.
 
 ```mermaid
-flowchart LR
+flowchart TB
     s1["Step 1-1 · 기반 구축<br/><b>로그인해서 내 계좌 목록이 보인다</b><br/><i>배포된 주소에서</i>"]
     s2["Step 1-2 · 송금과 거래내역<br/><b>송금이 동시성까지 정확히 동작한다</b>"]
     s3["Step 1-3 · 안정화<br/><b>끊기지 않는 시연, 설명할 수 있는 코드</b>"]
