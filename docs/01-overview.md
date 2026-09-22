@@ -32,13 +32,29 @@
 
 ## 문서 목록
 
-| 문서                                   | 내용                                                |
-| -------------------------------------- | --------------------------------------------------- |
-| [01-overview.md](01-overview.md)       | 이 문서. 주제·구조                                  |
-| [02-scope.md](02-scope.md)             | Phase별 범위, 하는 것 / 안 하는 것, 기능 명세       |
-| [03-tech-stack.md](03-tech-stack.md)   | 기술 스택, 아키텍처, 버전 결정                      |
-| [04-domain.md](04-domain.md)           | 도메인 모델, 용어, 금액·송금·동시성 규칙            |
-| [05-schedule.md](05-schedule.md)       | Phase별 진행 순서, 완료 조건, 시연 시나리오, 리스크 |
-| [06-conventions.md](06-conventions.md) | Git·이슈·API·코드 규칙                              |
+**전체**
+
+| 문서                                   | 내용                                             |
+| -------------------------------------- | ------------------------------------------------ |
+| [01-overview.md](01-overview.md)       | 이 문서. 주제·구조                               |
+| [02-scope.md](02-scope.md)             | 범위 원칙, Phase 개요, 안 하는 것, 미확정 스코프 |
+| [03-tech-stack.md](03-tech-stack.md)   | 기술 스택, 아키텍처, 버전 결정                   |
+| [04-domain.md](04-domain.md)           | 모든 도메인이 따르는 용어·금액·송금·동시성 규칙  |
+| [05-schedule.md](05-schedule.md)       | Phase 순서와 원칙, 시연 시나리오, 리스크         |
+| [06-conventions.md](06-conventions.md) | Git·이슈·API·코드 규칙                           |
+
+**도메인별** — 각 Phase의 범위·기능 명세·모델·진행. 틀이 같다.
+
+| 문서                                                   | Phase              |
+| ------------------------------------------------------ | ------------------ |
+| [domains/01-core.md](domains/01-core.md)               | 1 · 은행 코어      |
+| [domains/02-risk.md](domains/02-risk.md)               | 2 · 리스크 (FDS)   |
+| [domains/03-product.md](domains/03-product.md)         | 3 · 여신/수신 상품 |
+| [domains/04-openbanking.md](domains/04-openbanking.md) | 4 · 오픈뱅킹       |
+| [domains/05-card.md](domains/05-card.md)               | 5 · 카드           |
+| [domains/06-securities.md](domains/06-securities.md)   | 6 · 증권           |
+| [domains/07-insurance.md](domains/07-insurance.md)     | 7 · 보험           |
+
+Phase 3 이후 문서는 착수 전까지 연결점·모델 후보·완료 조건만 있는 스텁이다. 착수하는 팀이 채운다.
 
 개발 환경 세팅과 실행 방법은 저장소 루트의 [README.md](../README.md)에 있다.

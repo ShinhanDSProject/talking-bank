@@ -32,6 +32,7 @@ JVM 모듈은 Gradle 멀티프로젝트가, 프론트엔드는 npm workspaces가
 1. [01-overview](docs/01-overview.md) — 무엇을 만드는지
 2. [02-scope](docs/02-scope.md) — 하는 것과 **안 하는 것**
 3. [06-conventions](docs/06-conventions.md) — 브랜치·커밋·PR·코드 규칙
+4. 구현할 Phase의 [docs/domains/](docs/domains/) 문서 — 그 도메인의 범위·명세·모델·진행
 
 ## 시작하기
 
