@@ -7,8 +7,8 @@
 | 백엔드      | **Spring Boot 3.5.x (LTS)** · Java 21             | 아래 "버전 결정" 참고                              |
 | 보안        | Spring Security 6 · JWT (HS256)                   | 정책은 [06-conventions.md](06-conventions.md)      |
 | 데이터      | Spring Data JPA (Hibernate) · **MariaDB 11.4**    |                                                    |
-| 캐시/토큰   | Redis (Refresh Token 저장소)                      | **미확정** — #14에서 인프라 담당 협의 중           |
-| 배치        | Spring Batch                                      | **Phase 2부터** 도입. 자동이체·정산·결제·만기 처리 |
+| 캐시/토큰   | Redis (Refresh Token 저장소)                      | **미확정** — 인증 설계 때 결정                     |
+| 배치        | Spring Batch                                      | **Phase 3부터** 도입. 자동이체·정산·결제·만기 처리 |
 | 프론트엔드  | **React 19 · TypeScript · Vite**                  |                                                    |
 | 라우팅/상태 | React Router · TanStack Query                     | 전역 상태 라이브러리는 필요해질 때 추가            |
 | 테스트      | JUnit 5 + MockMvc (H2) · Vitest + Testing Library |                                                    |
@@ -22,7 +22,7 @@
 ```
 bank-bank/
 ├── apps/
-│   ├── api/          # Spring Boot — 계좌·송금·FDS 룰과 확장 도메인. 돈을 다루는 쪽
+│   ├── api/          # Spring Boot — 계좌·송금과 확장 도메인. 돈을 다루는 쪽
 │   ├── web/          # React — 고객 화면 + 관리자 화면
 │   └── ai/           # (예정) Python — LLM 기능. 설명·요약·검색만
 ├── packages/         # 앱 사이 공유 코드 (아직 비어 있음)
@@ -35,7 +35,7 @@ bank-bank/
 
 JVM 모듈은 Gradle이, 프론트엔드는 npm workspaces가 관리한다. Python 서비스가 들어오면 `apps/ai`에 자체 `pyproject.toml`을 두고 루트 `package.json` 스크립트에서 함께 띄운다.
 
-확장 도메인(Phase 2~6)은 별도 앱이 아니라 **`apps/api` 안의 패키지**로 들어간다. 도메인마다 서비스를 쪼개면 트랜잭션이 서비스 경계를 넘게 된다(카드 승인 → 계좌 출금). 하나의 DB, 하나의 트랜잭션 안에서 처리한다.
+확장 도메인(Phase 2~7)은 별도 앱이 아니라 **`apps/api` 안의 패키지**로 들어간다. 도메인마다 서비스를 쪼개면 트랜잭션이 서비스 경계를 넘게 된다(카드 승인 → 계좌 출금). 하나의 DB, 하나의 트랜잭션 안에서 처리한다.
 
 ## 아키텍처
 
@@ -51,17 +51,19 @@ apps/api (Spring Boot, :8080)
   │  Phase 1 — 은행 코어
   ├── auth         회원·JWT
   ├── account      계좌·잔액
-  ├── transfer     송금 (트랜잭션·락)  ──▶ fds (룰 평가)
+  ├── transfer     송금 (트랜잭션·락)  ──▶ 출금 평가 훅 (Phase 1은 항상 통과)
   ├── transaction  거래내역
-  ├── admin        관리자 조회
+  ├── common       예외·에러 응답·설정
   │
-  │  Phase 2~6 — 확장 도메인 (모두 account·transfer를 호출한다)
-  ├── product      예금·대출 상품            (Phase 2)
-  ├── batch        Spring Batch Job들         (Phase 2~)
-  ├── openbanking  OAuth 인가 서버·오픈 API   (Phase 3)
-  ├── card         승인·매입·정산             (Phase 4)
-  ├── securities   주문·체결·T+2              (Phase 5)
-  └── insurance    청약·납입·만기             (Phase 6)
+  │  Phase 2~7 — 확장 도메인 (모두 account·transfer를 호출한다)
+  ├── fds          규칙 평가 (훅 구현체)      (Phase 2)
+  ├── admin        관리자 조회                (Phase 2)
+  ├── product      예금·대출 상품            (Phase 3)
+  ├── batch        Spring Batch Job들         (Phase 3~)
+  ├── openbanking  OAuth 인가 서버·오픈 API   (Phase 4)
+  ├── card         승인·매입·정산             (Phase 5)
+  ├── securities   주문·체결·T+2              (Phase 6)
+  └── insurance    청약·납입·만기             (Phase 7)
   │            │
   ▼            ▼
 MariaDB     Redis (Refresh Token, 미확정)
@@ -85,7 +87,7 @@ apps/ai (Python, 예정) ◀── api가 HTTP로 호출. 타임아웃 시 설�
 | MariaDB | **3308**  | 호스트 3306·3307이 다른 서비스와 겹쳐서 3308                                   |
 | Redis   | 6379      | 도입 확정 시                                                                   |
 
-JWT 시크릿 등 인증 관련 변수는 `AUTH-00`(#14)에서 정한다. 시크릿은 저장소에 커밋하지 않는다 — 공유 경로도 #14에서 결정.
+JWT 시크릿 등 인증 관련 변수는 인증 설계 때 정한다. 시크릿은 저장소에 커밋하지 않는다.
 
 ## 버전 결정: Spring Boot 3.5.x
 
