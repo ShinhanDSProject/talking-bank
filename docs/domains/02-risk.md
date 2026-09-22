@@ -61,7 +61,7 @@
 | detail    | String   | 판정 근거                            |
 | createdAt | DateTime |                                      |
 
-`Transfer 1 ──── 0..1 FdsAlert`. Transfer의 `PENDING_AUTH`·`BLOCKED` 상태는 [코어 문서](01-core.md#transfer-이체)에 정의되어 있다.
+`Transfer 1 ──── 0..1 FdsAlert`. Transfer의 `PENDING_AUTH`·`BLOCKED` 상태는 ERD 문서에 정의한다. <!-- TODO: ERD 문서 링크 -->
 
 ## 시드 데이터
 
