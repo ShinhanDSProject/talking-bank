@@ -12,6 +12,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record JwtProperties(String secret, Duration accessTokenValidity, Duration refreshTokenValidity) {
 
     public JwtProperties {
+        if (secret != null && secret.startsWith("${")) {
+            // prod 에서 환경 변수가 없으면 플레이스홀더 문자열이 그대로 들어온다. 32바이트 오류보다 원인을 바로 말한다.
+            throw new IllegalArgumentException("jwt.secret 이 설정되지 않았습니다. 환경 변수 JWT_SECRET 을 넣어 주세요 (" + secret + ")");
+        }
         if (secret != null && !secret.isBlank() && secret.getBytes().length < 32) {
             throw new IllegalArgumentException("jwt.secret은 32바이트 이상이어야 합니다");
         }

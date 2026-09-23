@@ -87,6 +87,14 @@ class JwtTokenProviderTest {
     }
 
     @Test
+    @DisplayName("환경 변수가 없어 플레이스홀더가 그대로 들어오면 원인을 말하며 기동하지 않는다")
+    void unresolvedPlaceholderRejected() {
+        assertThatThrownBy(() -> new JwtProperties("${JWT_SECRET}", Duration.ofMinutes(30), Duration.ofDays(7)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("JWT_SECRET");
+    }
+
+    @Test
     @DisplayName("시크릿이 32바이트보다 짧으면 기동하지 않는다")
     void shortSecretRejected() {
         assertThatThrownBy(() -> new JwtProperties("short", Duration.ofMinutes(30), Duration.ofDays(7)))
