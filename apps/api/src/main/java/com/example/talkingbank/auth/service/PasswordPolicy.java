@@ -1,7 +1,7 @@
-package com.example.talkingbank.auth;
+package com.example.talkingbank.auth.service;
 
-import com.example.talkingbank.common.BusinessException;
-import com.example.talkingbank.common.ErrorCode;
+import com.example.talkingbank.common.exception.BusinessException;
+import com.example.talkingbank.common.exception.ErrorCode;
 import java.util.regex.Pattern;
 
 /**

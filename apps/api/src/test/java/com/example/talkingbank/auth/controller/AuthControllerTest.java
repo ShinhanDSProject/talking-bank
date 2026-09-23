@@ -1,4 +1,4 @@
-package com.example.talkingbank.auth;
+package com.example.talkingbank.auth.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -10,8 +10,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.talkingbank.user.User;
-import com.example.talkingbank.user.UserRepository;
+import com.example.talkingbank.auth.config.JwtProperties;
+import com.example.talkingbank.auth.dto.LoginRequest;
+import com.example.talkingbank.auth.dto.SignupRequest;
+import com.example.talkingbank.auth.jwt.JwtTokenProvider;
+import com.example.talkingbank.auth.jwt.TokenType;
+import com.example.talkingbank.auth.repository.RefreshTokenRepository;
+import com.example.talkingbank.user.entity.User;
+import com.example.talkingbank.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;

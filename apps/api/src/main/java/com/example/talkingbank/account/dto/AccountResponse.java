@@ -1,5 +1,7 @@
-package com.example.talkingbank.account;
+package com.example.talkingbank.account.dto;
 
+import com.example.talkingbank.account.entity.Account;
+import com.example.talkingbank.account.entity.AccountStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

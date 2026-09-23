@@ -1,7 +1,7 @@
-package com.example.talkingbank.auth;
+package com.example.talkingbank.auth.jwt;
 
-import com.example.talkingbank.common.ErrorCode;
-import com.example.talkingbank.common.ErrorResponse;
+import com.example.talkingbank.common.exception.ErrorCode;
+import com.example.talkingbank.common.response.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,7 +1,10 @@
-package com.example.talkingbank.user;
+package com.example.talkingbank.user.service;
 
-import com.example.talkingbank.common.BusinessException;
-import com.example.talkingbank.common.ErrorCode;
+import com.example.talkingbank.common.exception.BusinessException;
+import com.example.talkingbank.common.exception.ErrorCode;
+import com.example.talkingbank.user.dto.UserResponse;
+import com.example.talkingbank.user.entity.User;
+import com.example.talkingbank.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

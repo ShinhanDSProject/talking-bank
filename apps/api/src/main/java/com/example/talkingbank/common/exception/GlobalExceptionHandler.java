@@ -1,5 +1,6 @@
-package com.example.talkingbank.common;
+package com.example.talkingbank.common.exception;
 
+import com.example.talkingbank.common.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;

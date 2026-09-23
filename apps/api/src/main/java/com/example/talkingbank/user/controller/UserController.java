@@ -1,5 +1,7 @@
-package com.example.talkingbank.user;
+package com.example.talkingbank.user.controller;
 
+import com.example.talkingbank.user.dto.UserResponse;
+import com.example.talkingbank.user.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

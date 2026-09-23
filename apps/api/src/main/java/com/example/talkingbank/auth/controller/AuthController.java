@@ -1,5 +1,13 @@
-package com.example.talkingbank.auth;
+package com.example.talkingbank.auth.controller;
 
+import com.example.talkingbank.auth.config.AuthProperties;
+import com.example.talkingbank.auth.dto.EmailCheckResponse;
+import com.example.talkingbank.auth.dto.LoginRequest;
+import com.example.talkingbank.auth.dto.SignupRequest;
+import com.example.talkingbank.auth.dto.SignupResponse;
+import com.example.talkingbank.auth.dto.TokenResponse;
+import com.example.talkingbank.auth.jwt.JwtTokenProvider;
+import com.example.talkingbank.auth.service.AuthService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

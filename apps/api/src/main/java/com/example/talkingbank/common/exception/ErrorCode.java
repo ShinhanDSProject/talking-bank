@@ -1,4 +1,4 @@
-package com.example.talkingbank.common;
+package com.example.talkingbank.common.exception;
 
 import org.springframework.http.HttpStatus;
 

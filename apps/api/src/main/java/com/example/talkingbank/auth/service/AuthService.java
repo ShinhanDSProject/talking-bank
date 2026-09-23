@@ -1,9 +1,18 @@
-package com.example.talkingbank.auth;
+package com.example.talkingbank.auth.service;
 
-import com.example.talkingbank.common.BusinessException;
-import com.example.talkingbank.common.ErrorCode;
-import com.example.talkingbank.user.User;
-import com.example.talkingbank.user.UserRepository;
+import com.example.talkingbank.auth.config.AuthProperties;
+import com.example.talkingbank.auth.dto.LoginRequest;
+import com.example.talkingbank.auth.dto.SignupRequest;
+import com.example.talkingbank.auth.dto.SignupResponse;
+import com.example.talkingbank.auth.dto.TokenResponse;
+import com.example.talkingbank.auth.entity.RefreshToken;
+import com.example.talkingbank.auth.jwt.JwtTokenProvider;
+import com.example.talkingbank.auth.jwt.TokenType;
+import com.example.talkingbank.auth.repository.RefreshTokenRepository;
+import com.example.talkingbank.common.exception.BusinessException;
+import com.example.talkingbank.common.exception.ErrorCode;
+import com.example.talkingbank.user.entity.User;
+import com.example.talkingbank.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import org.springframework.dao.DataIntegrityViolationException;

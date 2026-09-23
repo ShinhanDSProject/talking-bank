@@ -1,10 +1,10 @@
-package com.example.talkingbank.config;
+package com.example.talkingbank.common.config;
 
-import com.example.talkingbank.auth.AuthProperties;
-import com.example.talkingbank.auth.JwtAccessDeniedHandler;
-import com.example.talkingbank.auth.JwtAuthenticationEntryPoint;
-import com.example.talkingbank.auth.JwtAuthenticationFilter;
-import com.example.talkingbank.auth.JwtProperties;
+import com.example.talkingbank.auth.config.AuthProperties;
+import com.example.talkingbank.auth.config.JwtProperties;
+import com.example.talkingbank.auth.jwt.JwtAccessDeniedHandler;
+import com.example.talkingbank.auth.jwt.JwtAuthenticationEntryPoint;
+import com.example.talkingbank.auth.jwt.JwtAuthenticationFilter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

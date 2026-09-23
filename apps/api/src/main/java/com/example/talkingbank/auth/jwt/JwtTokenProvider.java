@@ -1,7 +1,8 @@
-package com.example.talkingbank.auth;
+package com.example.talkingbank.auth.jwt;
 
-import com.example.talkingbank.common.BusinessException;
-import com.example.talkingbank.common.ErrorCode;
+import com.example.talkingbank.auth.config.JwtProperties;
+import com.example.talkingbank.common.exception.BusinessException;
+import com.example.talkingbank.common.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

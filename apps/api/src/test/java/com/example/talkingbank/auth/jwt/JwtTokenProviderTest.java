@@ -1,10 +1,11 @@
-package com.example.talkingbank.auth;
+package com.example.talkingbank.auth.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.talkingbank.common.BusinessException;
-import com.example.talkingbank.common.ErrorCode;
+import com.example.talkingbank.auth.config.JwtProperties;
+import com.example.talkingbank.common.exception.BusinessException;
+import com.example.talkingbank.common.exception.ErrorCode;
 import java.time.Duration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

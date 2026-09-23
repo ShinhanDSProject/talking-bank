@@ -1,4 +1,4 @@
-package com.example.talkingbank.auth;
+package com.example.talkingbank.auth.config;
 
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,5 +1,7 @@
-package com.example.talkingbank.account;
+package com.example.talkingbank.account.controller;
 
+import com.example.talkingbank.account.dto.AccountResponse;
+import com.example.talkingbank.account.service.AccountService;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

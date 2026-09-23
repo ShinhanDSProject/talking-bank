@@ -1,4 +1,6 @@
-package com.example.talkingbank.user;
+package com.example.talkingbank.user.entity;
+
+
 
 public enum UserStatus {
     ACTIVE,

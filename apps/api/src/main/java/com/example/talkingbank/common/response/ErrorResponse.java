@@ -1,5 +1,6 @@
-package com.example.talkingbank.common;
+package com.example.talkingbank.common.response;
 
+import com.example.talkingbank.common.exception.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
