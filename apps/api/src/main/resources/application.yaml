@@ -6,8 +6,11 @@ spring:
     # 프로필을 지정하지 않으면 local. 서버에서는 SPRING_PROFILES_ACTIVE=prod
     default: local
   config:
-    # apps/api/.env 를 properties로 읽는다. 파일이 없어도 기동된다. 비밀값(JWT_SECRET 등)은 여기에만 둔다 — Git 제외.
-    import: optional:file:./.env[.properties]
+    # 저장소 루트의 .env 를 properties로 읽는다(web과 공유). 파일이 없어도 기동된다. 비밀값(JWT_SECRET 등)은 여기에만 둔다 — Git 제외.
+    # apps/api 가 작업 디렉터리라 ../../.env 가 루트다. JAR을 다른 곳에서 띄울 때를 위해 현재 디렉터리의 .env 도 본다(뒤쪽이 우선).
+    import:
+      - optional:file:../../.env[.properties]
+      - optional:file:./.env[.properties]
   jpa:
     open-in-view: false
     properties:

@@ -25,8 +25,8 @@ npm install
 npm run dev          # API(8080) + 웹(5173) 동시 실행
 ```
 
-환경 변수는 `apps/api/.env`에 둡니다(Git 제외). `apps/api/.env.example`을 복사해 채우면 되고, 로컬은 없어도 뜹니다.
-비밀값은 `.env`, 환경별 차이는 `application-local.yaml` · `application-prod.yaml`에 있습니다.
+환경 변수는 루트의 `.env` 하나를 API와 웹이 함께 읽습니다(Git 제외). `.env.example`을 복사해 채우면 되고, 로컬은 없어도 뜹니다.
+비밀값은 `.env`, 환경별 차이는 `apps/api`의 `application-local.yaml` · `application-prod.yaml`에 있습니다.
 
 ## 명령
 
