@@ -134,7 +134,7 @@ public class AuthService {
 
         refreshTokenRepository.findByUserId(user.getId()).ifPresentOrElse(
                 stored -> stored.rotate(refreshToken, expiresAt),
-                () -> refreshTokenRepository.save(new RefreshToken(user.getId(), refreshToken, expiresAt)));
+                () -> refreshTokenRepository.save(RefreshToken.issue(user.getId(), refreshToken, expiresAt)));
 
         return new LoginResult(TokenResponse.bearer(accessToken, jwtTokenProvider.accessTokenValiditySeconds()),
                 refreshToken);

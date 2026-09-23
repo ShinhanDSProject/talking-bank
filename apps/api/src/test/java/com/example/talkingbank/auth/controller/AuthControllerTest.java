@@ -71,14 +71,14 @@ class AuthControllerTest {
     private MvcResult signup(String email, String password) throws Exception {
         return mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json(new SignupRequest(email, password, "홍길동", "010-1234-5678"))))
+                        .content(json(SignupRequest.builder().email(email).password(password).name("홍길동").phone("010-1234-5678").build())))
                 .andReturn();
     }
 
     private MvcResult login(String email, String password) throws Exception {
         return mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json(new LoginRequest(email, password))))
+                        .content(json(LoginRequest.builder().email(email).password(password).build())))
                 .andReturn();
     }
 
@@ -154,7 +154,7 @@ class AuthControllerTest {
 
             mockMvc.perform(post("/api/auth/signup")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(json(new SignupRequest(EMAIL, PASSWORD, "김철수", "010-9999-8888"))))
+                            .content(json(SignupRequest.builder().email(EMAIL).password(PASSWORD).name("김철수").phone("010-9999-8888").build())))
                     .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.errorCode").value("AUTH_001"))
                     .andExpect(jsonPath("$.timestamp").exists())
@@ -166,7 +166,7 @@ class AuthControllerTest {
         void weakPassword() throws Exception {
             mockMvc.perform(post("/api/auth/signup")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(json(new SignupRequest(EMAIL, "password", "홍길동", "010-1234-5678"))))
+                            .content(json(SignupRequest.builder().email(EMAIL).password("password").name("홍길동").phone("010-1234-5678").build())))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.errorCode").value("AUTH_002"));
         }
@@ -176,7 +176,7 @@ class AuthControllerTest {
         void missingFields() throws Exception {
             mockMvc.perform(post("/api/auth/signup")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(json(new SignupRequest("", PASSWORD, "홍", "12345"))))
+                            .content(json(SignupRequest.builder().email("").password(PASSWORD).name("홍").phone("12345").build())))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.errorCode").value("COMMON_001"))
                     .andExpect(jsonPath("$.fieldErrors[*].field", hasItem("email")))
@@ -201,7 +201,7 @@ class AuthControllerTest {
         void success() throws Exception {
             MvcResult result = mockMvc.perform(post("/api/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(json(new LoginRequest(EMAIL, PASSWORD))))
+                            .content(json(LoginRequest.builder().email(EMAIL).password(PASSWORD).build())))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.accessToken").isNotEmpty())
                     .andExpect(jsonPath("$.tokenType").value("Bearer"))
@@ -226,7 +226,7 @@ class AuthControllerTest {
         void wrongPassword() throws Exception {
             mockMvc.perform(post("/api/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(json(new LoginRequest(EMAIL, "Wrong1234!"))))
+                            .content(json(LoginRequest.builder().email(EMAIL).password("Wrong1234!").build())))
                     .andExpect(status().isUnauthorized())
                     .andExpect(jsonPath("$.errorCode").value("AUTH_003"))
                     .andExpect(jsonPath("$.message").value("이메일 또는 비밀번호가 일치하지 않습니다"));
@@ -237,7 +237,7 @@ class AuthControllerTest {
         void unknownEmailLooksTheSame() throws Exception {
             mockMvc.perform(post("/api/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(json(new LoginRequest("nobody@example.com", PASSWORD))))
+                            .content(json(LoginRequest.builder().email("nobody@example.com").password(PASSWORD).build())))
                     .andExpect(status().isUnauthorized())
                     .andExpect(jsonPath("$.errorCode").value("AUTH_003"))
                     .andExpect(jsonPath("$.message").value("이메일 또는 비밀번호가 일치하지 않습니다"));
@@ -251,7 +251,7 @@ class AuthControllerTest {
             }
             mockMvc.perform(post("/api/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(json(new LoginRequest(EMAIL, "Wrong1234!"))))
+                            .content(json(LoginRequest.builder().email(EMAIL).password("Wrong1234!").build())))
                     .andExpect(status().isLocked())
                     .andExpect(jsonPath("$.errorCode").value("AUTH_008"));
 

@@ -31,10 +31,15 @@ public class RefreshToken {
     @Column(nullable = false)
     private LocalDateTime expiresAt;
 
-    public RefreshToken(Long userId, String token, LocalDateTime expiresAt) {
+    private RefreshToken(Long userId, String token, LocalDateTime expiresAt) {
         this.userId = userId;
         this.token = token;
         this.expiresAt = expiresAt;
+    }
+
+    /** 로그인 성공 시 처음 발급. 이후 재발급은 rotate()로 값만 바꾼다. */
+    public static RefreshToken issue(Long userId, String token, LocalDateTime expiresAt) {
+        return new RefreshToken(userId, token, expiresAt);
     }
 
     public boolean matches(String candidate) {
