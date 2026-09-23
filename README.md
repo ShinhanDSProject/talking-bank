@@ -12,12 +12,10 @@ talking-bank/
 │   └── assistant/           # FastAPI · anthropic SDK — AI 비서 (Phase 2, 아직 없음)
 ├── packages/                # 앱 사이에서 공유할 코드 (아직 비어 있음)
 ├── docs/                    # 기획·범위·스펙·일정·개발 규칙
-├── build.gradle             # 루트: 플러그인 버전만 선언
-├── settings.gradle          # Gradle 멀티프로젝트 (:apps:api)
 └── package.json             # npm workspaces (apps/*, packages/*)
 ```
 
-JVM 모듈은 Gradle 멀티프로젝트가, 프론트엔드는 npm workspaces가 관리합니다.
+`apps/api`는 독립 Gradle 프로젝트(`apps/api/build.gradle`)이고, 프론트엔드는 npm workspaces가 관리합니다.
 두 빌드는 서로 결합되어 있지 않으며, **각각 따로 빌드·배포**합니다.
 
 |                  | 개발                    | 빌드 산출물                  |
@@ -70,10 +68,13 @@ Step 1-1의 `AUTH-01`·`AUTH-03` 이슈에서 팀이 함께 붙입니다.
 Gradle을 직접 쓸 수도 있습니다.
 
 ```bash
-./gradlew :apps:api:bootRun
-./gradlew :apps:api:test
-./gradlew :apps:api:bootJar
+cd apps/api
+./gradlew bootRun
+./gradlew test
+./gradlew bootJar
 ```
+
+IntelliJ에서는 `apps/api` 폴더를 프로젝트로 열면 됩니다.
 
 ## 개발 중 API 호출 흐름
 
@@ -85,7 +86,7 @@ Gradle을 직접 쓸 수도 있습니다.
 ## 배포
 
 프론트와 API를 따로 배포하는 구성입니다. `npm run build:web`은 `apps/web/dist/`(정적 파일)를,
-`./gradlew :apps:api:bootJar`는 `apps/api/build/libs/*.jar`를 만듭니다.
+`npm run build:api`는 `apps/api/build/libs/*.jar`를 만듭니다.
 배포 환경(DB · CORS · 환경 변수 · 서버)은 Step 1-1 인프라 이슈에서 정하고 여기에 적습니다.
 
 ## 아직 없는 것
