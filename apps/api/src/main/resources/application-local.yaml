@@ -1,0 +1,23 @@
+# 로컬 개발. .env 없이도 npm run dev 가 되도록 개발용 기본값을 둔다.
+spring:
+  datasource:
+    # 인메모리 H2. 서버를 내리면 데이터가 사라지고, 다시 올리면 AccountSeeder가 예시 데이터를 넣는다.
+    url: jdbc:h2:mem:talkingbank;DB_CLOSE_DELAY=-1;MODE=LEGACY
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  # 개발 전용 기본값. .env 에 JWT_SECRET 을 두면 그 값이 우선한다.
+  secret: ${JWT_SECRET:talking-bank-local-dev-secret-key-change-me-0123456789}
+
+auth:
+  # http://localhost 라 Secure 쿠키를 쓰지 않는다.
+  cookie-secure: false
+
+logging:
+  level:
+    com.example.talkingbank: debug
