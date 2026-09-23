@@ -1,9 +1,9 @@
 ---
 name: 🐛 버그 리포트
 about: 의도대로 동작하지 않는 문제를 알려 주세요
-title: "[Bug] "
-labels: ["bug"]
-assignees: ""
+title: '[Bug] '
+labels: ['bug']
+assignees: ''
 ---
 
 ## 무슨 일이 일어났나요
