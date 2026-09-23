@@ -9,6 +9,15 @@ spring:
       hibernate:
         format_sql: false
 
+jwt:
+  secret: test-only-secret-key-that-is-at-least-32-characters-long
+  access-token-validity: 30m
+  refresh-token-validity: 7d
+
+auth:
+  max-login-fail-count: 5
+  cookie-secure: false
+
 logging:
   level:
     com.example.talkingbank: info

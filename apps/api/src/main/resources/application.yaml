@@ -17,6 +17,21 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  jackson:
+    # 응답의 날짜·시각은 ISO 8601 + 오프셋(+09:00)으로 나간다.
+    time-zone: Asia/Seoul
+
+jwt:
+  # 32자 이상. 배포 환경에서는 JWT_SECRET 환경 변수로 반드시 바꾼다. 아래 기본값은 로컬 개발 전용.
+  secret: ${JWT_SECRET:talking-bank-local-dev-secret-key-change-me-0123456789}
+  access-token-validity: 30m
+  refresh-token-validity: 7d
+
+auth:
+  # 연속 로그인 실패 허용 횟수. 개발 중 잠기는 게 번거로우면 MAX_LOGIN_FAIL=999 로 띄운다.
+  max-login-fail-count: ${MAX_LOGIN_FAIL:5}
+  # Refresh Token 쿠키의 Secure 속성. HTTPS로 배포하면 true.
+  cookie-secure: ${AUTH_COOKIE_SECURE:false}
 
 logging:
   level:
