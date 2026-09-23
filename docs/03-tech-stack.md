@@ -4,19 +4,19 @@
 
 ## 한눈에 보기
 
-| 영역        | 선택                                              | 비고                                          |
-| ----------- | ------------------------------------------------- | --------------------------------------------- |
-| 백엔드      | **Spring Boot 3.5.x (LTS)** · Java 21             | 아래 "버전 결정" 참고                         |
-| 보안        | Spring Security 6 · JWT (HS256)                   | 정책은 [06-conventions.md](06-conventions.md) |
-| 데이터      | Spring Data JPA (Hibernate) · **MariaDB 11.4**    |                                               |
-| 캐시/토큰   | Redis (Refresh Token 저장소)                      | **미확정** — 인증 설계 때 결정                |
-| AI 서비스   | **Python 3.12 · FastAPI · `anthropic` SDK**       | Phase 2. 모델은 아래 "AI 서비스" 참고         |
-| 프론트엔드  | **React 19 · TypeScript · Vite**                  |                                               |
-| 라우팅/상태 | React Router · TanStack Query                     | 전역 상태 라이브러리는 필요해질 때 추가       |
-| 테스트      | JUnit 5 + MockMvc (H2) · Vitest + Testing Library |                                               |
-| 코드 품질   | ESLint · Prettier                                 | 백엔드 포매터는 미정 (Spotless 등 검토)       |
-| 인프라      | Docker Compose                                    | 로컬: MariaDB(+Redis). 배포: 서버 1대         |
-| 빌드        | Gradle 9 (멀티프로젝트) · npm workspaces          | 두 빌드는 결합하지 않는다                     |
+| 영역        | 선택                                              | 비고                                                                       |
+| ----------- | ------------------------------------------------- | -------------------------------------------------------------------------- |
+| 백엔드      | **Spring Boot 3.5.x (LTS)** · Java 21             | 아래 "버전 결정" 참고                                                      |
+| 보안        | Spring Security 6 · JWT (HS256)                   | Step 1-1 `AUTH-03`에서 도입. 정책은 [06-conventions.md](06-conventions.md) |
+| 데이터      | Spring Data JPA (Hibernate) · **MariaDB 11.4**    | **지금은 인메모리 H2.** MariaDB는 Step 1-1 `AUTH-01`에서 도입              |
+| 캐시/토큰   | Redis (Refresh Token 저장소)                      | **미확정** — 인증 설계 때 결정                                             |
+| AI 서비스   | **Python 3.12 · FastAPI · `anthropic` SDK**       | Phase 2. 모델은 아래 "AI 서비스" 참고                                      |
+| 프론트엔드  | **React 19 · TypeScript · Vite**                  |                                                                            |
+| 라우팅/상태 | React Router · TanStack Query                     | 전역 상태 라이브러리는 필요해질 때 추가                                    |
+| 테스트      | JUnit 5 + MockMvc (H2) · Vitest + Testing Library |                                                                            |
+| 코드 품질   | ESLint · Prettier                                 | 백엔드 포매터는 미정 (Spotless 등 검토)                                    |
+| 인프라      | Docker Compose                                    | Step 1-1 `AUTH-01`에서 도입. 로컬: MariaDB(+Redis). 배포: 서버 1대         |
+| 빌드        | Gradle 9 (멀티프로젝트) · npm workspaces          | 두 빌드는 결합하지 않는다                                                  |
 
 ## 모노레포 구조
 
@@ -30,8 +30,7 @@ talking-bank/
 ├── docs/             # 이 문서들
 ├── build.gradle      # 플러그인 버전만 선언
 ├── settings.gradle   # include 'apps:api'
-├── package.json      # npm workspaces
-└── docker-compose.yml
+└── package.json      # npm workspaces
 ```
 
 JVM 모듈은 Gradle이, 프론트엔드는 npm workspaces가, AI 서비스는 `uv`(또는 `pip`)가 관리한다. 세 빌드는 결합하지 않는다.
@@ -106,12 +105,12 @@ flowchart TB
 
 ## 포트와 환경
 
-| 서비스    | 개발 포트 | 환경 변수                                                                                                |
-| --------- | --------- | -------------------------------------------------------------------------------------------------------- |
-| web       | 5173      | `VITE_API_BASE_URL`, `VITE_API_PROXY_TARGET`                                                             |
-| api       | 8080      | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `CORS_ALLOWED_ORIGINS`, `JPA_DDL_AUTO`                           |
-| MariaDB   | **3308**  | 호스트 3306·3307이 다른 서비스와 겹쳐서 3308                                                             |
-| Redis     | 6379      | 도입 확정 시                                                                                             |
-| assistant | 8000      | `ANTHROPIC_API_KEY`, `ASSISTANT_MODEL`, `CORE_API_URL`, `JWT_SECRET`(api와 동일), `DAILY_COST_LIMIT_USD` |
+| 서비스    | 개발 포트 | 환경 변수                                                                                                           |
+| --------- | --------- | ------------------------------------------------------------------------------------------------------------------- |
+| web       | 5173      | `VITE_API_BASE_URL`, `VITE_API_PROXY_TARGET`                                                                        |
+| api       | 8080      | 지금은 없음. `DB_URL` · `DB_USERNAME` · `DB_PASSWORD` · `CORS_ALLOWED_ORIGINS` · `JPA_DDL_AUTO`는 Step 1-1에서 추가 |
+| MariaDB   | **3308**  | Step 1-1에서 도입. 호스트 3306·3307이 다른 서비스와 겹쳐서 3308                                                     |
+| Redis     | 6379      | 도입 확정 시                                                                                                        |
+| assistant | 8000      | `ANTHROPIC_API_KEY`, `ASSISTANT_MODEL`, `CORE_API_URL`, `JWT_SECRET`(api와 동일), `DAILY_COST_LIMIT_USD`            |
 
 프론트와 API, AI 서비스는 따로 배포한다. 개발 중에는 Vite 프록시(`/api` → `:8080`, `/assistant` → `:8000`)를 타고, 배포 시에는 `VITE_API_BASE_URL` · `VITE_ASSISTANT_BASE_URL`과 각 서비스의 `CORS_ALLOWED_ORIGINS`를 서로 맞춘다. `web` 환경 변수에 `VITE_ASSISTANT_BASE_URL`, `VITE_ASSISTANT_PROXY_TARGET`이 추가된다(Phase 2).

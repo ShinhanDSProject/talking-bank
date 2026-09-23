@@ -5,27 +5,18 @@ spring:
     # 프로필을 지정하지 않고 실행하면 로컬 개발 설정을 쓴다.
     default: local
   datasource:
-    url: ${DB_URL:jdbc:mariadb://localhost:3308/talkingbank}
-    username: ${DB_USERNAME:talkingbank}
-    password: ${DB_PASSWORD:talkingbank}
+    # 인메모리 H2. 서버를 내리면 데이터가 사라지고, 다시 올리면 AccountSeeder가 예시 데이터를 넣는다.
+    url: jdbc:h2:mem:talkingbank;DB_CLOSE_DELAY=-1;MODE=LEGACY
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: ${JPA_DDL_AUTO:update}
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-
-app:
-  cors:
-    # apps/web의 Vite dev 서버. 배포 시 CORS_ALLOWED_ORIGINS로 교체한다.
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
 
 logging:
   level:

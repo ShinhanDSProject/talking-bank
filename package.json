@@ -24,9 +24,7 @@
     "lint": "npm run lint -w @talking-bank/web",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,yaml,yml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md,yaml,yml}\"",
-    "typecheck": "npm run typecheck -w @talking-bank/web",
-    "db:up": "docker compose up -d mariadb",
-    "db:down": "docker compose down"
+    "typecheck": "npm run typecheck -w @talking-bank/web"
   },
   "devDependencies": {
     "concurrently": "^10.0.5",
