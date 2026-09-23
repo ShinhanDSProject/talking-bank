@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import java.time.Duration;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @Validated
+@RequiredArgsConstructor
 public class AuthController {
 
     static final String REFRESH_COOKIE = "refresh_token";
@@ -38,12 +40,6 @@ public class AuthController {
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthProperties authProperties;
-
-    public AuthController(AuthService authService, JwtTokenProvider jwtTokenProvider, AuthProperties authProperties) {
-        this.authService = authService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.authProperties = authProperties;
-    }
 
     @GetMapping("/check-email")
     public EmailCheckResponse checkEmail(

@@ -6,6 +6,7 @@ import com.example.talkingbank.account.repository.AccountRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -14,13 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 /** 로컬 개발에서 화면을 바로 확인할 수 있도록 계좌가 하나도 없을 때만 예시 데이터를 넣는다. */
 @Component
 @Profile("local")
+@RequiredArgsConstructor
 public class AccountSeeder implements CommandLineRunner {
 
     private final AccountRepository accountRepository;
-
-    public AccountSeeder(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
 
     @Override
     @Transactional

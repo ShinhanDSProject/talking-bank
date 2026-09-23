@@ -5,18 +5,16 @@ import com.example.talkingbank.common.exception.ErrorCode;
 import com.example.talkingbank.user.dto.UserResponse;
 import com.example.talkingbank.user.entity.User;
 import com.example.talkingbank.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public UserResponse findMe(Long userId) {
         User user = userRepository.findById(userId)
