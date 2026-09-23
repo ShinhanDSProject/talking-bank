@@ -7,15 +7,14 @@
 ```
 talking-bank/
 ├── apps/
-│   ├── api/                 # Spring Boot 4 · Java 21 · JPA · Security
+│   ├── api/                 # Spring Boot 3.5 · Java 21 · JPA
 │   ├── web/                 # Vite · React 19 · TypeScript · TanStack Query
 │   └── assistant/           # FastAPI · anthropic SDK — AI 비서 (Phase 2, 아직 없음)
 ├── packages/                # 앱 사이에서 공유할 코드 (아직 비어 있음)
 ├── docs/                    # 기획·범위·스펙·일정·개발 규칙
 ├── build.gradle             # 루트: 플러그인 버전만 선언
 ├── settings.gradle          # Gradle 멀티프로젝트 (:apps:api)
-├── package.json             # npm workspaces (apps/*, packages/*)
-└── docker-compose.yml       # 로컬 개발용 MariaDB
+└── package.json             # npm workspaces (apps/*, packages/*)
 ```
 
 JVM 모듈은 Gradle 멀티프로젝트가, 프론트엔드는 npm workspaces가 관리합니다.
@@ -41,36 +40,32 @@ JVM 모듈은 Gradle 멀티프로젝트가, 프론트엔드는 npm workspaces가
 
 ## 시작하기
 
-사전 준비: JDK 21+ (없으면 Gradle이 자동으로 내려받습니다), Node.js 20+, Docker.
+사전 준비: JDK 21+ (없으면 Gradle이 자동으로 내려받습니다), Node.js 20+. Docker는 아직 필요 없습니다.
 
 ```bash
 npm install          # 프론트엔드 의존성 설치 (workspace 전체)
-npm run db:up        # MariaDB 컨테이너 기동 (호스트 포트 3308)
 npm run dev          # API(8080) + 웹(5173) 동시 실행
 ```
 
 브라우저에서 <http://localhost:5173> 을 열면 됩니다.
-`local` 프로필로 처음 실행할 때 계좌가 비어 있으면 예시 데이터 3건이 자동으로 들어갑니다
-(`AccountSeeder`).
 
-> 호스트 포트 3308을 쓰는 이유는 로컬에 설치된 MariaDB(3306)나 다른 프로젝트 컨테이너와
-> 겹치지 않게 하기 위해서입니다. 바꾸려면 `docker-compose.yml`과
-> `apps/api/src/main/resources/application.yaml`의 `DB_URL` 기본값을 함께 수정하세요.
+DB는 **인메모리 H2**입니다. 서버를 내리면 데이터가 사라지고, 다시 올리면 `AccountSeeder`가
+예시 계좌 3건을 넣습니다. MariaDB·Docker·Spring Security 같은 인프라 설정은 일부러 빼 두었고,
+Step 1-1의 `AUTH-01`·`AUTH-03` 이슈에서 팀이 함께 붙입니다.
 
 ## 자주 쓰는 명령
 
 루트에서 실행합니다.
 
-| 명령                                  | 설명                       |
-| ------------------------------------- | -------------------------- |
-| `npm run dev`                         | API와 웹을 동시에 실행     |
-| `npm run dev:api` / `npm run dev:web` | 한쪽만 실행                |
-| `npm run build`                       | 양쪽 모두 빌드             |
-| `npm test`                            | 양쪽 테스트 실행           |
-| `npm run lint`                        | 프론트엔드 ESLint          |
-| `npm run typecheck`                   | 프론트엔드 타입 검사       |
-| `npm run format`                      | Prettier 포맷 적용         |
-| `npm run db:up` / `npm run db:down`   | MariaDB 컨테이너 기동/정리 |
+| 명령                                  | 설명                   |
+| ------------------------------------- | ---------------------- |
+| `npm run dev`                         | API와 웹을 동시에 실행 |
+| `npm run dev:api` / `npm run dev:web` | 한쪽만 실행            |
+| `npm run build`                       | 양쪽 모두 빌드         |
+| `npm test`                            | 양쪽 테스트 실행       |
+| `npm run lint`                        | 프론트엔드 ESLint      |
+| `npm run typecheck`                   | 프론트엔드 타입 검사   |
+| `npm run format`                      | Prettier 포맷 적용     |
 
 Gradle을 직접 쓸 수도 있습니다.
 
@@ -89,31 +84,17 @@ Gradle을 직접 쓸 수도 있습니다.
 
 ## 배포
 
-프론트와 API를 따로 배포하는 구성입니다.
+프론트와 API를 따로 배포하는 구성입니다. `npm run build:web`은 `apps/web/dist/`(정적 파일)를,
+`./gradlew :apps:api:bootJar`는 `apps/api/build/libs/*.jar`를 만듭니다.
+배포 환경(DB · CORS · 환경 변수 · 서버)은 Step 1-1 인프라 이슈에서 정하고 여기에 적습니다.
 
-**apps/web** — `npm run build:web`으로 만든 `apps/web/dist/`를 정적 호스팅(S3/CDN/Nginx)에 올립니다.
-빌드 시 `VITE_API_BASE_URL`에 API 주소를 넣으면 그 주소로 직접 호출합니다.
+## 아직 없는 것
 
-```bash
-VITE_API_BASE_URL=https://api.example.com npm run build:web
-```
+일부러 최소 구성으로 시작했습니다. 아래는 Step 1-1에서 이슈로 붙입니다.
 
-**apps/api** — `./gradlew :apps:api:bootJar`로 만든 JAR을 실행합니다.
-프론트가 다른 도메인에 있으므로 허용 출처를 반드시 지정해야 합니다.
-
-```bash
-CORS_ALLOWED_ORIGINS=https://talking-bank.example.com \
-DB_URL=jdbc:mariadb://db.example.com:3306/talkingbank \
-DB_USERNAME=... DB_PASSWORD=... \
-JPA_DDL_AUTO=validate \
-java -jar apps/api/build/libs/api-0.0.1-SNAPSHOT.jar
-```
-
-## 알아둘 점
-
-- **보안**: 현재 `/api/**`는 인증 없이 열려 있습니다(`SecurityConfig`). 인증 체계를 붙일 때
-  이 부분을 먼저 좁혀야 합니다.
-- **스키마**: 로컬은 `ddl-auto: update`입니다. 운영에서는 `JPA_DDL_AUTO=validate`로 두고
-  마이그레이션 도구(Flyway 등)를 쓰는 것을 권합니다.
-- **타입 공유**: 지금은 서버의 `AccountResponse`와 웹의 `Account` 타입을 손으로 맞추고 있습니다.
-  공유가 늘어나면 `packages/`에 타입 패키지를 두거나 OpenAPI 기반 생성을 검토하세요.
+| 없는 것                      | 붙이는 이슈           | 지금 상태                                                                 |
+| ---------------------------- | --------------------- | ------------------------------------------------------------------------- |
+| MariaDB · Docker Compose     | `AUTH-01`             | 인메모리 H2. 재시작하면 데이터가 사라진다                                 |
+| Spring Security · CORS · JWT | `AUTH-03`             | `/api/**`가 인증 없이 열려 있다. 개발 중엔 Vite 프록시라 CORS도 필요 없다 |
+| 공통 에러 응답 · Swagger     | `AUTH-10` · `AUTH-11` | 없음                                                                      |
+| 타입 공유(`packages/`)       | 필요해질 때           | 서버 `AccountResponse`와 웹 `Account`를 손으로 맞춘다                     |
