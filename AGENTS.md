@@ -1,43 +1,78 @@
 # talking-bank
 
-말하면 알아듣고, 돈은 사람이 확인해야 움직이는 은행. 풀스택 모노레포.
-`apps/api` Spring Boot 3.5 · Java 21 · JPA — `apps/web` React 19 · Vite · TypeScript.
+AI 코딩 도구 공통 지침. 규칙은 아래 YAML이 전부다. `CLAUDE.md` · `GEMINI.md`는 이 파일을 불러올 뿐이니 여기만 고친다.
 
-이 파일은 **AI 코딩 도구 공통 지침**이다. Codex · Cursor · GitHub Copilot · Antigravity는 `AGENTS.md`를 바로 읽고, Claude Code는 `CLAUDE.md`, Gemini CLI는 `GEMINI.md`가 이 파일을 불러온다. 지침을 바꿀 때는 이 파일만 고친다.
+```yaml
+project:
+  name: talking-bank
+  summary: 말하면 알아듣고, 돈은 사람이 확인해야 움직이는 은행
+  apps:
+    api: { path: apps/api, stack: [Spring Boot 3.5, Java 21, JPA] }
+    web: { path: apps/web, stack: [React 19, Vite, TypeScript] }
 
-## 먼저 읽을 것
+read_first:
+  - { file: README.md, for: 구성 · 실행 }
+  - { file: DESIGN.md, for: 화면 토큰 }
+  - { file: docs/, for: 기획 · 요구사항, status: 재작성 중 }
 
-- `README.md` — 구성 · 실행 · 명령
-- `DESIGN.md` — 화면 규칙(색 · 타이포 · 간격 · 컴포넌트)
-- `docs/` — 기획 · 요구사항 · 개발 규칙. 지금 처음부터 다시 쌓는 중이라 비어 있다. 문서가 생기면 여기 표에 추가한다.
+workflow:
+  steps: [계획, 사람 검토, 구현, npm test, npm run lint, npm run typecheck, PR]
+  pr: 이슈 = 브랜치 = PR. 템플릿 "확인한 것" 필수
+  scope: 시키지 않은 파일 금지. 범위 밖 개선은 제안만
 
-## 작업 절차
+commands:
+  dev: npm run dev # api 8080 · web 5173
+  test: npm test # 인프라 없이 돈다
+  lint: npm run lint
+  typecheck: npm run typecheck
+  api_test: cd apps/api && ./gradlew test # 루트에서는 ./gradlew :api:test
 
-1. **코드를 쓰기 전에 계획을 세운다.** 단계별 작업 계획을 만들고, 사람이 검토한 뒤 구현한다.
-2. 구현 → `npm test` · `npm run lint` · `npm run typecheck`.
-3. 이슈 하나 = 브랜치 하나 = PR 하나. PR 템플릿의 "확인한 것"을 채운다.
-4. 사람이 시키지 않은 파일은 건드리지 않는다. 범위 밖의 개선은 제안만 한다.
-
-## 명령
-
+# id: <영역>-<번호>. 번호는 재사용하지 않고, 지운 규칙은 deprecated: true 로 남긴다.
+# scope: api | web | all. 이유는 rule 에 쓰지 않고 필요하면 why: <링크> 한 줄.
+rules:
+  - { id: MONEY-01, scope: api, rule: 금액은 BigDecimal. double · float 금지 }
+  - {
+      id: PKG-01,
+      scope: api,
+      rule: '<domain>/controller · service · repository · entity · dto. 공통은 common/config · exception · response · entity',
+    }
+  - { id: TX-01, scope: api, rule: '@Transactional은 Service에만' }
+  - {
+      id: DI-01,
+      scope: api,
+      rule: final 필드 + @RequiredArgsConstructor. 필드 주입 금지. 생성자에서 값을 계산할 때만 직접 작성,
+    }
+  - {
+      id: GEN-01,
+      scope: api,
+      rule: Entity · DTO는 static 팩토리 또는 @Builder. public 생성자 금지(Bean 주입 생성자 · 예외 클래스 제외),
+    }
+  - { id: GEN-02, scope: api, rule: Entity 기본 생성자는 @NoArgsConstructor(PROTECTED) 하나만 }
+  - {
+      id: GEN-03,
+      scope: api,
+      rule: 요청 DTO는 @Builder + @Jacksonized,
+      응답 DTO는 record + static from/of,
+    }
+  - {
+      id: ACC-01,
+      scope: api,
+      rule: getter · setter는 Lombok. Entity에 @Setter 금지,
+      상태 변경은 메서드. 비밀 필드는 @ToString(exclude),
+    }
+  - {
+      id: TIME-01,
+      scope: api,
+      rule: 생성 · 수정 시각은 BaseTimeEntity 상속(JPA Auditing). DB 기본값 · @PrePersist 금지,
+    }
+  - { id: NAME-01, scope: api, rule: '회원 = user (User · users · /api/users). member 금지' }
+  - { id: WEB-01, scope: web, rule: 서버 상태는 TanStack Query }
+  - { id: WEB-02, scope: web, rule: API 호출은 lib/api.ts의 apiFetch만 }
+  - { id: WEB-03, scope: web, rule: 색 · 간격 · 폰트는 DESIGN.md 토큰만 }
+  - { id: SEC-01, scope: all, rule: 시크릿 커밋 금지. 환경 변수는 루트 .env(Git 제외) }
+  - {
+      id: GIT-01,
+      scope: all,
+      rule: '커밋 · PR 메시지는 한국어, <type>: <요약> (feat · fix · refactor · test · docs · chore)',
+    }
 ```
-npm run dev          api :8080 + web :5173
-npm test             양쪽 테스트 (인프라 없이 돈다)
-npm run lint · npm run typecheck
-cd apps/api && ./gradlew test   (루트에서는 ./gradlew :api:test)
-```
-
-## 절대 규칙
-
-- 금액은 `BigDecimal`. `double`·`float` 금지.
-- `@Transactional`은 Service에.
-- 서버 상태는 TanStack Query. API 호출은 `lib/api.ts`의 `apiFetch`만.
-- 색 · 간격 · 폰트는 `DESIGN.md` 토큰만 쓴다.
-- 시크릿은 커밋하지 않는다.
-- 도메인 안은 `controller · service · repository · entity · dto`로 나눈다. 공통은 `common/config · exception · response`.
-- getter · setter는 직접 쓰지 않고 Lombok(`@Getter` · `@Setter`)으로. Entity에는 `@Setter`를 두지 않고 상태 변경은 메서드로. 요청 DTO에 비밀 필드가 있으면 `@ToString(exclude = ...)`로 뺀다.
-- Entity · DTO 생성은 static 팩토리(`User.signup(...)`) 또는 `@Builder`. 거기에 public 생성자를 두지 않는다(Bean의 주입용 생성자와 예외 클래스는 예외). Entity의 기본 생성자는 JPA용 `@NoArgsConstructor(access = PROTECTED)` 하나만. 요청 DTO는 `@Builder` + `@Jacksonized`, 응답 DTO는 `record` + static `from`/`of`.
-- 생성 · 수정 시각은 `common/entity/BaseTimeEntity`를 상속해 JPA Auditing이 넣는다. DB 기본값이나 `@PrePersist`로 직접 넣지 않는다.
-- 의존성은 `final` 필드 + `@RequiredArgsConstructor`. 생성자 안에서 값을 계산해야 할 때만 직접 쓴다. 필드 주입(`@Autowired`) 금지.
-- 회원은 `user`(`User` 엔티티 · `users` 테이블 · `/api/users`). `member`와 혼용하지 않는다.
-- 커밋 · PR 메시지는 한국어. `<type>: <요약>` 형식(feat · fix · refactor · test · docs · chore).
