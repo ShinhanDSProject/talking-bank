@@ -1,9 +1,9 @@
 ---
 name: 📋 작업
 about: 팀 내부 개발 작업을 쪼개어 등록합니다
-title: "[Task] "
-labels: ["task"]
-assignees: ""
+title: '[Task] '
+labels: ['task']
+assignees: ''
 ---
 
 ## 작업 내용

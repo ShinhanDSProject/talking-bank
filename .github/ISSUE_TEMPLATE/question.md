@@ -1,9 +1,9 @@
 ---
 name: 💬 질문 · 논의
 about: 구현 방향이나 정책을 함께 정하고 싶을 때 사용합니다
-title: "[Question] "
-labels: ["question"]
-assignees: ""
+title: '[Question] '
+labels: ['question']
+assignees: ''
 ---
 
 ## 논의하고 싶은 것

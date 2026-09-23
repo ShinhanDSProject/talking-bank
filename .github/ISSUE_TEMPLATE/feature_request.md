@@ -1,9 +1,9 @@
 ---
 name: ✨ 기능 제안
 about: 새로 만들었으면 하는 기능을 제안해 주세요
-title: "[Feat] "
-labels: ["enhancement"]
-assignees: ""
+title: '[Feat] '
+labels: ['enhancement']
+assignees: ''
 ---
 
 ## 해결하려는 문제
