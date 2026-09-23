@@ -1,4 +1,4 @@
-package com.example.bankbank.account;
+package com.example.talkingbank.account;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

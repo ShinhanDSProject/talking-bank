@@ -1,11 +1,11 @@
-# bank-bank
+# talking-bank
 
 **말하면 알아듣고, 돈은 사람이 확인해야 움직이는 은행.** Spring Boot API, React 웹, FastAPI AI 서비스를 한 저장소에서 개발하는 풀스택 모노레포입니다.
 
 ## 구성
 
 ```
-bank-bank/
+talking-bank/
 ├── apps/
 │   ├── api/                 # Spring Boot 4 · Java 21 · JPA · Security
 │   ├── web/                 # Vite · React 19 · TypeScript · TanStack Query
@@ -102,8 +102,8 @@ VITE_API_BASE_URL=https://api.example.com npm run build:web
 프론트가 다른 도메인에 있으므로 허용 출처를 반드시 지정해야 합니다.
 
 ```bash
-CORS_ALLOWED_ORIGINS=https://bank-bank.example.com \
-DB_URL=jdbc:mariadb://db.example.com:3306/bankbank \
+CORS_ALLOWED_ORIGINS=https://talking-bank.example.com \
+DB_URL=jdbc:mariadb://db.example.com:3306/talkingbank \
 DB_USERNAME=... DB_PASSWORD=... \
 JPA_DDL_AUTO=validate \
 java -jar apps/api/build/libs/api-0.0.1-SNAPSHOT.jar

@@ -21,7 +21,7 @@
 ## 모노레포 구조
 
 ```
-bank-bank/
+talking-bank/
 ├── apps/
 │   ├── api/          # Spring Boot — 계좌·송금과 확장 도메인. 돈을 다루는 쪽
 │   ├── web/          # React — 고객 화면 + 관리자 화면 + AI 비서 패널

@@ -1,4 +1,4 @@
-package com.example.bankbank.account;
+package com.example.talkingbank.account;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

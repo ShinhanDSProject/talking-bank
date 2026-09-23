@@ -3,7 +3,7 @@ spring:
     # 로컬 시드 데이터(AccountSeeder)가 끼어들지 않도록 test 프로필로 돌린다.
     default: test
   datasource:
-    url: jdbc:h2:mem:bankbank;DB_CLOSE_DELAY=-1;MODE=LEGACY
+    url: jdbc:h2:mem:talkingbank;DB_CLOSE_DELAY=-1;MODE=LEGACY
     driver-class-name: org.h2.Driver
     username: sa
     password: ""
@@ -16,4 +16,4 @@ spring:
 
 logging:
   level:
-    com.example.bankbank: info
+    com.example.talkingbank: info

@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 export default function HomePage() {
   return (
     <section>
-      <h2>bank-bank</h2>
+      <h2>talking-bank</h2>
       <p>Spring Boot API와 React 웹을 한 저장소에서 개발하는 풀스택 모노레포입니다.</p>
       <ul>
         <li>

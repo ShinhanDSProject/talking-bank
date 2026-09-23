@@ -1,4 +1,4 @@
-package com.example.bankbank.config;
+package com.example.talkingbank.config;
 
 import java.util.List;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
