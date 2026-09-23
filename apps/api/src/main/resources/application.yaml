@@ -1,13 +1,13 @@
 spring:
   application:
-    name: bank-bank
+    name: talking-bank
   profiles:
     # 프로필을 지정하지 않고 실행하면 로컬 개발 설정을 쓴다.
     default: local
   datasource:
-    url: ${DB_URL:jdbc:mariadb://localhost:3308/bankbank}
-    username: ${DB_USERNAME:bankbank}
-    password: ${DB_PASSWORD:bankbank}
+    url: ${DB_URL:jdbc:mariadb://localhost:3308/talkingbank}
+    username: ${DB_USERNAME:talkingbank}
+    password: ${DB_PASSWORD:talkingbank}
   jpa:
     open-in-view: false
     hibernate:
@@ -29,4 +29,4 @@ management:
 
 logging:
   level:
-    com.example.bankbank: debug
+    com.example.talkingbank: debug

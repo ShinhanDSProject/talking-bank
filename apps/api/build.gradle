@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management'
 }
 
-description = 'bank-bank API server'
+description = 'talking-bank API server'
 
 java {
     toolchain {

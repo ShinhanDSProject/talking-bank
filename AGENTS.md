@@ -1,4 +1,4 @@
-# bank-bank
+# talking-bank
 
 말하면 알아듣고, 돈은 사람이 확인해야 움직이는 은행. 풀스택 모노레포.
 `apps/api` Spring Boot 3.5 · Java 21 · JPA · MariaDB — `apps/web` React 19 · Vite · TypeScript — `apps/assistant` FastAPI · Python 3.12 · anthropic SDK (Phase 2).

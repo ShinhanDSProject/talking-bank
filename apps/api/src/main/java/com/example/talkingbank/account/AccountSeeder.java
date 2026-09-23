@@ -1,4 +1,4 @@
-package com.example.bankbank.account;
+package com.example.talkingbank.account;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

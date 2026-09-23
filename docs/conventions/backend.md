@@ -7,7 +7,7 @@
 패키지는 **도메인별**로 나눈다. 계층별(`controller/`, `service/`)로 나누지 않는다. 지금 `account/`, `config/`가 이 방식이다.
 
 ```
-com.example.bankbank
+com.example.talkingbank
 ├── auth/         User, AuthController, AuthService, JwtProvider ...     Phase 1
 ├── account/      Account, AccountController, AccountService, Repository Phase 1
 ├── transfer/     Transfer, TransferService, TransferController          Phase 1

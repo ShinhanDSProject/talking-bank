@@ -8,7 +8,7 @@ export default function App() {
     <BrowserRouter>
       <div className="app">
         <header className="app-header">
-          <span className="logo">bank-bank</span>
+          <span className="logo">talking-bank</span>
           <nav>
             <NavLink to="/" end>
               홈

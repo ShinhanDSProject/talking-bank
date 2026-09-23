@@ -316,7 +316,7 @@ AI 비서는 메뉴가 아니라 **모든 페이지의 우하단 버튼 → 우�
 
 ## 5. Figma
 
-Figma 파일 **bank-bank Design** 이 이 문서의 구현이다.
+Figma 파일 **talking-bank Design** 이 이 문서의 구현이다.
 
 - 변수: `Primitives`(팔레트, 숨김) → `Color`(시맨틱) · `Spacing`(간격·radius·size·bp). 값은 프리미티브만 고치면 전체가 따라온다
 - 텍스트 스타일 12개 · 이펙트 `Shadow/Card`
