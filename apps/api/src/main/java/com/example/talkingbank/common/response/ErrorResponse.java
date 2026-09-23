@@ -20,10 +20,10 @@ public record ErrorResponse(
     public record FieldError(String field, String reason) {}
 
     public static ErrorResponse of(ErrorCode errorCode, String path) {
-        return new ErrorResponse(errorCode.name(), errorCode.message(), OffsetDateTime.now(ZONE), path, null);
+        return new ErrorResponse(errorCode.name(), errorCode.getMessage(), OffsetDateTime.now(ZONE), path, null);
     }
 
     public static ErrorResponse of(ErrorCode errorCode, String path, List<FieldError> fieldErrors) {
-        return new ErrorResponse(errorCode.name(), errorCode.message(), OffsetDateTime.now(ZONE), path, fieldErrors);
+        return new ErrorResponse(errorCode.name(), errorCode.getMessage(), OffsetDateTime.now(ZONE), path, fieldErrors);
     }
 }

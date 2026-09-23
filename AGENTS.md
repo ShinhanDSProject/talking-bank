@@ -35,6 +35,7 @@ cd apps/api && ./gradlew test   (루트에서는 ./gradlew :api:test)
 - 색 · 간격 · 폰트는 `DESIGN.md` 토큰만 쓴다.
 - 시크릿은 커밋하지 않는다.
 - 도메인 안은 `controller · service · repository · entity · dto`로 나눈다. 공통은 `common/config · exception · response`.
+- getter · setter는 직접 쓰지 않고 Lombok(`@Getter` · `@Setter`)으로. Entity에는 `@Setter`를 두지 않고 상태 변경은 메서드로. 요청 DTO는 `@Getter` + `@NoArgsConstructor(PROTECTED)` + `@ToString(exclude = 비밀 필드)`.
 - 의존성은 `final` 필드 + `@RequiredArgsConstructor`. 생성자 안에서 값을 계산해야 할 때만 직접 쓴다. 필드 주입(`@Autowired`) 금지.
 - 회원은 `user`(`User` 엔티티 · `users` 테이블 · `/api/users`). `member`와 혼용하지 않는다.
 - 커밋 · PR 메시지는 한국어. `<type>: <요약>` 형식(feat · fix · refactor · test · docs · chore).

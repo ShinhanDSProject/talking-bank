@@ -29,7 +29,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     static void write(HttpServletResponse response, String path, ErrorCode code, ObjectMapper objectMapper)
             throws IOException {
-        response.setStatus(code.status().value());
+        response.setStatus(code.getStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         objectMapper.writeValue(response.getWriter(), ErrorResponse.of(code, path));

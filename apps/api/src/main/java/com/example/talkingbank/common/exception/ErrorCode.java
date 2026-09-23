@@ -1,8 +1,12 @@
 package com.example.talkingbank.common.exception;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 /** 에러 응답의 errorCode. 프론트는 이 코드로 분기하고, message는 그대로 보여줘도 되는 문장으로 쓴다. */
+@Getter
+@RequiredArgsConstructor
 public enum ErrorCode {
     AUTH_001(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다"),
     AUTH_002(HttpStatus.BAD_REQUEST, "비밀번호 형식이 올바르지 않습니다"),
@@ -17,17 +21,4 @@ public enum ErrorCode {
 
     private final HttpStatus status;
     private final String message;
-
-    ErrorCode(HttpStatus status, String message) {
-        this.status = status;
-        this.message = message;
-    }
-
-    public HttpStatus status() {
-        return status;
-    }
-
-    public String message() {
-        return message;
-    }
 }

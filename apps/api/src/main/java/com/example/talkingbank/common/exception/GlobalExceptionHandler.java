@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusiness(BusinessException e, HttpServletRequest request) {
         ErrorCode code = e.getErrorCode();
-        return ResponseEntity.status(code.status()).body(ErrorResponse.of(code, request.getRequestURI()));
+        return ResponseEntity.status(code.getStatus()).body(ErrorResponse.of(code, request.getRequestURI()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
         List<ErrorResponse.FieldError> fieldErrors = e.getBindingResult().getFieldErrors().stream()
                 .map(fe -> new ErrorResponse.FieldError(fe.getField(), fe.getDefaultMessage()))
                 .toList();
-        return ResponseEntity.status(ErrorCode.COMMON_001.status())
+        return ResponseEntity.status(ErrorCode.COMMON_001.getStatus())
                 .body(ErrorResponse.of(ErrorCode.COMMON_001, request.getRequestURI(), fieldErrors));
     }
 
@@ -42,14 +42,14 @@ public class GlobalExceptionHandler {
         List<ErrorResponse.FieldError> fieldErrors = e.getConstraintViolations().stream()
                 .map(v -> new ErrorResponse.FieldError(lastNode(v.getPropertyPath().toString()), v.getMessage()))
                 .toList();
-        return ResponseEntity.status(ErrorCode.COMMON_001.status())
+        return ResponseEntity.status(ErrorCode.COMMON_001.getStatus())
                 .body(ErrorResponse.of(ErrorCode.COMMON_001, request.getRequestURI(), fieldErrors));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception e, HttpServletRequest request) {
         log.error("처리되지 않은 예외: {} {}", request.getMethod(), request.getRequestURI(), e);
-        return ResponseEntity.status(ErrorCode.COMMON_002.status())
+        return ResponseEntity.status(ErrorCode.COMMON_002.getStatus())
                 .body(ErrorResponse.of(ErrorCode.COMMON_002, request.getRequestURI()));
     }
 
