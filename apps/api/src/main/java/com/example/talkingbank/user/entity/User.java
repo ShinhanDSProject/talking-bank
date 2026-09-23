@@ -1,5 +1,6 @@
 package com.example.talkingbank.user.entity;
 
+import com.example.talkingbank.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,8 +8,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,12 +45,6 @@ public class User {
     private int loginFailCount;
 
     private LocalDateTime lastLoginAt;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 
     private User(String email, String encodedPassword, String name, String phone) {
         this.email = email;
@@ -88,17 +81,5 @@ public class User {
     public void recordLoginSuccess(LocalDateTime now) {
         loginFailCount = 0;
         lastLoginAt = now;
-    }
-
-    @PrePersist
-    void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
-        createdAt = now;
-        updatedAt = now;
-    }
-
-    @PreUpdate
-    void onUpdate() {
-        updatedAt = LocalDateTime.now();
     }
 }

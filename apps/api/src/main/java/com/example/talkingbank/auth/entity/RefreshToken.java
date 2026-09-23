@@ -1,5 +1,6 @@
 package com.example.talkingbank.auth.entity;
 
+import com.example.talkingbank.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "refresh_token")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RefreshToken {
+public class RefreshToken extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

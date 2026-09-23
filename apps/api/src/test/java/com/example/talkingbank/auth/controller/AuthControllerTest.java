@@ -145,6 +145,9 @@ class AuthControllerTest {
 
             User saved = userRepository.findByEmail(EMAIL).orElseThrow();
             assertThat(saved.getPassword()).startsWith("$2a$").isNotEqualTo(PASSWORD);
+            assertThat(saved.getCreatedAt()).isNotNull();
+            assertThat(saved.getUpdatedAt()).isNotNull();
+            assertThat(body.get("createdAt").asText()).isNotBlank();
         }
 
         @Test

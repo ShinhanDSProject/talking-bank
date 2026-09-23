@@ -1,5 +1,6 @@
 package com.example.talkingbank.account.entity;
 
+import com.example.talkingbank.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "account")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Account {
+public class Account extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
