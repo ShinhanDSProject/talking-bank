@@ -4,19 +4,19 @@
 
 ## 한눈에 보기
 
-| 영역        | 선택                                              | 비고                                                                       |
-| ----------- | ------------------------------------------------- | -------------------------------------------------------------------------- |
-| 백엔드      | **Spring Boot 3.5.x (LTS)** · Java 21             | 아래 "버전 결정" 참고                                                      |
-| 보안        | Spring Security 6 · JWT (HS256)                   | Step 1-1 `AUTH-03`에서 도입. 정책은 [06-conventions.md](06-conventions.md) |
-| 데이터      | Spring Data JPA (Hibernate) · **MariaDB 11.4**    | **지금은 인메모리 H2.** MariaDB는 Step 1-1 `AUTH-01`에서 도입              |
-| 캐시/토큰   | Redis (Refresh Token 저장소)                      | **미확정** — 인증 설계 때 결정                                             |
-| AI 서비스   | **Python 3.12 · FastAPI · `anthropic` SDK**       | Phase 2. 모델은 아래 "AI 서비스" 참고                                      |
-| 프론트엔드  | **React 19 · TypeScript · Vite**                  |                                                                            |
-| 라우팅/상태 | React Router · TanStack Query                     | 전역 상태 라이브러리는 필요해질 때 추가                                    |
-| 테스트      | JUnit 5 + MockMvc (H2) · Vitest + Testing Library |                                                                            |
-| 코드 품질   | ESLint · Prettier                                 | 백엔드 포매터는 미정 (Spotless 등 검토)                                    |
-| 인프라      | Docker Compose                                    | Step 1-1 `AUTH-01`에서 도입. 로컬: MariaDB(+Redis). 배포: 서버 1대         |
-| 빌드        | Gradle 9 (멀티프로젝트) · npm workspaces          | 두 빌드는 결합하지 않는다                                                  |
+| 영역        | 선택                                                 | 비고                                                                       |
+| ----------- | ---------------------------------------------------- | -------------------------------------------------------------------------- |
+| 백엔드      | **Spring Boot 3.5.x (LTS)** · Java 21                | 아래 "버전 결정" 참고                                                      |
+| 보안        | Spring Security 6 · JWT (HS256)                      | Step 1-1 `AUTH-03`에서 도입. 정책은 [06-conventions.md](06-conventions.md) |
+| 데이터      | Spring Data JPA (Hibernate) · **MariaDB 11.4**       | **지금은 인메모리 H2.** MariaDB는 Step 1-1 `AUTH-01`에서 도입              |
+| 캐시/토큰   | Redis (Refresh Token 저장소)                         | **미확정** — 인증 설계 때 결정                                             |
+| AI 서비스   | **Python 3.12 · FastAPI · `anthropic` SDK**          | Phase 2. 모델은 아래 "AI 서비스" 참고                                      |
+| 프론트엔드  | **React 19 · TypeScript · Vite**                     |                                                                            |
+| 라우팅/상태 | React Router · TanStack Query                        | 전역 상태 라이브러리는 필요해질 때 추가                                    |
+| 테스트      | JUnit 5 + MockMvc (H2) · Vitest + Testing Library    |                                                                            |
+| 코드 품질   | ESLint · Prettier                                    | 백엔드 포매터는 미정 (Spotless 등 검토)                                    |
+| 인프라      | Docker Compose                                       | Step 1-1 `AUTH-01`에서 도입. 로컬: MariaDB(+Redis). 배포: 서버 1대         |
+| 빌드        | Gradle 9 (`apps/api` 독립 프로젝트) · npm workspaces | 두 빌드는 결합하지 않는다. JVM 모듈이 둘 이상 되면 멀티프로젝트로 올린다   |
 
 ## 모노레포 구조
 
@@ -28,12 +28,10 @@ talking-bank/
 │   └── assistant/    # FastAPI — 모델 호출·도구 루프. 돈을 만지지 않는 쪽 (Phase 2)
 ├── packages/         # 앱 사이 공유 코드 (아직 비어 있음)
 ├── docs/             # 이 문서들
-├── build.gradle      # 플러그인 버전만 선언
-├── settings.gradle   # include 'apps:api'
 └── package.json      # npm workspaces
 ```
 
-JVM 모듈은 Gradle이, 프론트엔드는 npm workspaces가, AI 서비스는 `uv`(또는 `pip`)가 관리한다. 세 빌드는 결합하지 않는다.
+`apps/api`는 자기 폴더 안의 Gradle이, 프론트엔드는 npm workspaces가, AI 서비스는 `uv`(또는 `pip`)가 관리한다. 세 빌드는 결합하지 않는다.
 
 ## 아키텍처
 

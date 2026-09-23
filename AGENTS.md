@@ -32,7 +32,7 @@
 npm run dev          api :8080 + web :5173
 npm test             양쪽 테스트 (인프라 없이 돈다)
 npm run lint · npm run typecheck
-./gradlew :apps:api:test
+cd apps/api && ./gradlew test
 ```
 
 ## 절대 규칙
