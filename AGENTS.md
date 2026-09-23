@@ -1,6 +1,6 @@
 # talking-bank
 
-AI 코딩 도구 공통 지침. 규칙은 아래 YAML이 전부다. `CLAUDE.md` · `GEMINI.md`는 이 파일을 불러올 뿐이니 여기만 고친다.
+Shared instructions for AI coding tools. The YAML below is the whole rule set. `CLAUDE.md` and `GEMINI.md` only import this file, so edit here only.
 
 <!-- prettier-ignore -->
 ```yaml
