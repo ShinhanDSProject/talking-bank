@@ -34,4 +34,6 @@ cd apps/api && ./gradlew test   (루트에서는 ./gradlew :api:test)
 - 서버 상태는 TanStack Query. API 호출은 `lib/api.ts`의 `apiFetch`만.
 - 색 · 간격 · 폰트는 `DESIGN.md` 토큰만 쓴다.
 - 시크릿은 커밋하지 않는다.
+- 도메인 안은 `controller · service · repository · entity · dto`로 나눈다. 공통은 `common/config · exception · response`.
+- 회원은 `user`(`User` 엔티티 · `users` 테이블 · `/api/users`). `member`와 혼용하지 않는다.
 - 커밋 · PR 메시지는 한국어. `<type>: <요약>` 형식(feat · fix · refactor · test · docs · chore).
