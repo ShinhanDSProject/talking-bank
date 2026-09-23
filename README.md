@@ -1,6 +1,6 @@
 # bank-bank
 
-Spring Boot API와 React 웹을 한 저장소에서 개발하는 풀스택 모노레포입니다.
+**말하면 알아듣고, 돈은 사람이 확인해야 움직이는 은행.** Spring Boot API, React 웹, FastAPI AI 서비스를 한 저장소에서 개발하는 풀스택 모노레포입니다.
 
 ## 구성
 
@@ -8,7 +8,8 @@ Spring Boot API와 React 웹을 한 저장소에서 개발하는 풀스택 모�
 bank-bank/
 ├── apps/
 │   ├── api/                 # Spring Boot 4 · Java 21 · JPA · Security
-│   └── web/                 # Vite · React 19 · TypeScript · TanStack Query
+│   ├── web/                 # Vite · React 19 · TypeScript · TanStack Query
+│   └── assistant/           # FastAPI · anthropic SDK — AI 비서 (Phase 2, 아직 없음)
 ├── packages/                # 앱 사이에서 공유할 코드 (아직 비어 있음)
 ├── docs/                    # 기획·범위·스펙·일정·개발 규칙
 ├── build.gradle             # 루트: 플러그인 버전만 선언
@@ -20,10 +21,11 @@ bank-bank/
 JVM 모듈은 Gradle 멀티프로젝트가, 프론트엔드는 npm workspaces가 관리합니다.
 두 빌드는 서로 결합되어 있지 않으며, **각각 따로 빌드·배포**합니다.
 
-|            | 개발                    | 빌드 산출물                  |
-| ---------- | ----------------------- | ---------------------------- |
-| `apps/api` | `http://localhost:8080` | `apps/api/build/libs/*.jar`  |
-| `apps/web` | `http://localhost:5173` | `apps/web/dist/` (정적 파일) |
+|                  | 개발                    | 빌드 산출물                  |
+| ---------------- | ----------------------- | ---------------------------- |
+| `apps/api`       | `http://localhost:8080` | `apps/api/build/libs/*.jar`  |
+| `apps/web`       | `http://localhost:5173` | `apps/web/dist/` (정적 파일) |
+| `apps/assistant` | `http://localhost:8000` | 컨테이너 이미지 (Phase 2)    |
 
 ## 프로젝트 문서
 
@@ -31,8 +33,9 @@ JVM 모듈은 Gradle 멀티프로젝트가, 프론트엔드는 npm workspaces가
 
 1. [01-overview](docs/01-overview.md) — 무엇을 만드는지
 2. [02-scope](docs/02-scope.md) — 범위와 **향후 확장 후보**
-3. [06-conventions](docs/06-conventions.md) — 브랜치·커밋·PR·API 계약 등 공통 규칙, 그리고 맡은 쪽의 [backend](docs/conventions/backend.md) 또는 [frontend](docs/conventions/frontend.md) 규칙
-4. 구현할 Phase의 [docs/domains/](docs/domains/) 문서 — 그 도메인의 범위·명세·모델·진행
+3. [requirements/](docs/requirements/01-core.md) — 화면 · 정책 수치 · 요구사항의 단일 출처
+4. [06-conventions](docs/06-conventions.md) — 브랜치·커밋·PR·API 계약·AI 서비스 규칙, 그리고 맡은 쪽의 [backend](docs/conventions/backend.md) · [frontend](docs/conventions/frontend.md) · [assistant](docs/conventions/assistant.md) 규칙
+5. 구현할 Phase의 [docs/domains/](docs/domains/) 문서 — 그 도메인의 범위·명세·모델·진행
 
 루트의 [AGENTS.md](AGENTS.md)는 AI 코딩 도구(Claude Code · Codex · Cursor · Copilot · Antigravity · Gemini CLI) 공통 지침(문서 위치·작업 절차·절대 규칙), [DESIGN.md](DESIGN.md)는 화면 규칙(색·타이포·간격·컴포넌트)입니다. `CLAUDE.md`·`GEMINI.md`는 AGENTS.md를 불러오기만 합니다.
 
