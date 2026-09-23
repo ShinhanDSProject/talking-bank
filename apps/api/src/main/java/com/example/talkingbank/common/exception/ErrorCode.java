@@ -17,7 +17,10 @@ public enum ErrorCode {
     AUTH_007(HttpStatus.FORBIDDEN, "접근 권한이 없습니다"),
     AUTH_008(HttpStatus.LOCKED, "로그인 시도 횟수를 초과했습니다"),
     COMMON_001(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다"),
-    COMMON_002(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다");
+    COMMON_002(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다"),
+    COMMON_003(HttpStatus.NOT_FOUND, "요청한 리소스가 없습니다"),
+    COMMON_004(HttpStatus.METHOD_NOT_ALLOWED, "지원하지 않는 요청 방식입니다"),
+    COMMON_005(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원하지 않는 Content-Type입니다");
 
     private final HttpStatus status;
     private final String message;

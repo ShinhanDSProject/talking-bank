@@ -1,6 +1,7 @@
 package com.example.talkingbank.common.response;
 
 import com.example.talkingbank.common.exception.ErrorCode;
+import com.example.talkingbank.common.config.TimeZoneConfig;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -15,7 +16,7 @@ public record ErrorResponse(
         String path,
         List<FieldError> fieldErrors) {
 
-    public static final ZoneId ZONE = ZoneId.of("Asia/Seoul");
+    private static final ZoneId ZONE = ZoneId.of(TimeZoneConfig.ZONE_ID);
 
     public record FieldError(String field, String reason) {}
 

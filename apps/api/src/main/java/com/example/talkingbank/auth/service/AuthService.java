@@ -106,6 +106,10 @@ public class AuthService {
         }
         RefreshToken stored = refreshTokenRepository.findByUserId(parsed.userId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUTH_006));
+        if (stored.isExpired(LocalDateTime.now())) {
+            refreshTokenRepository.delete(stored);
+            throw new BusinessException(ErrorCode.AUTH_006);
+        }
         if (!stored.matches(refreshToken)) {
             // 서명은 맞는데 저장된 값과 다르다 = 이미 rotation된 옛 토큰이 다시 왔다. 탈취 가능성이 있어 전부 폐기한다.
             refreshTokenRepository.delete(stored);

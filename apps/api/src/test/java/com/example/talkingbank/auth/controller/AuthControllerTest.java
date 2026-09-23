@@ -353,6 +353,54 @@ class AuthControllerTest {
         }
     }
 
+    // ---------- 공통 에러 포맷 ----------
+
+    @Nested
+    @DisplayName("공통 에러 포맷")
+    class CommonErrors {
+
+        @Test
+        @DisplayName("깨진 JSON 본문은 400 COMMON_001")
+        void malformedJson() throws Exception {
+            mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"email\": "))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.errorCode").value("COMMON_001"));
+        }
+
+        @Test
+        @DisplayName("지원하지 않는 메서드는 405 COMMON_004")
+        void methodNotAllowed() throws Exception {
+            mockMvc.perform(get("/api/auth/login"))
+                    .andExpect(status().isMethodNotAllowed())
+                    .andExpect(jsonPath("$.errorCode").value("COMMON_004"));
+        }
+
+        @Test
+        @DisplayName("Content-Type이 JSON이 아니면 415 COMMON_005")
+        void unsupportedMediaType() throws Exception {
+            mockMvc.perform(post("/api/auth/login").contentType(MediaType.TEXT_PLAIN).content("x"))
+                    .andExpect(status().isUnsupportedMediaType())
+                    .andExpect(jsonPath("$.errorCode").value("COMMON_005"));
+        }
+
+        @Test
+        @DisplayName("없는 경로는 (인증 뒤) 404 COMMON_003")
+        void notFound() throws Exception {
+            signup(EMAIL, PASSWORD);
+            String token = accessTokenOf(login(EMAIL, PASSWORD));
+            mockMvc.perform(get("/api/nothing").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.errorCode").value("COMMON_003"));
+        }
+
+        @Test
+        @DisplayName("에러 응답의 timestamp는 +09:00 오프셋을 가진다")
+        void timestampOffset() throws Exception {
+            mockMvc.perform(get("/api/users/me"))
+                    .andExpect(jsonPath("$.timestamp", containsString("+09:00")));
+        }
+    }
+
     // ---------- 인증 필터 · /api/users/me ----------
 
     @Nested
