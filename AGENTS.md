@@ -38,7 +38,7 @@ rules:
     - { id: REPO-01, target: env.secrets, use: root .env (git-ignored), avoid: [commit, hardcode] }
     - { id: REPO-02, target: git.commit-message, use: 'Korean, <type>: <summary>', types: [feat, fix, refactor, test, docs, chore] }
   api:
-    - { id: STRUCT-01, target: package.layout, use: ['<domain>/{controller,service,repository,entity,dto}', 'common/{config,exception,response,entity}'] }
+    - { id: STRUCT-01, target: package.layout, use: ['<domain>/{controller,service,repository,entity,dto,config}', 'common/{config,exception,response,entity}'], except: domain-specific subpackage when a concern fits none (e.g. auth/jwt) }
     - { id: STRUCT-02, target: bean.injection, use: final fields + @RequiredArgsConstructor, avoid: '@Autowired on fields', except: explicit constructor when it computes a value }
     - { id: DOMAIN-01, target: field.money, use: BigDecimal, avoid: [double, float] }
     - { id: DOMAIN-02, target: service.transaction, use: '@Transactional on Service', avoid: [Controller, Repository] }

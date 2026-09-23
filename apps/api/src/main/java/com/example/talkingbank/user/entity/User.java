@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,6 +47,9 @@ public class User extends BaseTimeEntity {
 
     private LocalDateTime lastLoginAt;
 
+    /** 로그인 실패 누적으로 잠긴 경우 잠금이 풀리는 시각. null 이면 잠기지 않았다. */
+    private LocalDateTime lockedUntil;
+
     private User(String email, String encodedPassword, String name, String phone) {
         this.email = email;
         this.password = encodedPassword;
@@ -60,19 +64,24 @@ public class User extends BaseTimeEntity {
         return new User(normalizedEmail, encodedPassword, name, phone);
     }
 
-    public boolean isLocked() {
-        return status == UserStatus.LOCKED;
+    /** 실패 누적 잠금(시간 제한) 또는 관리자 잠금(status = LOCKED). */
+    public boolean isLocked(LocalDateTime now) {
+        return status == UserStatus.LOCKED || (lockedUntil != null && now.isBefore(lockedUntil));
     }
 
     public boolean isWithdrawn() {
         return status == UserStatus.WITHDRAWN;
     }
 
-    /** 로그인 실패를 기록하고, 허용 횟수에 도달하면 잠근다. 잠겼으면 true. */
-    public boolean recordLoginFailure(int maxFailCount) {
+    /**
+     * 로그인 실패를 기록하고, 허용 횟수에 도달하면 lockDuration 동안 잠근다. 잠겼으면 true.
+     * 영구 잠금이 아니라 시간 제한 잠금이다 — 이메일만 알면 남의 계정을 영영 잠글 수 있는 구멍을 막는다.
+     */
+    public boolean recordLoginFailure(int maxFailCount, Duration lockDuration, LocalDateTime now) {
         loginFailCount++;
         if (loginFailCount >= maxFailCount) {
-            status = UserStatus.LOCKED;
+            lockedUntil = now.plus(lockDuration);
+            loginFailCount = 0;
             return true;
         }
         return false;
@@ -80,6 +89,7 @@ public class User extends BaseTimeEntity {
 
     public void recordLoginSuccess(LocalDateTime now) {
         loginFailCount = 0;
+        lockedUntil = null;
         lastLoginAt = now;
     }
 }

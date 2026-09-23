@@ -8,7 +8,7 @@ const envDir = fileURLToPath(new URL('../..', import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, envDir, '')
+  const env = loadEnv(mode, envDir)
 
   return {
     envDir,

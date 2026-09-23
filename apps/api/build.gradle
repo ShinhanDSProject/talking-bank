@@ -41,4 +41,6 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    // 테스트는 test 프로필로 돈다(src/test/resources/application-test.yaml). 시드 데이터가 끼어들지 않고 DB가 컨텍스트마다 분리된다.
+    systemProperty 'spring.profiles.active', 'test'
 }

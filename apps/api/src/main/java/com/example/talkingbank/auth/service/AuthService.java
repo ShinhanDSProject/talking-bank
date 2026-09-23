@@ -73,20 +73,22 @@ public class AuthService {
     /** 실패 횟수는 예외가 나도 저장돼야 하므로 BusinessException에는 롤백하지 않는다. */
     @Transactional(noRollbackFor = BusinessException.class)
     public LoginResult login(LoginRequest request) {
+        LocalDateTime now = LocalDateTime.now();
         User user = userRepository.findByEmail(normalizeEmail(request.getEmail())).orElse(null);
         if (user == null || user.isWithdrawn()) {
             passwordEncoder.matches(request.getPassword(), dummyHash);
             throw new BusinessException(ErrorCode.AUTH_003);
         }
-        if (user.isLocked()) {
+        if (user.isLocked(now)) {
             throw new BusinessException(ErrorCode.AUTH_008);
         }
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            boolean lockedNow = user.recordLoginFailure(authProperties.maxLoginFailCount());
+            boolean lockedNow = user.recordLoginFailure(authProperties.maxLoginFailCount(),
+                    authProperties.lockDuration(), now);
             throw new BusinessException(lockedNow ? ErrorCode.AUTH_008 : ErrorCode.AUTH_003);
         }
-        user.recordLoginSuccess(LocalDateTime.now());
-        return issueTokens(user);
+        user.recordLoginSuccess(now);
+        return issueTokens(user, refreshTokenRepository.findByUserId(user.getId()).orElse(null));
     }
 
     /** 탈취 의심으로 저장된 토큰을 지운 뒤 예외를 던지므로, 그 삭제가 롤백되지 않게 한다. */
@@ -117,13 +119,13 @@ public class AuthService {
         }
         User user = userRepository.findById(parsed.userId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUTH_006));
-        if (user.isLocked()) {
+        if (user.isLocked(LocalDateTime.now())) {
             throw new BusinessException(ErrorCode.AUTH_008);
         }
         if (user.isWithdrawn()) {
             throw new BusinessException(ErrorCode.AUTH_006);
         }
-        return issueTokens(user);
+        return issueTokens(user, stored);
     }
 
     @Transactional
@@ -131,16 +133,26 @@ public class AuthService {
         refreshTokenRepository.deleteByUserId(userId);
     }
 
-    private LoginResult issueTokens(User user) {
+    /** stored 가 있으면 값만 교체(rotation), 없으면 새로 만든다. 회원당 Refresh Token 은 하나다. */
+    private LoginResult issueTokens(User user, RefreshToken stored) {
         String accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
         LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(jwtTokenProvider.refreshTokenValiditySeconds());
 
-        refreshTokenRepository.findByUserId(user.getId()).ifPresentOrElse(
-                stored -> stored.rotate(refreshToken, expiresAt),
-                () -> refreshTokenRepository.save(RefreshToken.issue(user.getId(), refreshToken, expiresAt)));
+        if (stored != null) {
+            stored.rotate(refreshToken, expiresAt);
+        } else {
+            try {
+                refreshTokenRepository.saveAndFlush(RefreshToken.issue(user.getId(), refreshToken, expiresAt));
+            } catch (DataIntegrityViolationException e) {
+                // 같은 회원이 동시에 처음 로그인하면 user_id unique 에 걸린다. 먼저 들어간 행을 가져와 교체한다.
+                RefreshToken existing = refreshTokenRepository.findByUserId(user.getId())
+                        .orElseThrow(() -> new BusinessException(ErrorCode.COMMON_002));
+                existing.rotate(refreshToken, expiresAt);
+            }
+        }
 
-        return new LoginResult(TokenResponse.bearer(accessToken, jwtTokenProvider.accessTokenValiditySeconds()),
+        return new LoginResult(TokenResponse.of(accessToken, jwtTokenProvider.accessTokenValiditySeconds()),
                 refreshToken);
     }
 

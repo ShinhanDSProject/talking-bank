@@ -469,6 +469,15 @@ class AuthControllerTest {
         }
 
         @Test
+        @DisplayName("계좌 목록(GET /api/accounts)만 임시로 열려 있고 그 하위 경로는 인증이 필요하다")
+        void accountsOnlyListIsPublic() throws Exception {
+            mockMvc.perform(get("/api/accounts")).andExpect(status().isOk());
+            mockMvc.perform(get("/api/accounts/1"))
+                    .andExpect(status().isUnauthorized())
+                    .andExpect(jsonPath("$.errorCode").value("AUTH_004"));
+        }
+
+        @Test
         @DisplayName("가입 · 로그인 · health는 토큰 없이 된다")
         void publicEndpoints() throws Exception {
             mockMvc.perform(get("/actuator/health")).andExpect(status().isOk());

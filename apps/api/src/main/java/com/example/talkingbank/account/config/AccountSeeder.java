@@ -1,4 +1,4 @@
-package com.example.talkingbank.account;
+package com.example.talkingbank.account.config;
 
 import com.example.talkingbank.account.entity.Account;
 import com.example.talkingbank.account.entity.AccountStatus;

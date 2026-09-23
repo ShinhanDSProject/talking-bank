@@ -1,0 +1,25 @@
+# 테스트 프로필. build.gradle 의 test 태스크가 spring.profiles.active=test 로 켠다.
+# 공통 application.yaml 위에 겹쳐지므로 운영 키 이름(jwt.* · auth.*)이 틀리면 테스트에서도 드러난다.
+spring:
+  datasource:
+    # 컨텍스트마다 다른 DB 이름 — 캐시된 Spring 컨텍스트끼리 스키마를 공유하지 않는다.
+    url: jdbc:h2:mem:test-${random.uuid};DB_CLOSE_DELAY=-1;MODE=LEGACY
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: false
+
+jwt:
+  secret: test-only-secret-key-that-is-at-least-32-characters-long
+
+auth:
+  cookie-secure: false
+
+logging:
+  level:
+    com.example.talkingbank: info

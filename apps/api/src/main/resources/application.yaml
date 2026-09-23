@@ -1,30 +1,24 @@
-# 모든 환경 공통. 환경별 차이는 application-<profile>.yaml, 비밀은 .env 에 둔다.
+# 모든 환경 공통. 환경별 차이는 application-<profile>.yaml, 비밀은 환경 변수(로컬은 루트 .env)로 넣는다.
 spring:
   application:
     name: talking-bank
   profiles:
     # 프로필을 지정하지 않으면 local. 서버에서는 SPRING_PROFILES_ACTIVE=prod
     default: local
-  config:
-    # 저장소 루트의 .env 를 properties로 읽는다(web과 공유). 파일이 없어도 기동된다. 비밀값(JWT_SECRET 등)은 여기에만 둔다 — Git 제외.
-    # apps/api 가 작업 디렉터리라 ../../.env 가 루트다. JAR을 다른 곳에서 띄울 때를 위해 현재 디렉터리의 .env 도 본다(뒤쪽이 우선).
-    import:
-      - optional:file:../../.env[.properties]
-      - optional:file:./.env[.properties]
   jpa:
     open-in-view: false
     properties:
       hibernate:
         format_sql: true
   jackson:
-    # 응답의 날짜·시각은 ISO 8601 + 오프셋(+09:00)으로 나간다.
     time-zone: Asia/Seoul
 
 jwt:
-  # 시크릿은 프로필별 파일에서 정한다. local은 개발용 기본값이 있고, prod는 .env 의 JWT_SECRET 이 없으면 기동이 실패한다.
+  # 시크릿(jwt.secret)은 프로필별 파일에서 정한다.
   access-token-validity: 30m
   refresh-token-validity: 7d
 
 auth:
-  # 연속 로그인 실패 허용 횟수. 개발 중 잠기는 게 번거로우면 .env 에 MAX_LOGIN_FAIL=999
+  # 연속 로그인 실패 허용 횟수와 잠금 시간. 개발 중 잠기는 게 번거로우면 .env 에 MAX_LOGIN_FAIL=999
   max-login-fail-count: ${MAX_LOGIN_FAIL:5}
+  lock-duration: 30m

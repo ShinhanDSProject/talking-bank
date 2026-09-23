@@ -6,6 +6,7 @@ import com.example.talkingbank.auth.jwt.JwtAccessDeniedHandler;
 import com.example.talkingbank.auth.jwt.JwtAuthenticationEntryPoint;
 import com.example.talkingbank.auth.jwt.JwtAuthenticationFilter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,6 +32,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /** JwtAuthenticationFilter 는 @Component 라 서블릿 컨테이너에도 자동 등록된다. 시큐리티 체인 안에서만 돌게 컨테이너 등록은 끈다. */
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtFilterRegistration(JwtAuthenticationFilter filter) {
+        FilterRegistrationBean<JwtAuthenticationFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter,
             JwtAuthenticationEntryPoint entryPoint, JwtAccessDeniedHandler accessDeniedHandler) throws Exception {
@@ -45,8 +54,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/check-email", "/api/auth/signup", "/api/auth/login",
                                 "/api/auth/refresh").permitAll()
                         .requestMatchers("/actuator/health/**").permitAll()
-                        // TODO: 계좌가 회원에 연결되면(ACCT) 인증 필요로 바꾼다. 지금은 웹 계좌 목록 화면이 계속 돌게 열어 둔다.
-                        .requestMatchers("/api/accounts/**").permitAll()
+                        // TODO: 계좌가 회원에 연결되면(ACCT) 지운다. 웹 계좌 목록 화면이 계속 돌게 이 한 경로만 연다 — 하위 경로는 열지 않는다.
+                        .requestMatchers(HttpMethod.GET, "/api/accounts").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(entryPoint)

@@ -76,6 +76,17 @@ class JwtTokenProviderTest {
     }
 
     @Test
+    @DisplayName("시크릿이 비어 있으면 임시 키를 만들어 자기 토큰은 검증하지만 다른 인스턴스와는 호환되지 않는다")
+    void blankSecretGeneratesEphemeralKey() {
+        JwtTokenProvider a = new JwtTokenProvider(new JwtProperties("", Duration.ofMinutes(30), Duration.ofDays(7)));
+        JwtTokenProvider b = new JwtTokenProvider(new JwtProperties(null, Duration.ofMinutes(30), Duration.ofDays(7)));
+        String token = a.createAccessToken(1L, "a@b.c");
+
+        assertThat(a.parse(token).userId()).isEqualTo(1L);
+        assertThatThrownBy(() -> b.parse(token)).isInstanceOf(BusinessException.class);
+    }
+
+    @Test
     @DisplayName("시크릿이 32바이트보다 짧으면 기동하지 않는다")
     void shortSecretRejected() {
         assertThatThrownBy(() -> new JwtProperties("short", Duration.ofMinutes(30), Duration.ofDays(7)))
