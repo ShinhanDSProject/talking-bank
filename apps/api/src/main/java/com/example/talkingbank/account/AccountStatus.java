@@ -1,4 +1,4 @@
-package com.example.bankbank.account;
+package com.example.talkingbank.account;
 
 public enum AccountStatus {
     /** 정상 */

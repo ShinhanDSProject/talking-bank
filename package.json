@@ -1,8 +1,8 @@
 {
-  "name": "bank-bank",
+  "name": "talking-bank",
   "private": true,
   "version": "0.0.1",
-  "description": "bank-bank full-stack monorepo (Spring Boot API + React web)",
+  "description": "talking-bank full-stack monorepo (Spring Boot API + React web)",
   "type": "module",
   "workspaces": [
     "apps/*",
@@ -14,19 +14,17 @@
   "scripts": {
     "dev": "concurrently -n api,web -c blue,magenta \"npm:dev:api\" \"npm:dev:web\"",
     "dev:api": "./gradlew :apps:api:bootRun --console=plain",
-    "dev:web": "npm run dev -w @bank-bank/web",
+    "dev:web": "npm run dev -w @talking-bank/web",
     "build": "npm run build:api && npm run build:web",
     "build:api": "./gradlew :apps:api:bootJar",
-    "build:web": "npm run build -w @bank-bank/web",
+    "build:web": "npm run build -w @talking-bank/web",
     "test": "npm run test:api && npm run test:web",
     "test:api": "./gradlew :apps:api:test",
-    "test:web": "npm run test -w @bank-bank/web",
-    "lint": "npm run lint -w @bank-bank/web",
+    "test:web": "npm run test -w @talking-bank/web",
+    "lint": "npm run lint -w @talking-bank/web",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,yaml,yml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md,yaml,yml}\"",
-    "typecheck": "npm run typecheck -w @bank-bank/web",
-    "db:up": "docker compose up -d mariadb",
-    "db:down": "docker compose down"
+    "typecheck": "npm run typecheck -w @talking-bank/web"
   },
   "devDependencies": {
     "concurrently": "^10.0.5",

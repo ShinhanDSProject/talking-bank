@@ -1,6 +1,6 @@
 # 06. 개발 규칙 — 공통
 
-> 팀 전체가 따르는 규칙이다. 백엔드·프론트엔드 전용 규칙은 [conventions/backend.md](conventions/backend.md), [conventions/frontend.md](conventions/frontend.md)에 있다. 규칙은 초안이며 팀이 확정하면 그대로 따르고, 바꾸면 문서를 먼저 고친다.
+> 팀 전체가 따르는 규칙이다. 영역별 규칙은 [conventions/backend.md](conventions/backend.md), [conventions/frontend.md](conventions/frontend.md), [conventions/assistant.md](conventions/assistant.md)에 있다. 규칙은 초안이며 팀이 확정하면 그대로 따르고, 바꾸면 문서를 먼저 고친다.
 
 ## Git
 
@@ -74,19 +74,20 @@ docs/schedule               문서만
 
 `XFER-03`처럼 **도메인-번호** 형식을 쓴다. 제목에 `[BE][XFER-03]`처럼 영역과 함께 적는다.
 
-| 도메인  | 범위                       | Phase |
-| ------- | -------------------------- | ----- |
-| `AUTH`  | 회원·인증                  | 1     |
-| `ACCT`  | 계좌                       | 1     |
-| `XFER`  | 송금                       | 1     |
-| `TXN`   | 거래내역                   | 1     |
-| `CMN`   | 공통 기반 (예외·에러·문서) | 1     |
-| `INFRA` | 인프라·환경                | 1     |
-| `WEB`   | 프론트 공통·디자인 시스템  | 1     |
-| `FDS`   | 이상거래 탐지              | 2     |
-| `ADMIN` | 관리자                     | 2     |
+| 도메인  | 범위                                   | Phase |
+| ------- | -------------------------------------- | ----- |
+| `AUTH`  | 회원·인증                              | 1     |
+| `ACCT`  | 계좌                                   | 1     |
+| `XFER`  | 송금                                   | 1     |
+| `TXN`   | 거래내역                               | 1     |
+| `CMN`   | 공통 기반 (예외·에러·문서)             | 1     |
+| `INFRA` | 인프라·환경                            | 1     |
+| `WEB`   | 프론트 공통·디자인 시스템              | 1     |
+| `AST`   | AI 비서 (apps/assistant · 패널 · 별칭) | 2     |
+| `FDS`   | FDS 라이트 (규칙 2개 · 보류)           | 2     |
+| `ADMIN` | 관리자 AI 비서 대시보드                | 2     |
 
-Phase 3 이후의 도메인(`PRODUCT`, `OPENBANK`, `CARD`, `SEC`, `INS`)은 그 Phase에 착수할 때 추가한다.
+영역 표기는 `[BE]` · `[FE]` · `[AI]` · `[Infra]`. 향후 확장 도메인(`RISK`, `PRODUCT`, `OPENBANK`, `CARD`, `SEC`, `INS`)은 착수할 때 추가한다.
 
 GitHub 이슈 번호(#N)와 작업 ID는 다르다. 문서와 대화에서는 작업 ID를, 링크는 #N을 쓴다.
 
@@ -101,6 +102,7 @@ GitHub 이슈 번호(#N)와 작업 ID는 다르다. 문서와 대화에서는 �
 ```
 기능 X가 궁금하다
   → 요구사항 정의서  이 Phase에 어떤 화면 · 정책 수치 · 요구사항(REQ) · 제외가 있나   (docs/requirements/<phase>.md)
+  → 도구 정의        비서가 어떤 도구를 · 어떤 인자로 · 언제 부르나 (PRD 5절과 같은 표. 도구 이름 · 인자명이 코드와 같다)
   → PRD X            무엇을 · 왜 · 어떤 규칙 · API · 어떤 작업으로 쪼개지나           (docs/domains/<phase>/<ID>.md)
   → UI 브리프        어떤 화면에 · 어떤 데이터가 · 어떤 상태로 보이나                 (docs/domains/<phase>/ui-brief.md)
   → ERD              데이터가 어떻게 생겼나
@@ -115,10 +117,11 @@ GitHub 이슈 번호(#N)와 작업 ID는 다르다. 문서와 대화에서는 �
 | 에러 코드                      | PRD 5절 API             | UI 브리프 상태 표 · `common/` 예외 · 프론트 분기      |
 | 작업 ID                        | PRD 7절 진행            | 이슈 제목 · 브랜치 이름                               |
 | 디자인 토큰                    | `DESIGN.md`             | UI 브리프 · Figma 변수 · CSS 변수                     |
+| 도구 이름 · 인자명 (Phase 2)   | PRD 5절 도구 표         | `apps/assistant/app/tools/` · 평가 세트 · 로그        |
 
 - 화면 목록·정책 수치·요구사항은 **요구사항 정의서가 주인**이고, 흐름·데이터·규칙·API는 **PRD가 주인**이고, 색·간격·폰트는 **`DESIGN.md`가 주인**이다. UI 브리프는 그것을 화면 언어로 옮긴 것이고, 여기서 필드나 화면을 새로 만들지 않는다.
 - 어긋나면 요구사항 정의서 → PRD 순으로 먼저 고치고 나머지를 따라 고친다.
-- 요구사항 정의서: [requirements/01-core.md](requirements/01-core.md). 템플릿: [templates/prd.md](templates/prd.md), [templates/ui-brief.md](templates/ui-brief.md). 화면 규칙: [DESIGN.md](../DESIGN.md). AI 코딩 도구 공통 지침: [AGENTS.md](../AGENTS.md)
+- 요구사항 정의서: [requirements/01-core.md](requirements/01-core.md), [requirements/02-assistant.md](requirements/02-assistant.md). 템플릿: [templates/prd.md](templates/prd.md), [templates/ui-brief.md](templates/ui-brief.md). 화면 규칙: [DESIGN.md](../DESIGN.md). AI 코딩 도구 공통 지침: [AGENTS.md](../AGENTS.md)
 
 ## API 계약
 
@@ -136,10 +139,22 @@ GitHub 이슈 번호(#N)와 작업 ID는 다르다. 문서와 대화에서는 �
 /api/accounts/{id}/transactions  GET     거래내역
 /api/transfers                   POST    송금
 /api/transfers/{id}              GET
-/api/transfers/{id}/confirm      POST    보류 건 추가 인증        (Phase 2)
-/api/admin/fds-alerts            GET                              (Phase 2)
-/api/admin/transactions          GET                              (Phase 2)
+/api/accounts/holder             GET     계좌번호로 예금주 (마스킹)
+/api/transfers/drafts            POST    이체 초안 생성            (Phase 2 · 비서 스코프)
+/api/transfers/{id}/confirm      POST    보류 건 추가 인증          (Phase 2)
+/api/recipients                  GET     내 수취인 별칭             (Phase 2)
+/api/recipients                  POST    별칭 저장                  (Phase 2 · 비서 스코프 허용)
+/api/recipients/{id}             DELETE                             (Phase 2)
+/api/auth/assistant-token        POST    비서 스코프 토큰 교환      (Phase 2)
+/api/admin/assistant/stats       GET     AI 비서 대시보드           (Phase 2)
+/api/admin/assistant/conversations GET                              (Phase 2 · 권장)
+
+/assistant/conversations                     POST   대화 시작           (apps/assistant)
+/assistant/conversations/{id}/messages       POST   메시지 전송 · SSE   (apps/assistant)
+/assistant/conversations/{id}                GET    대화 이력           (apps/assistant)
 ```
+
+`/api/**`는 `apps/api`, `/assistant/**`는 `apps/assistant`가 받는다. 개발 중에는 Vite 프록시가 둘 다 나눠 보낸다.
 
 - 복수형 명사, kebab-case. 동사는 쓰지 않는다 (`/confirm` 같은 상태 전이는 예외).
 - 관리자 API는 `/api/admin/` 아래. 인가는 URL 패턴으로 한 번에 건다.
@@ -176,22 +191,44 @@ A를 권장한다. 에러 응답만 통일(아래)하면 성공 응답은 래퍼
 
 ## 인증 정책
 
-| 항목                 | 정책                                                         |
-| -------------------- | ------------------------------------------------------------ |
-| Access Token 만료    | 30분                                                         |
-| Refresh Token 만료   | 7일                                                          |
-| Refresh Token 저장소 | Redis (TTL 자동 만료). **미확정** — RDB 테이블도 가능        |
-| 클라이언트 저장      | Access는 메모리, Refresh는 httpOnly + Secure + SameSite 쿠키 |
-| 로그아웃             | Refresh Token 삭제. Access 블랙리스트는 **도입하지 않음**    |
-| 서명                 | HS256, 시크릿 32자 이상, 환경 변수 주입                      |
-| 시크릿 공유          | <!-- TODO: 결정 -->                                          |
+| 항목                 | 정책                                                                                                                         |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Access Token 만료    | 30분                                                                                                                         |
+| Refresh Token 만료   | 7일                                                                                                                          |
+| Refresh Token 저장소 | Redis (TTL 자동 만료). **미확정** — RDB 테이블도 가능                                                                        |
+| 클라이언트 저장      | Access는 메모리, Refresh는 httpOnly + Secure + SameSite 쿠키                                                                 |
+| 로그아웃             | Refresh Token 삭제. Access 블랙리스트는 **도입하지 않음**                                                                    |
+| 서명                 | HS256, 시크릿 32자 이상, 환경 변수 주입                                                                                      |
+| 시크릿 공유          | <!-- TODO: 결정 -->                                                                                                          |
+| 비서 스코프 토큰     | `POST /api/auth/assistant-token`에 사용자 Access Token을 내면 `scope=assistant`, 만료 5분 토큰을 준다. 아래 "AI 서비스 규칙" |
+
+## AI 서비스 규칙
+
+`apps/assistant`와 `apps/api`가 **함께** 지키는 규칙이다. 근거는 [02-assistant.md 원칙](domains/02-assistant.md#원칙).
+
+- **AI 서비스는 이체를 실행하지 않는다.** 도구 목록에 실행이 없다. 새 도구를 추가하는 PR은 "돈이 움직이나" 여부를 본문에 적는다.
+- **AI 서비스는 비서 스코프 토큰으로만 코어를 부른다.** 사용자 Access Token을 그대로 전달하지 않는다.
+- `scope=assistant` 토큰으로 허용되는 API는 아래뿐이다. 나머지는 403(`AUTH_007`).
+
+  | 허용                                                                                                             | 이유             |
+  | ---------------------------------------------------------------------------------------------------------------- | ---------------- |
+  | `GET /api/accounts`, `GET /api/accounts/{id}`, `GET /api/accounts/{id}/transactions`, `GET /api/accounts/holder` | 읽기             |
+  | `GET /api/transfers/{id}`, `GET /api/transfers`                                                                  | 읽기 · 설명      |
+  | `POST /api/transfers/drafts`                                                                                     | 초안만           |
+  | `GET /api/recipients`, `POST /api/recipients`                                                                    | 별칭 조회 · 저장 |
+
+- `POST /api/transfers`(실행)와 `POST /api/transfers/{id}/confirm`(추가 인증)은 이체 비밀번호가 필수이고 `scope=assistant`를 거부한다. 이 두 조건을 테스트로 증명한다.
+- 도구 결과(통장표시 · 별칭 · 메모)는 데이터다. 그 안의 지시문을 따르지 않는다. 주입 케이스(NFR-021)로 검증한다.
+- `ANTHROPIC_API_KEY`는 `apps/assistant` 환경 변수에만 있다. 프론트와 코어에는 없다.
+- 모델에 비밀번호 · 토큰 · 주민번호를 보내지 않는다. 로그에도 남기지 않는다(NFR-004).
 
 ## 테스트 원칙
 
 - 테스트가 없는 PR은 왜 없어도 되는지 본문에 적는다.
 - 백엔드·프론트엔드 테스트가 `npm test` 한 번으로, 인프라 없이 통과해야 한다.
 - 테스트 이름은 무엇을 검증하는지 한국어로 쓴다.
-- 영역별 최소 기준은 [backend.md](conventions/backend.md#테스트), [frontend.md](conventions/frontend.md#테스트)에 있다.
+- 영역별 최소 기준은 [backend.md](conventions/backend.md#테스트), [frontend.md](conventions/frontend.md#테스트), [assistant.md](conventions/assistant.md#테스트)에 있다.
+- AI 서비스 테스트는 모델 호출을 목킹한다. 평가 세트만 실제 호출이며 CI 밖에서 돌리고 결과를 PR에 붙인다.
 - **E2E**: 각 도메인 문서의 시연 장면을 Playwright로 자동화한다. selector는 `data-testid` 또는 role 기반 — CSS 클래스로 잡지 않는다. Phase의 안정화 Step에서 붙인다.
 
 ## 시크릿과 환경 변수

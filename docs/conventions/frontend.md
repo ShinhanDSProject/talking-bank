@@ -8,7 +8,7 @@
 
 ```
 src/
-├── features/     기능별. accounts/, transfers/, auth/ ... 각각 api.ts + 화면 + 테스트
+├── features/     기능별. accounts/, transfers/, auth/, assistant/ (Phase 2) ... 각각 api.ts + 화면 + 테스트
 ├── pages/        라우트에 붙는 페이지
 ├── components/   여러 기능이 쓰는 UI 컴포넌트 (디자인 시스템)
 ├── lib/          api 클라이언트, queryClient 등
@@ -20,7 +20,9 @@ src/
 ## 코드
 
 - 서버 상태는 TanStack Query. `useEffect` + `fetch` 조합을 쓰지 않는다.
-- API 호출은 `lib/api.ts`의 `apiFetch`만 쓴다. 컴포넌트에서 `fetch`를 직접 부르지 않는다.
+- API 호출은 `lib/api.ts`의 `apiFetch`만 쓴다. 컴포넌트에서 `fetch`를 직접 부르지 않는다. AI 서비스 호출(SSE 스트리밍)은 `lib/assistant.ts` 하나로 모은다(Phase 2).
+- 프론트는 모델을 직접 부르지 않는다. `ANTHROPIC_API_KEY`가 프론트 코드나 환경 변수에 있으면 안 된다.
+- 음성 입출력은 `features/assistant/speech.ts`에서만 Web Speech API를 만진다. 미지원 브라우저에서는 마이크 버튼을 숨긴다.
 - 타입은 서버 응답 DTO와 이름·필드를 맞춘다. (`AccountResponse` ↔ `Account`)
 - 에러 처리는 [에러 포맷](../06-conventions.md#에러-포맷)의 `errorCode`로 분기한다. `message`는 그대로 보여줘도 된다.
 - 금액 표시는 `Intl.NumberFormat('ko-KR')`. 문자열 연산으로 콤마를 넣지 않는다.

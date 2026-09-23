@@ -1,4 +1,4 @@
-package com.example.bankbank.account;
+package com.example.talkingbank.account;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
