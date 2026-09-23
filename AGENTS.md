@@ -2,6 +2,7 @@
 
 AI 코딩 도구 공통 지침. 규칙은 아래 YAML이 전부다. `CLAUDE.md` · `GEMINI.md`는 이 파일을 불러올 뿐이니 여기만 고친다.
 
+<!-- prettier-ignore -->
 ```yaml
 project:
   name: talking-bank
@@ -27,52 +28,25 @@ commands:
   typecheck: npm run typecheck
   api_test: cd apps/api && ./gradlew test # 루트에서는 ./gradlew :api:test
 
-# id: <영역>-<번호>. 번호는 재사용하지 않고, 지운 규칙은 deprecated: true 로 남긴다.
-# scope: api | web | all. 이유는 rule 에 쓰지 않고 필요하면 why: <링크> 한 줄.
+# 규칙 스키마 — id: <영역>-<번호>(번호 재사용 금지, 지운 규칙은 deprecated: true) · scope: api | web | all
+#   target: 대상 · use: 이렇게 · avoid: 이렇게는 안 됨 · except: 예외. 이유는 쓰지 않는다(필요하면 why: <링크>).
 rules:
-  - { id: MONEY-01, scope: api, rule: 금액은 BigDecimal. double · float 금지 }
-  - {
-      id: PKG-01,
-      scope: api,
-      rule: '<domain>/controller · service · repository · entity · dto. 공통은 common/config · exception · response · entity',
-    }
-  - { id: TX-01, scope: api, rule: '@Transactional은 Service에만' }
-  - {
-      id: DI-01,
-      scope: api,
-      rule: final 필드 + @RequiredArgsConstructor. 필드 주입 금지. 생성자에서 값을 계산할 때만 직접 작성,
-    }
-  - {
-      id: GEN-01,
-      scope: api,
-      rule: Entity · DTO는 static 팩토리 또는 @Builder. public 생성자 금지(Bean 주입 생성자 · 예외 클래스 제외),
-    }
-  - { id: GEN-02, scope: api, rule: Entity 기본 생성자는 @NoArgsConstructor(PROTECTED) 하나만 }
-  - {
-      id: GEN-03,
-      scope: api,
-      rule: 요청 DTO는 @Builder + @Jacksonized,
-      응답 DTO는 record + static from/of,
-    }
-  - {
-      id: ACC-01,
-      scope: api,
-      rule: getter · setter는 Lombok. Entity에 @Setter 금지,
-      상태 변경은 메서드. 비밀 필드는 @ToString(exclude),
-    }
-  - {
-      id: TIME-01,
-      scope: api,
-      rule: 생성 · 수정 시각은 BaseTimeEntity 상속(JPA Auditing). DB 기본값 · @PrePersist 금지,
-    }
-  - { id: NAME-01, scope: api, rule: '회원 = user (User · users · /api/users). member 금지' }
-  - { id: WEB-01, scope: web, rule: 서버 상태는 TanStack Query }
-  - { id: WEB-02, scope: web, rule: API 호출은 lib/api.ts의 apiFetch만 }
-  - { id: WEB-03, scope: web, rule: 색 · 간격 · 폰트는 DESIGN.md 토큰만 }
-  - { id: SEC-01, scope: all, rule: 시크릿 커밋 금지. 환경 변수는 루트 .env(Git 제외) }
-  - {
-      id: GIT-01,
-      scope: all,
-      rule: '커밋 · PR 메시지는 한국어, <type>: <요약> (feat · fix · refactor · test · docs · chore)',
-    }
+  - { id: MONEY-01, scope: api, target: 금액, use: BigDecimal, avoid: [double, float] }
+  - { id: PKG-01, scope: api, target: 패키지, use: ['<domain>/{controller,service,repository,entity,dto}', 'common/{config,exception,response,entity}'] }
+  - { id: TX-01, scope: api, target: '@Transactional', use: Service, avoid: [Controller, Repository] }
+  - { id: DI-01, scope: api, target: 의존성 주입, use: final 필드 + @RequiredArgsConstructor, avoid: '@Autowired 필드 주입', except: 생성자에서 값을 계산하면 직접 생성자 }
+  - { id: GEN-01, scope: api, target: Entity · DTO 생성, use: [static 팩토리, '@Builder'], avoid: public 생성자, except: [Bean 주입 생성자, 예외 클래스] }
+  - { id: GEN-02, scope: api, target: Entity 기본 생성자, use: '@NoArgsConstructor(PROTECTED)', avoid: 그 외 기본 생성자 }
+  - { id: GEN-03, scope: api, target: 요청 DTO, use: '@Builder + @Jacksonized' }
+  - { id: GEN-04, scope: api, target: 응답 DTO, use: record + static from/of }
+  - { id: ACC-01, scope: api, target: getter · setter, use: Lombok @Getter · @Setter, avoid: 직접 작성 }
+  - { id: ACC-02, scope: api, target: Entity 상태 변경, use: 의도가 드러나는 메서드, avoid: '@Setter' }
+  - { id: ACC-03, scope: api, target: 비밀 필드(password 등), use: '@ToString(exclude)', avoid: 로그 · 응답 노출 }
+  - { id: TIME-01, scope: api, target: createdAt · updatedAt, use: BaseTimeEntity 상속(JPA Auditing), avoid: [DB 기본값, '@PrePersist'] }
+  - { id: NAME-01, scope: api, target: 회원, use: user (User · users · /api/users), avoid: member }
+  - { id: WEB-01, scope: web, target: 서버 상태, use: TanStack Query, avoid: useEffect + fetch }
+  - { id: WEB-02, scope: web, target: API 호출, use: lib/api.ts의 apiFetch, avoid: fetch 직접 호출 }
+  - { id: WEB-03, scope: web, target: 색 · 간격 · 폰트, use: DESIGN.md 토큰, avoid: 하드코딩 값 }
+  - { id: SEC-01, scope: all, target: 시크릿, use: 루트 .env(Git 제외), avoid: [커밋, 코드 하드코딩] }
+  - { id: GIT-01, scope: all, target: 커밋 · PR 메시지, use: '한국어 <type>: <요약>', types: [feat, fix, refactor, test, docs, chore] }
 ```
