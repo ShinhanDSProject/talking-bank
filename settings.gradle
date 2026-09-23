@@ -1,0 +1,11 @@
+plugins {
+    // build.gradle이 요구하는 JDK(toolchain)가 로컬에 없으면 자동으로 내려받는다.
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'talking-bank'
+
+// apps/api는 자기 폴더 안에 build.gradle · settings.gradle · gradlew를 가진 독립 Gradle 프로젝트다.
+// 여기서는 그 빌드를 "포함 빌드"로 연결만 한다. 그래서 IntelliJ는 루트 폴더를 열어도, apps/api 폴더만 열어도
+// 같은 프로젝트를 인식한다. 루트에서 태스크를 돌릴 때는 `./gradlew :api:<task>` (포함 빌드 이름은 폴더명 api).
+includeBuild 'apps/api'

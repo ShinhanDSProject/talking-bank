@@ -12,10 +12,12 @@ talking-bank/
 │   └── assistant/           # FastAPI · anthropic SDK — AI 비서 (Phase 2, 아직 없음)
 ├── packages/                # 앱 사이에서 공유할 코드 (아직 비어 있음)
 ├── docs/                    # 기획·범위·스펙·일정·개발 규칙
+├── settings.gradle          # apps/api를 포함 빌드로 연결만 한다 (IntelliJ에서 루트를 열 때용)
 └── package.json             # npm workspaces (apps/*, packages/*)
 ```
 
 `apps/api`는 독립 Gradle 프로젝트(`apps/api/build.gradle`)이고, 프론트엔드는 npm workspaces가 관리합니다.
+루트의 `settings.gradle`은 `apps/api`를 **포함 빌드**로 연결만 하므로, IntelliJ에서 루트 폴더를 열어도 `apps/api` 폴더만 열어도 같은 프로젝트로 인식합니다.
 두 빌드는 서로 결합되어 있지 않으며, **각각 따로 빌드·배포**합니다.
 
 |                  | 개발                    | 빌드 산출물                  |
@@ -68,13 +70,20 @@ Step 1-1의 `AUTH-01`·`AUTH-03` 이슈에서 팀이 함께 붙입니다.
 Gradle을 직접 쓸 수도 있습니다.
 
 ```bash
-cd apps/api
-./gradlew bootRun
-./gradlew test
-./gradlew bootJar
+# apps/api 안에서
+cd apps/api && ./gradlew bootRun
+cd apps/api && ./gradlew test
+
+# 또는 루트에서 (포함 빌드 이름은 api)
+./gradlew :api:bootRun
+./gradlew :api:test
 ```
 
-IntelliJ에서는 `apps/api` 폴더를 프로젝트로 열면 됩니다.
+### IntelliJ
+
+루트 폴더(`talking-bank`)를 열든 `apps/api` 폴더를 열든 둘 다 됩니다. 프론트까지 한 창에서 보려면 루트, 백엔드만 보려면 `apps/api`.
+
+예전 구조로 임포트한 프로젝트가 있으면 Gradle 툴 창에서 **Reload All Gradle Projects**를 한 번 누르세요. 그래도 실행 구성이 빨갛게 남아 있으면 지우고 `TalkingBankApplication` 옆 실행 버튼으로 다시 만들면 됩니다. 그것도 안 되면 `.idea`를 지우고 다시 여세요(Git에 올라가지 않는 로컬 파일입니다).
 
 ## 개발 중 API 호출 흐름
 
