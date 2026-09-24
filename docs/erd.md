@@ -35,8 +35,6 @@ erDiagram
     users ||--o| refresh_token : "회원당 최대 1개"
 ```
 
-스키마의 주인은 엔티티다. 바꿀 때는 아래 파일을 고치고 이 그림을 따라 고친다.
-
 | 표                                    | 엔티티                                                                                                | enum                                                                                                 |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `users`                               | [User](../apps/api/src/main/java/com/example/talkingbank/user/entity/User.java)                       | [UserStatus](../apps/api/src/main/java/com/example/talkingbank/user/entity/UserStatus.java)          |

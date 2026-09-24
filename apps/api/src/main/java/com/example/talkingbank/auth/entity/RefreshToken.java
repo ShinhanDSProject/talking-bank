@@ -23,6 +23,8 @@ public class RefreshToken extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // users.id 를 값으로만 가리킨다(FK 제약 없음) — 도메인 사이는 Service 로만 잇는다.
+    // 회원 삭제 기능을 만들 때 이 행도 함께 지워야 한다.
     @Column(nullable = false, unique = true)
     private Long userId;
 
