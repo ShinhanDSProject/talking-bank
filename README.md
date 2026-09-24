@@ -8,7 +8,7 @@ talking-bank/
 │   ├── api/          # Spring Boot 3.5 · Java 21 · JPA — 독립 Gradle 프로젝트
 │   └── web/          # Vite · React 19 · TypeScript · TanStack Query
 ├── packages/         # 앱 사이에서 공유할 코드 (아직 비어 있음)
-├── docs/             # 기획·요구사항·개발 규칙
+├── docs/             # erd.md(DB 스키마) · 기획 · 요구사항
 ├── settings.gradle   # apps/api를 포함 빌드로 연결 (IDE에서 루트를 열 때용)
 └── package.json      # npm workspaces
 ```

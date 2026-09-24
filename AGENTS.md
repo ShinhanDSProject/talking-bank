@@ -14,6 +14,7 @@ project:
 read_first:
   - { file: README.md, for: 구성 · 실행 · 명령 }
   - { file: DESIGN.md, for: 화면 토큰 }
+  - { file: docs/erd.md, for: DB 스키마 (표 · 컬럼 · 제약) }
   - { file: docs/, for: 기획 · 요구사항, status: 다시 쓰는 중 }
 
 workflow:
