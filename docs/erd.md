@@ -1,14 +1,25 @@
 # talking-bank ERD 초안
 
-> 기준: [MVP](./mvp.md). PRD가 아직 작성되지 않아 아래 테이블·컬럼·제약은 팀 검토용 설계 제안이다. DB 마이그레이션이나 구현을 확정하는 문서가 아니다.
+> 기준: 팀장님 ERD 스크린샷과 [MVP](./mvp.md). PR 원문 전체는 아직 확인하지 않았다. PRD가 아직 작성되지 않아 아래 테이블·컬럼·제약은 팀 검토용 설계 제안이다. DB 마이그레이션이나 구현을 확정하는 문서가 아니다.
+
+## 기존안과 이번 확장안의 구분
+
+| 구분 | 반영 내용 |
+| --- | --- |
+| 기존 유지 | users의 컬럼명·상태, refresh_token의 사용자당 한 행 및 FK 없는 논리 참조, account의 단수 이름·기존 컬럼·전역 계좌번호 UNIQUE·DECIMAL(19,2) |
+| 기존 변경 제안 | users의 이메일·비밀번호 NULL 허용, 사용자 유형·관리자 권한 추가, account의 소유자·은행 FK 추가 |
+| 신규 제안 | 소셜 로그인 연결, 송금 PIN, 은행, 별명·기본 계좌, 금융 작업·입출금, 소비 분류, 대화·송금 초안 |
+| 확인 한계 | 스크린샷에서 확인한 범위만 반영. 로컬에는 Account가 있으며 User·RefreshToken 구현은 확인되지 않음 |
+
+기존 구조의 유지와 변경 제안을 구분해 검토한다. 팀장님 PR 원문에 추가 규칙이 있으면 이 초안을 다시 대조한다.
 
 ## 1. 설계 범위와 공통 규칙
 
-- 사용자와 로그인 수단을 분리하여 이메일·카카오·구글로 같은 계정에 접근한다.
+- 기존 `users`의 이메일·비밀번호 인증을 유지하고 소셜 로그인 연결 테이블을 추가하여 같은 계정에 접근한다.
 - 가입자와 시연용 가상 인물은 동일한 계좌 소유자 구조를 사용하되, 가상 인물은 로그인하지 못한다.
 - 은행·계좌·송금·결제·충전은 모두 프로젝트 내부의 가상 데이터다.
 - 금융상품, 패스키, 생체 인증, 실제 금융기관 연동은 포함하지 않는다.
-- PK는 `BIGINT`, 금액은 `DECIMAL(19,0)` 및 Java `BigDecimal`을 제안한다. MVP는 원화 정수 금액만 취급한다.
+- PK는 `BIGINT`, 금액은 `DECIMAL(19,2)` 및 Java `BigDecimal`을 제안한다. 기존 계좌 금액 자료형을 유지한다. MVP는 `KRW`만 허용하고 입력 금액은 원 단위 정수로 검증한다. USD·환전은 포함하지 않는다.
 - 모든 테이블에 `id`, `created_at`, `updated_at`을 둔다. 시간 필드는 `BaseTimeEntity`와 JPA Auditing으로 관리하며 DB 기본값이나 `@PrePersist`를 사용하지 않는다.
 - 업무 발생 시각인 `occurred_at`은 생성 시각과 구분한다. 샘플 거래는 과거 발생 시각을 가질 수 있다. 시각은 UTC로 저장하고 소비 기간은 한국 시간 기준으로 계산하는 방안을 제안한다.
 - 아래 표의 `?`는 NULL 허용이다. 나머지는 NOT NULL이다. 문자열 길이와 DB별 자료형은 물리 설계 때 확정한다.
@@ -18,20 +29,21 @@
 
 ```mermaid
 erDiagram
-    users ||--o{ login_identities : authenticates
+    users ||..o| refresh_token : logical_reference
+    users ||--o{ login_identities : social_login
     users ||--o| transfer_credentials : protects
-    users ||--o{ accounts : owns
-    banks ||--o{ accounts : provides
+    users ||--o{ account : owns
+    banks ||--o{ account : provides
     users ||--o| user_preferences : configures
-    accounts o|--o{ user_preferences : default_account
+    account o|--o{ user_preferences : default_account
     users ||--o{ saved_recipients : saves
-    accounts ||--o{ saved_recipients : recipient
+    account ||--o{ saved_recipients : recipient
     users ||--o{ money_operations : requests
-    accounts o|--o{ money_operations : source
-    accounts o|--o{ money_operations : destination
+    account o|--o{ money_operations : source
+    account o|--o{ money_operations : destination
     merchants o|--o{ money_operations : payment_target
     money_operations ||--o{ account_entries : posts
-    accounts ||--o{ account_entries : records
+    account ||--o{ account_entries : records
     account_entries ||--o| expense_classifications : categorizes
     spending_categories o|--o{ expense_classifications : selected_category
     spending_categories ||--o{ merchants : default_category
@@ -39,8 +51,8 @@ erDiagram
     conversations ||--o{ messages : contains
     conversations o|--o{ transfer_drafts : holds
     users ||--o{ transfer_drafts : prepares
-    accounts o|--o{ transfer_drafts : source
-    accounts o|--o{ transfer_drafts : destination
+    account o|--o{ transfer_drafts : source
+    account o|--o{ transfer_drafts : destination
     transfer_drafts o|--o| money_operations : executes
 ```
 
@@ -48,29 +60,46 @@ erDiagram
 
 ## 3. 사용자·인증·계좌
 
-### users — 사용자와 가상 인물
+### users — 기존 사용자 구조 확장
 
-| 컬럼 | 의미 / 제약 |
-| --- | --- |
-| display_name | 화면 표시 이름 |
-| user_type | `REGISTERED`, `DEMO` |
-| role | `USER`, `ADMIN` |
-| status | `ACTIVE`, `BLOCKED` |
+| 컬럼 | 자료형 | 의미 / 제약 |
+| --- | --- | --- |
+| email ? | VARCHAR(255) | UNIQUE, trim·소문자 정규화. 이메일 로그인 식별자 |
+| password ? | VARCHAR(255) | BCrypt 해시 |
+| name | VARCHAR(50) | 기존 이름 컬럼 유지 |
+| phone ? | VARCHAR(20) | 기존 컬럼 유지, 필수 수집 여부 미정 |
+| status | ENUM | 기존 `ACTIVE`, `LOCKED`, `WITHDRAWN` 유지 |
+| login_fail_count | INT | 연속 로그인 실패 횟수, 0 이상 |
+| last_login_at ? | TIMESTAMP | 마지막 로그인 시각 |
+| locked_until ? | TIMESTAMP | 잠금 해제 시각 |
+| user_type | ENUM | 추가 제안: `REGISTERED`, `DEMO` |
+| role | ENUM | 추가 제안: `USER`, `ADMIN` |
 
-`DEMO`는 시연용 계좌 소유자이며 로그인 수단을 생성하지 않는다. 관리자도 별도 로그인 테이블 없이 권한으로 구분한다. 가상 인물 생성 시 관리자를 지정할 수 없도록 서버에서 제한한다.
+기존 이메일·비밀번호 컬럼을 로그인 테이블로 옮기지 않는다. 소셜 전용 사용자와 가상 인물을 위해 email·password의 NULL 허용을 **변경 제안**한다. 이메일 로그인을 등록할 때는 두 값을 모두 설정하고 이메일 소유 확인을 거친다. 소셜 공급자가 제공한 이메일은 자동으로 이 컬럼에 연결하지 않는다. NULL 이메일의 UNIQUE 처리 방식은 선정 DB에서 확인한다.
 
-### login_identities — 로그인 수단
+`DEMO`는 시연용 계좌 소유자이며 이메일·비밀번호·소셜 로그인 수단을 갖지 않고 로그인할 수 없다. 관리자는 role로 구분하며 가상 인물에게 ADMIN 권한을 부여하지 않는다. status가 LOCKED 또는 WITHDRAWN이면 로그인 수단에 관계없이 접근을 제한한다.
+
+### refresh_token — 기존 세션 갱신 구조
+
+| 컬럼 | 자료형 | 의미 / 제약 |
+| --- | --- | --- |
+| user_id | BIGINT | UNIQUE, users.id 논리 참조. 기존안에는 물리 FK 없음 |
+| token | VARCHAR(512) | 기존 토큰 저장 컬럼 |
+| expires_at | TIMESTAMP | 만료 시각 |
+
+사용자당 최대 한 행인 기존 구조를 유지한다. 관계도의 점선은 논리 참조이며 FK 추가를 뜻하지 않는다. 소셜 로그인도 같은 사용자 세션 정책을 사용한다. 사용자 탈퇴·차단 시 토큰 정리와 사용자 존재 검증은 서비스에서 수행한다. 회전·폐기·다중 기기 로그인 정책과 token의 원문/해시 저장 여부는 인증 PR 원문 확인 후 결정한다. 토큰은 로그나 일반 사용자 조회 응답에 포함하지 않는다.
+
+### login_identities — 소셜 로그인 연결 추가 제안
 
 | 컬럼 | 의미 / 제약 |
 | --- | --- |
 | user_id | FK → users |
-| provider | `EMAIL`, `KAKAO`, `GOOGLE` |
-| subject | 이메일은 정규화된 로그인 이메일, 소셜은 공급자의 고유 사용자 식별자 |
-| password_hash ? | 이메일 로그인 비밀번호 해시. 소셜 로그인에서는 NULL |
+| provider | `KAKAO`, `GOOGLE` |
+| subject | 공급자의 고유 사용자 식별자 |
 
-- UNIQUE `(provider, subject)`: 하나의 로그인 수단이 서로 다른 사용자에게 연결되지 않는다.
+- UNIQUE `(provider, subject)`: 하나의 소셜 계정이 서로 다른 사용자에게 연결되지 않는다.
 - UNIQUE `(user_id, provider)`: 공급자별 하나의 계정 연결을 제안한다.
-- 이메일 계정은 비밀번호 해시가 필요하고 소셜 계정은 비밀번호를 저장하지 않는다.
+- 이메일 로그인은 기존 users에서 관리하며 이 테이블에 중복 저장하지 않는다.
 - 소셜에서 제공한 이메일 주소로 계정을 자동 연결하지 않는다. 기존 로그인과 새 공급자 인증을 모두 확인하고 연결한다.
 
 ### transfer_credentials — 송금용 간편 비밀번호
@@ -92,24 +121,30 @@ erDiagram
 | name | 농협은행 등 표시 이름 |
 | status | `ACTIVE`, `INACTIVE` |
 
-### accounts — 가상 계좌
+### account — 기존 계좌 구조 확장
 
-| 컬럼 | 의미 / 제약 |
-| --- | --- |
-| user_id | FK → users, 계좌 소유자 |
-| bank_id | FK → banks |
-| account_number | 계좌번호 문자열 |
-| balance | 현재 잔액, 0 이상 |
-| status | `ACTIVE`, `BLOCKED` |
+| 컬럼 | 자료형 | 의미 / 제약 |
+| --- | --- | --- |
+| account_number | VARCHAR(30) | 기존 전역 UNIQUE 유지 |
+| owner_name | VARCHAR(50) | 기존 소유자명 유지, 개설 시 이름 스냅샷 |
+| product_name | VARCHAR(100) | 기존 계좌 표시용 상품명 유지 |
+| balance | DECIMAL(19,2) | 기존 자료형 유지, 잔액 0 이상 |
+| currency | VARCHAR(3) | 기존 컬럼 유지, MVP에서는 KRW만 허용 |
+| status | ENUM | 기존 `ACTIVE`, `DORMANT`, `CLOSED` 유지 |
+| opened_at | DATE | 개설일 |
+| user_id | BIGINT | 추가 제안: FK → users, 소유자 |
+| bank_id | BIGINT | 추가 제안: FK → banks |
 
-UNIQUE `(bank_id, account_number)`. 계좌번호는 선행 0을 보존한다. 사용자당 계좌 개수는 제한하지 않는 초안이며 구체적 한도는 PRD에서 검토한다. 소유자는 거래 생성 이후 변경하지 않는다.
+`account` 단수 테이블명과 기존 전역 계좌번호 고유 제약을 유지한다. 은행별 복합 UNIQUE로 변경하지 않는다. 이름 문자열이 아닌 user_id로 본인 계좌와 권한을 판단한다. 사용자당 여러 은행 계좌를 허용하며, 거래 생성 이후 소유자를 변경하지 않는다. product_name 유지는 금융상품 가입 기능을 MVP에 추가한다는 뜻이 아니다.
+
+기존 계좌에는 소유자·은행 FK가 없으므로 실제 마이그레이션 시 데이터 매핑 후 NOT NULL을 적용해야 한다. owner_name만으로 가입자와 자동 연결하지 않는다. 시연 계좌는 명시적으로 가상 인물과 연결한다. `BaseTimeEntity` 상속은 팀장님 문서 기준이며 현재 로컬 Account 코드에는 아직 없어 구현 차이를 후속 작업에서 맞춰야 한다.
 
 ### user_preferences — 사용자 설정
 
 | 컬럼 | 의미 / 제약 |
 | --- | --- |
 | user_id | FK → users, UNIQUE |
-| default_account_id ? | FK → accounts, 기본 출금 계좌 |
+| default_account_id ? | FK → account, 기본 출금 계좌 |
 
 기본 출금 계좌는 해당 사용자 소유의 사용 가능한 계좌여야 한다. 다른 사용자 계좌를 지정하지 못하도록 서비스에서 검증한다.
 
@@ -118,7 +153,7 @@ UNIQUE `(bank_id, account_number)`. 계좌번호는 선행 0을 보존한다. �
 | 컬럼 | 의미 / 제약 |
 | --- | --- |
 | user_id | FK → users, 등록한 사용자 |
-| account_id | FK → accounts, 수취 계좌 |
+| account_id | FK → account, 수취 계좌 |
 | nickname | 엄마·민수 등 사용자 전용 별명 |
 
 UNIQUE `(user_id, account_id)`. 별명은 전역 고유값이 아니다. 중복 별명을 허용하고 챗봇에서 후보를 선택하게 하는 방안을 제안한다. 이름이나 별명이 같다는 이유로 수취 계좌를 임의 확정하지 않는다.
@@ -131,8 +166,8 @@ UNIQUE `(user_id, account_id)`. 별명은 전역 고유값이 아니다. 중복 
 | --- | --- |
 | requested_by | FK → users, 사용자 또는 시연 데이터를 생성한 관리자 |
 | type | `TRANSFER`, `PAYMENT`, `TOP_UP`, `INITIAL_FUNDING` |
-| source_account_id ? | FK → accounts, 출금 계좌 |
-| destination_account_id ? | FK → accounts, 입금 계좌 |
+| source_account_id ? | FK → account, 출금 계좌 |
+| destination_account_id ? | FK → account, 입금 계좌 |
 | merchant_id ? | FK → merchants, 결제 가맹점 |
 | transfer_draft_id ? | FK → transfer_drafts, UNIQUE, 송금 승인 대상 |
 | amount | 0보다 큰 금액 |
@@ -159,7 +194,7 @@ UNIQUE `(requested_by, idempotency_key)`. 같은 키·같은 요청은 기존 �
 | 컬럼 | 의미 / 제약 |
 | --- | --- |
 | operation_id | FK → money_operations |
-| account_id | FK → accounts |
+| account_id | FK → account |
 | direction | `DEBIT`, `CREDIT` |
 | amount | 0보다 큰 금액 |
 | balance_after | 반영 직후 계좌 잔액, 0 이상 |
@@ -216,8 +251,8 @@ UNIQUE `(conversation_id, sequence)`. 음성 원본 저장은 현재 범위에 �
 | --- | --- |
 | user_id | FK → users, 요청자 |
 | conversation_id ? | FK → conversations, 일반 화면에서는 NULL |
-| source_account_id ? | FK → accounts |
-| destination_account_id ? | FK → accounts |
+| source_account_id ? | FK → account |
+| destination_account_id ? | FK → account |
 | amount ? | 입력된 송금액, 값이 있으면 0보다 큼 |
 | status | `COLLECTING`, `READY`, `EXECUTED`, `CANCELLED`, `EXPIRED` |
 | revision | 확인 내용 변경 시 증가하는 버전 |
@@ -244,7 +279,7 @@ DB의 PK·FK·UNIQUE·금액 CHECK와, 여러 행을 다루는 서비스 트랜�
 
 | 테이블 | 인덱스 | 목적 |
 | --- | --- | --- |
-| accounts | `(user_id, status)` | 본인 계좌 조회 |
+| account | `(user_id, status)` | 본인 계좌 조회 |
 | account_entries | `(account_id, entry_sequence)` UNIQUE | 거래 순서·잔액 검증 |
 | money_operations | `(occurred_at, status)` | 기간별 완료 거래 조회 |
 | expense_classifications | `(category_id, account_entry_id)` | 카테고리 집계 |
@@ -255,7 +290,8 @@ DB의 PK·FK·UNIQUE·금액 CHECK와, 여러 행을 다루는 서비스 트랜�
 
 ## 7. PRD·팀 검토에서 확정할 사항
 
-- 로그인 세션·토큰 저장 방식, 이메일 검증·계정 복구·연결 해제 정책
+- 기존 refresh_token의 저장 형식·회전·폐기·다중 기기 정책 및 FK 부재 유지 여부
+- 이메일 검증·계정 복구·연결 해제 정책과 소셜 가입자의 필수 수집 정보
 - 간편 비밀번호 실패 횟수·잠금·재설정 정책
 - 송금 초안 만료 시간, 이체·충전 한도, 수수료 정책
 - 별명 중복 정책과 기본 출금 계좌 미설정 시 처리
