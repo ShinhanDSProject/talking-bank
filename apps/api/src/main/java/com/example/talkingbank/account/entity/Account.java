@@ -1,5 +1,6 @@
-package com.example.talkingbank.account;
+package com.example.talkingbank.account.entity;
 
+import com.example.talkingbank.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "account")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Account {
+public class Account extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +41,8 @@ public class Account {
     @Column(nullable = false, length = 3)
     private String currency;
 
+    // Hibernate 6은 이 컬럼을 DB의 native ENUM 으로 만든다(length 20은 무시된다). enum 값을 추가하면 ALTER TABLE 이 필요하다.
+    // VARCHAR 로 고정하려면 @JdbcTypeCode(SqlTypes.VARCHAR) 를 붙인다.
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private AccountStatus status;

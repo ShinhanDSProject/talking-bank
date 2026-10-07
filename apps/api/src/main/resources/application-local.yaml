@@ -1,0 +1,26 @@
+# 로컬 개발. .env 없이도 npm run dev 가 뜬다.
+spring:
+  config:
+    # 저장소 루트의 .env(web과 공유)를 읽는다. 작업 디렉터리가 apps/api 라 ../../.env 가 루트다. 없어도 된다.
+    import: optional:file:../../.env[.properties]
+  datasource:
+    # 인메모리 H2. 서버를 내리면 데이터가 사라진다.
+    url: jdbc:h2:mem:talkingbank;DB_CLOSE_DELAY=-1;MODE=LEGACY
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  # 비워 두면 기동 때 임시 키를 만든다(재시작하면 토큰 무효). 저장소에 시크릿을 두지 않기 위한 로컬 전용 동작.
+  secret: ${JWT_SECRET:}
+
+auth:
+  # http://localhost 라 Secure 쿠키를 쓰지 않는다.
+  cookie-secure: false
+
+logging:
+  level:
+    com.example.talkingbank: debug

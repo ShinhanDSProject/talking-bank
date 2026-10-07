@@ -1,9 +1,12 @@
-package com.example.talkingbank.account;
+package com.example.talkingbank.account.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.talkingbank.account.entity.Account;
+import com.example.talkingbank.account.entity.AccountStatus;
+import com.example.talkingbank.account.repository.AccountRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
