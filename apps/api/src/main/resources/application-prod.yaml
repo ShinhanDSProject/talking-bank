@@ -1,0 +1,23 @@
+# 운영. SPRING_PROFILES_ACTIVE=prod 로 기동하고, 값은 서버의 환경 변수로 넣는다(예: systemd EnvironmentFile, docker env_file).
+# .env 파일은 읽지 않는다. 아래 ${...} 중 하나라도 없으면 기동이 실패한다 — 개발용 값이 운영에 쓰이는 일을 막는다.
+spring:
+  datasource:
+    # MariaDB 접속 정보. AUTH-01에서 인프라가 정해지면 DB_URL 등을 채운다.
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      # 운영에서는 스키마를 자동으로 바꾸지 않는다.
+      ddl-auto: validate
+
+jwt:
+  secret: ${JWT_SECRET}
+
+auth:
+  # HTTPS 전제.
+  cookie-secure: true
+
+logging:
+  level:
+    com.example.talkingbank: info

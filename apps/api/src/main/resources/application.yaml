@@ -1,23 +1,24 @@
+# 모든 환경 공통. 환경별 차이는 application-<profile>.yaml, 비밀은 환경 변수(로컬은 루트 .env)로 넣는다.
 spring:
   application:
     name: talking-bank
   profiles:
-    # 프로필을 지정하지 않고 실행하면 로컬 개발 설정을 쓴다.
+    # 프로필을 지정하지 않으면 local. 서버에서는 SPRING_PROFILES_ACTIVE=prod
     default: local
-  datasource:
-    # 인메모리 H2. 서버를 내리면 데이터가 사라지고, 다시 올리면 AccountSeeder가 예시 데이터를 넣는다.
-    url: jdbc:h2:mem:talkingbank;DB_CLOSE_DELAY=-1;MODE=LEGACY
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ''
   jpa:
     open-in-view: false
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
+  jackson:
+    time-zone: Asia/Seoul
 
-logging:
-  level:
-    com.example.talkingbank: debug
+jwt:
+  # 시크릿(jwt.secret)은 프로필별 파일에서 정한다.
+  access-token-validity: 30m
+  refresh-token-validity: 7d
+
+auth:
+  # 연속 로그인 실패 허용 횟수와 잠금 시간. 개발 중 잠기는 게 번거로우면 .env 에 MAX_LOGIN_FAIL=999
+  max-login-fail-count: ${MAX_LOGIN_FAIL:5}
+  lock-duration: 30m

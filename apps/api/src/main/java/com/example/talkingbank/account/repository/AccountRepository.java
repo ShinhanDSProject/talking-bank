@@ -1,5 +1,6 @@
-package com.example.talkingbank.account;
+package com.example.talkingbank.account.repository;
 
+import com.example.talkingbank.account.entity.Account;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
