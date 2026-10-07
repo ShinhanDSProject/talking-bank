@@ -117,9 +117,23 @@ erDiagram
 
 | 컬럼 | 의미 / 제약 |
 | --- | --- |
-| code | 내부 은행 코드, UNIQUE |
-| name | 농협은행 등 표시 이름 |
-| status | `ACTIVE`, `INACTIVE` |
+| code | VARCHAR(30), NOT NULL, UNIQUE `uk_banks_code`. 대문자 영문으로 시작하며 대문자·숫자·밑줄 사용 |
+| name | VARCHAR(50), NOT NULL, 공백 제외 1~50자 표시 이름 |
+| status | ENUM `ACTIVE`, `INACTIVE`, NOT NULL |
+
+#103 구현: 공통 `id`는 BIGINT 자동 증가 PK이며, 생성·수정 시각은 BaseTimeEntity로 관리한다.
+기본 데이터는 `BNK`(경남은행), `KB`(국민은행), `NH`(농협은행), `SHINHAN`(신한은행)이다.
+코드는 실제 금융기관 코드가 아닌 프로젝트 내부 식별자다.
+앱 기동 시 누락된 코드만 ACTIVE로 등록하며 기존 이름·상태를 덮어쓰지 않는다.
+동시 초기화의 중복 코드는 DB 고유 제약으로 방지하며, 독립 트랜잭션 롤백 후 코드 존재를 확인한다.
+
+`GET /api/banks`는 기존 JWT 인증을 요구하며 활성 은행만 코드 오름차순으로 반환한다.
+응답은 `[{"id":1,"code":"NH","name":"농협은행"}]` 형식이며, 대상이 없으면 `[]`이다.
+미인증·유효하지 않은 토큰은 기존 인증 오류 응답(401)을 사용한다.
+계좌 연결 및 은행 관리 API는 후속 이슈 범위다.
+
+운영은 `ddl-auto: validate`이므로 앱 배포 전에 [은행 테이블 생성 SQL](./sql/103-banks.sql)을 적용한다.
+SQL은 MariaDB용이며 이번 작업에서는 운영 DB에 실행하지 않는다. 초기 은행 데이터는 앱이 JPA Auditing을 통해 등록한다.
 
 ### account — 기존 계좌 구조 확장
 
