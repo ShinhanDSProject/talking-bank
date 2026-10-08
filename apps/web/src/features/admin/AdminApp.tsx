@@ -4,8 +4,9 @@ import AdminAuthPage from './AdminAuthPage'
 import AdminDashboardPage from './dashboard/AdminDashboardPage'
 import AdminLayout from './AdminLayout'
 import AdminMembersPage from './members/AdminMembersPage'
+import AdminTransactionsPage from './transactions/AdminTransactionsPage'
 import { Badge, DataTable, PageHeader, Pagination, SearchBar } from './components'
-import { fdsCases, statusTone, transactions } from './mockData'
+import { fdsCases, statusTone } from './mockData'
 import './admin.css'
 
 const money = new Intl.NumberFormat('ko-KR')
@@ -26,7 +27,7 @@ export default function AdminApp() {
         <Route index element={<AdminDashboardPage />} />
         <Route path="members" element={<AdminMembersPage />} />
         <Route path="accounts" element={<AdminAccountsPage />} />
-        <Route path="transactions" element={<Transactions />} />
+        <Route path="transactions" element={<AdminTransactionsPage />} />
         <Route path="fds" element={<Fds />} />
         <Route path="system" element={<System />} />
         <Route path="*" element={<Navigate to="." replace />} />
@@ -35,35 +36,6 @@ export default function AdminApp() {
   )
 }
 
-function Transactions() {
-  return (
-    <ListPage
-      eyebrow="TRANSACTIONS"
-      title="거래 관리"
-      description="입금, 출금, 송금 내역과 처리 상태를 조회합니다."
-      count="오늘 18,492건"
-      placeholder="거래번호, 회원명 검색"
-    >
-      <DataTable headers={['거래번호', '일시', '회원', '구분', '금액', '상대 정보', '상태']}>
-        {transactions.map((t) => (
-          <tr key={t.id}>
-            <td className="admin-mono">{t.id}</td>
-            <td>{t.at}</td>
-            <td>
-              <strong>{t.user}</strong>
-            </td>
-            <td>{t.type}</td>
-            <td className="admin-num">{money.format(t.amount)}원</td>
-            <td>{t.target}</td>
-            <td>
-              <Badge tone={statusTone(t.status)}>{t.status}</Badge>
-            </td>
-          </tr>
-        ))}
-      </DataTable>
-    </ListPage>
-  )
-}
 function Fds() {
   return (
     <ListPage
