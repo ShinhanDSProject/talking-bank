@@ -40,6 +40,23 @@ describe('AdminApp', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
+  it('계좌 관리 경로에서 계좌 검색과 거래 상세 정보를 제공한다', async () => {
+    const user = userEvent.setup()
+    render(<AdminTestRouter path="/admin/accounts" />)
+
+    expect(screen.getByRole('heading', { name: '계좌 관리' })).toBeInTheDocument()
+    expect(screen.getByText('110-482-938201')).toBeInTheDocument()
+
+    await user.type(screen.getByRole('textbox', { name: '검색' }), '박서준')
+    expect(screen.getByText('110-293-104857')).toBeInTheDocument()
+    expect(screen.queryByText('110-482-938201')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '상세 보기' }))
+    expect(screen.getByRole('dialog', { name: '110-293-104857 계좌 정보' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '최근 거래 내역' })).toBeInTheDocument()
+    expect(screen.getByText('seojun.park@example.com')).toBeInTheDocument()
+  })
+
   it.each([
     ['/admin/login', '관리자 로그인'],
     ['/admin/login-error', '로그인할 수 없습니다'],
