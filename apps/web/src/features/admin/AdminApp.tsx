@@ -1,19 +1,11 @@
 import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router'
 import AdminAuthPage from './AdminAuthPage'
+import AdminLayout from './AdminLayout'
 import { Badge, DataTable, PageHeader, Pagination, SearchBar, StatCard } from './components'
 import { accounts, dashboardStats, fdsCases, members, statusTone, transactions } from './mockData'
 import './admin.css'
 
 const money = new Intl.NumberFormat('ko-KR')
-const menus = [
-  { to: '/admin', label: '대시보드', icon: '▦', end: true },
-  { to: '/admin/members', label: '회원 관리', icon: '♙' },
-  { to: '/admin/accounts', label: '계좌 관리', icon: '▣' },
-  { to: '/admin/transactions', label: '거래 관리', icon: '⇄' },
-  { to: '/admin/fds', label: '이상 거래 관리', icon: '◇' },
-  { to: '/admin/system', label: '시스템 상태', icon: '◉' },
-]
-
 export default function AdminApp() {
   const { pathname } = useLocation()
   const authPaths = [
@@ -26,59 +18,17 @@ export default function AdminApp() {
   if (authPaths.includes(pathname)) return <AdminAuthPage />
 
   return (
-    <div className="admin-shell">
-      <aside className="admin-sidebar">
-        <NavLink to="/admin" className="admin-logo">
-          <span>t</span>
-          <strong>talking-bank</strong>
-          <small>ADMIN</small>
-        </NavLink>
-        <nav>
-          {menus.map((menu) => (
-            <NavLink key={menu.to} to={menu.to} end={menu.end}>
-              <span>{menu.icon}</span>
-              {menu.label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="admin-sidebar__footer">
-          <div className="admin-avatar">관리</div>
-          <div>
-            <strong>김관리</strong>
-            <span>최고 관리자</span>
-          </div>
-          <button type="button" aria-label="관리자 메뉴">
-            ⋮
-          </button>
-        </div>
-      </aside>
-      <section className="admin-workspace">
-        <header className="admin-topbar">
-          <div>
-            <strong>관리자 센터</strong>
-            <span>운영 현황을 한눈에 확인하세요.</span>
-          </div>
-          <div className="admin-topbar__actions">
-            <button type="button" aria-label="알림">
-              ♢<i />
-            </button>
-            <div className="admin-avatar">관리</div>
-            <strong>김관리</strong>
-          </div>
-        </header>
-        <main>
-          <Routes>
-            <Route path="/admin" element={<Dashboard />} />
-            <Route path="/admin/members" element={<Members />} />
-            <Route path="/admin/accounts" element={<Accounts />} />
-            <Route path="/admin/transactions" element={<Transactions />} />
-            <Route path="/admin/fds" element={<Fds />} />
-            <Route path="/admin/system" element={<System />} />
-            <Route path="*" element={<Navigate to="/admin" replace />} />
-          </Routes>
-        </main>
-      </section>
-    </div>
+    <AdminLayout>
+      <Routes>
+        <Route path="/admin" element={<Dashboard />} />
+        <Route path="/admin/members" element={<Members />} />
+        <Route path="/admin/accounts" element={<Accounts />} />
+        <Route path="/admin/transactions" element={<Transactions />} />
+        <Route path="/admin/fds" element={<Fds />} />
+        <Route path="/admin/system" element={<System />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
+      </Routes>
+    </AdminLayout>
   )
 }
 

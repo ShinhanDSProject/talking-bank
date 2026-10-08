@@ -26,6 +26,7 @@ describe('AdminApp', () => {
     expect(screen.getByRole('heading', { name: '회원 관리' })).toBeInTheDocument()
     expect(screen.getByText('jiwoo.kim@example.com')).toBeInTheDocument()
     expect(screen.getAllByRole('button', { name: '상세 보기' })).toHaveLength(5)
+    expect(screen.getByRole('link', { name: /회원 관리/ })).toHaveAttribute('aria-current', 'page')
   })
 
   it.each([
@@ -41,5 +42,6 @@ describe('AdminApp', () => {
     )
     expect(screen.getByRole('heading', { name: title })).toBeInTheDocument()
     expect(screen.getByText('Talking BANK')).toBeInTheDocument()
+    expect(screen.queryByLabelText('관리자 사이드바')).not.toBeInTheDocument()
   })
 })
