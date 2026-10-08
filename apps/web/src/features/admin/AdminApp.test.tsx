@@ -57,6 +57,24 @@ describe('AdminApp', () => {
     expect(screen.getByText('seojun.park@example.com')).toBeInTheDocument()
   })
 
+  it('거래 관리 경로에서 거래를 필터링하고 실패 사유를 제공한다', async () => {
+    const user = userEvent.setup()
+    render(<AdminTestRouter path="/admin/transactions" />)
+
+    expect(screen.getByRole('heading', { name: '거래 관리' })).toBeInTheDocument()
+    expect(screen.getByText('TX-20261008-1842')).toBeInTheDocument()
+
+    await user.selectOptions(screen.getByRole('combobox', { name: '거래 상태' }), '실패')
+    expect(screen.getByText('TX-20261008-1839')).toBeInTheDocument()
+    expect(screen.queryByText('TX-20261008-1842')).not.toBeInTheDocument()
+
+    await user.type(screen.getByRole('textbox', { name: '검색' }), 'TX-20261008-1839')
+    await user.click(screen.getByRole('button', { name: '상세 보기' }))
+    expect(screen.getByRole('dialog', { name: 'TX-20261008-1839 거래 정보' })).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent('수취 계좌가 존재하지 않습니다.')
+    expect(screen.getByText('FDS-2048')).toBeInTheDocument()
+  })
+
   it.each([
     ['/admin/login', '관리자 로그인'],
     ['/admin/login-error', '로그인할 수 없습니다'],

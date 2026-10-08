@@ -48,3 +48,7 @@
 ## 계좌 관리
 
 `accounts/AdminAccountsPage.tsx`는 계좌 목록 검색, 상태 표시, 페이지 이동과 상세 정보 모달을 제공한다. 상세 화면은 소유 회원 정보와 최근 거래 내역을 함께 표시한다. Mock 데이터와 타입은 `accounts/accountsData.ts`에 분리했으며 계좌 비밀번호나 인증 정보는 표시하지 않는다.
+
+## 거래 관리
+
+`transactions/AdminTransactionsPage.tsx`는 거래 ID·계좌·회원 검색과 유형·상태·기간 필터를 제공한다. 상세 화면은 송금·수취 계좌와 회원, 거래 금액, 실패 사유 및 연결된 FDS 탐지 번호를 표시한다. Mock 데이터와 타입은 `transactions/transactionsData.ts`에 분리했으며 거래 정보는 조회만 가능하다.

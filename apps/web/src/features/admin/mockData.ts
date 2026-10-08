@@ -181,8 +181,8 @@ export const fdsCases = [
 ]
 
 export const statusTone = (status: string): StatusTone => {
-  if (['정상', '완료', '확인 완료', '운영 중'].includes(status)) return 'success'
-  if (['잠김', '휴면', '보류', '검토 중'].includes(status)) return 'warning'
+  if (['정상', '완료', '성공', '확인 완료', '운영 중'].includes(status)) return 'success'
+  if (['잠김', '휴면', '보류', '처리 중', '검토 중'].includes(status)) return 'warning'
   if (['차단', '실패', '장애'].includes(status)) return 'danger'
   return 'neutral'
 }

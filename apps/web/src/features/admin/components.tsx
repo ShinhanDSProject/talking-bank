@@ -104,6 +104,27 @@ export function DataTable({ headers, children }: { headers: string[]; children: 
   )
 }
 
+export function FilterSelect({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string
+  value: string
+  options: string[]
+  onChange: (value: string) => void
+}) {
+  return (
+    <label className="admin-filter-field">
+      <span>{label}</span>
+      <select aria-label={label} value={value} onChange={(event) => onChange(event.target.value)}>
+        {options.map((option) => <option key={option}>{option}</option>)}
+      </select>
+    </label>
+  )
+}
+
 export function Pagination({
   page = 1,
   pageCount = 24,
