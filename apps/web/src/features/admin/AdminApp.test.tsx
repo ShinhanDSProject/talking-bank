@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -73,6 +73,26 @@ describe('AdminApp', () => {
     expect(screen.getByRole('dialog', { name: 'TX-20261008-1839 거래 정보' })).toBeInTheDocument()
     expect(screen.getByRole('alert')).toHaveTextContent('수취 계좌가 존재하지 않습니다.')
     expect(screen.getByText('FDS-2048')).toBeInTheDocument()
+  })
+
+  it('이상 거래 관리 경로에서 위험도를 필터링하고 원본 거래를 제공한다', async () => {
+    const user = userEvent.setup()
+    render(<AdminTestRouter path="/admin/fds" />)
+
+    expect(screen.getByRole('heading', { name: '이상 거래 관리' })).toBeInTheDocument()
+    expect(screen.getByText('TX-20261008-1839')).toBeInTheDocument()
+
+    await user.selectOptions(screen.getByRole('combobox', { name: '위험도' }), 'MEDIUM')
+    expect(screen.getByText('TX-20261008-1764')).toBeInTheDocument()
+    expect(screen.queryByText('TX-20261008-1839')).not.toBeInTheDocument()
+
+    await user.selectOptions(screen.getByRole('combobox', { name: '위험도' }), 'HIGH')
+    await user.type(screen.getByRole('textbox', { name: '검색' }), 'FDS-2048')
+    await user.click(screen.getByRole('button', { name: '상세 보기' }))
+    const dialog = screen.getByRole('dialog', { name: 'FDS-2048 탐지 정보' })
+    expect(dialog).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '원본 거래 정보' })).toBeInTheDocument()
+    expect(within(dialog).getByText('단시간 고액 반복 송금')).toBeInTheDocument()
   })
 
   it.each([

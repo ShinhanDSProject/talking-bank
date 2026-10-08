@@ -52,3 +52,7 @@
 ## 거래 관리
 
 `transactions/AdminTransactionsPage.tsx`는 거래 ID·계좌·회원 검색과 유형·상태·기간 필터를 제공한다. 상세 화면은 송금·수취 계좌와 회원, 거래 금액, 실패 사유 및 연결된 FDS 탐지 번호를 표시한다. Mock 데이터와 타입은 `transactions/transactionsData.ts`에 분리했으며 거래 정보는 조회만 가능하다.
+
+## 이상 거래 관리
+
+`fds/AdminFdsPage.tsx`는 FDS 탐지 거래 검색, 위험도·처리 상태 필터, 위험 점수 시각화를 제공한다. 상세 화면은 복수 탐지 사유와 원본 거래의 계좌·회원·금액 정보를 표시한다. Mock 데이터와 타입은 `fds/fdsData.ts`에 분리했으며 원본 거래는 조회만 가능하다.

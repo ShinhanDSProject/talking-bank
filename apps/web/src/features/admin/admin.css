@@ -497,6 +497,15 @@
   border-radius: 12px;
   background: var(--admin-bg-tertiary);
 }
+.fds-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 240px));
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--admin-bg-tertiary);
+}
 .admin-filter-field {
   display: grid;
   gap: 6px;
@@ -683,6 +692,52 @@
 .transaction-fds-link strong {
   color: var(--admin-brand);
 }
+.fds-risk-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0 16px;
+  border-radius: 12px;
+  background: var(--admin-danger-soft);
+  padding: 16px;
+}
+.fds-risk-summary > div {
+  display: grid;
+  gap: 4px;
+}
+.fds-risk-summary span {
+  color: var(--admin-muted);
+  font-size: 12px;
+}
+.fds-risk-summary strong {
+  color: var(--admin-danger);
+  font-size: 28px;
+}
+.fds-reasons,
+.fds-original-transaction {
+  margin-bottom: 20px;
+}
+.fds-reasons h3,
+.fds-original-transaction h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+.fds-reasons ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fds-reasons li {
+  border-radius: 9999px;
+  background: var(--admin-danger-soft);
+  padding: 7px 10px;
+  color: var(--admin-danger);
+  font-size: 12px;
+  font-weight: 600;
+}
 .risk-score {
   display: flex;
   align-items: center;
@@ -861,7 +916,8 @@
 }
 
 @media (max-width: 560px) {
-  .transaction-filters {
+  .transaction-filters,
+  .fds-filters {
     grid-template-columns: 1fr;
   }
 }
