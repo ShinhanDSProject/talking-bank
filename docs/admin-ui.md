@@ -36,3 +36,7 @@
 - `adminMenus`: 관리자 메뉴 구성을 한 곳에서 관리
 
 로그인, 로그인 실패, 권한 없음, 세션 만료 화면에는 관리자 공통 레이아웃을 적용하지 않는다.
+
+## 대시보드
+
+`dashboard/AdminDashboardPage.tsx`는 운영 요약, 최근 거래, 이상거래, 시스템 지표를 표시한다. Mock 데이터는 `dashboard/dashboardData.ts`에 분리되어 있으며 이후 통계 API 응답으로 교체할 수 있다. 페이지는 `ready`, `loading`, `empty`, `error` 상태 UI를 지원한다.

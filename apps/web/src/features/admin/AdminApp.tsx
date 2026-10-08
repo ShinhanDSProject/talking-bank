@@ -1,8 +1,9 @@
-import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 import AdminAuthPage from './AdminAuthPage'
+import AdminDashboardPage from './dashboard/AdminDashboardPage'
 import AdminLayout from './AdminLayout'
-import { Badge, DataTable, PageHeader, Pagination, SearchBar, StatCard } from './components'
-import { accounts, dashboardStats, fdsCases, members, statusTone, transactions } from './mockData'
+import { Badge, DataTable, PageHeader, Pagination, SearchBar } from './components'
+import { accounts, fdsCases, members, statusTone, transactions } from './mockData'
 import './admin.css'
 
 const money = new Intl.NumberFormat('ko-KR')
@@ -20,7 +21,7 @@ export default function AdminApp() {
   return (
     <AdminLayout>
       <Routes>
-        <Route path="/admin" element={<Dashboard />} />
+        <Route path="/admin" element={<AdminDashboardPage />} />
         <Route path="/admin/members" element={<Members />} />
         <Route path="/admin/accounts" element={<Accounts />} />
         <Route path="/admin/transactions" element={<Transactions />} />
@@ -29,110 +30,6 @@ export default function AdminApp() {
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </AdminLayout>
-  )
-}
-
-function Dashboard() {
-  return (
-    <>
-      <PageHeader
-        eyebrow="OVERVIEW"
-        title="대시보드"
-        description="2026년 10월 8일 목요일 · 실시간 운영 현황입니다."
-        action={
-          <button className="admin-button" type="button">
-            ↻ 새로고침
-          </button>
-        }
-      />
-      <section className="stat-grid">
-        {dashboardStats.map((item) => (
-          <StatCard
-            key={item.label}
-            label={item.label}
-            value={item.value}
-            meta={item.delta}
-            tone={item.tone}
-          />
-        ))}
-      </section>
-      <div className="dashboard-grid">
-        <section className="admin-card admin-card--wide">
-          <div className="card-heading">
-            <div>
-              <h2>거래 추이</h2>
-              <p>최근 7일 거래 건수</p>
-            </div>
-            <select aria-label="거래 추이 기간">
-              <option>최근 7일</option>
-            </select>
-          </div>
-          <div className="bar-chart" aria-label="최근 7일 거래량 막대 차트">
-            {[52, 68, 61, 82, 73, 94, 78].map((height, index) => (
-              <div key={height + index}>
-                <span style={{ height: `${height}%` }} />
-                <small>{['10/2', '10/3', '10/4', '10/5', '10/6', '10/7', '오늘'][index]}</small>
-              </div>
-            ))}
-          </div>
-        </section>
-        <section className="admin-card">
-          <div className="card-heading">
-            <div>
-              <h2>시스템 상태</h2>
-              <p>주요 서비스 실시간 상태</p>
-            </div>
-            <Badge tone="success">전체 정상</Badge>
-          </div>
-          {[
-            ['API 서버', '99.99%', 24],
-            ['데이터베이스', '99.98%', 41],
-            ['FDS 엔진', '99.95%', 62],
-          ].map(([name, uptime, usage]) => (
-            <div className="service-row" key={name as string}>
-              <div>
-                <strong>{name}</strong>
-                <Badge tone="success">운영 중</Badge>
-              </div>
-              <div className="meter">
-                <span style={{ width: `${usage}%` }} />
-              </div>
-              <small>가동률 {uptime}</small>
-            </div>
-          ))}
-        </section>
-      </div>
-      <section className="admin-card">
-        <div className="card-heading">
-          <div>
-            <h2>최근 이상 거래</h2>
-            <p>위험 점수가 높은 순서로 표시합니다.</p>
-          </div>
-          <NavLink to="/admin/fds">전체 보기 →</NavLink>
-        </div>
-        <DataTable
-          headers={['탐지 번호', '탐지 시각', '회원', '금액', '위험 점수', '탐지 사유', '상태']}
-        >
-          {fdsCases.slice(0, 3).map((item) => (
-            <tr key={item.id}>
-              <td className="admin-mono">{item.id}</td>
-              <td>{item.at}</td>
-              <td>
-                <strong>{item.user}</strong>
-              </td>
-              <td className="admin-num">{money.format(item.amount)}원</td>
-              <td>
-                <RiskScore score={item.score} />
-              </td>
-              <td>{item.reason}</td>
-              <td>
-                <Badge tone={statusTone(item.status)}>{item.status}</Badge>
-              </td>
-            </tr>
-          ))}
-        </DataTable>
-      </section>
-    </>
   )
 }
 

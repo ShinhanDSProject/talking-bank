@@ -12,8 +12,11 @@ describe('AdminApp', () => {
         <AdminApp />
       </MemoryRouter>,
     )
-    expect(screen.getByRole('heading', { name: '대시보드' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '관리자 Dashboard' })).toBeInTheDocument()
     expect(screen.getByText('전체 회원')).toBeInTheDocument()
+    expect(screen.getByText('CPU')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '최근 거래' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '최근 이상거래' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /이상 거래 관리/ })).toBeInTheDocument()
   })
 
