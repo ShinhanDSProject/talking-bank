@@ -44,3 +44,7 @@
 ## 회원 관리
 
 `members/AdminMembersPage.tsx`는 회원 목록 검색, 상태 표시, 페이지 이동, 상세 정보 모달을 제공한다. Mock 데이터와 타입은 `members/membersData.ts`에 분리했으며 회원 API 연결 시 페이지의 `data` 입력을 서버 응답으로 교체할 수 있다. 비밀번호와 인증 토큰 등 민감한 정보는 표시하지 않는다.
+
+## 계좌 관리
+
+`accounts/AdminAccountsPage.tsx`는 계좌 목록 검색, 상태 표시, 페이지 이동과 상세 정보 모달을 제공한다. 상세 화면은 소유 회원 정보와 최근 거래 내역을 함께 표시한다. Mock 데이터와 타입은 `accounts/accountsData.ts`에 분리했으며 계좌 비밀번호나 인증 정보는 표시하지 않는다.

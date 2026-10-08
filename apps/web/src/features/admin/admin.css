@@ -551,6 +551,9 @@
   box-shadow: var(--admin-shadow-modal);
   padding: 28px;
 }
+.admin-modal--wide {
+  width: min(760px, 100%);
+}
 .admin-modal > header {
   display: flex;
   align-items: flex-start;
@@ -606,6 +609,25 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+.account-transactions {
+  margin-bottom: 24px;
+}
+.account-transactions .card-heading {
+  margin-bottom: 12px;
+}
+.account-transactions .card-heading h3 {
+  margin: 0;
+  font-size: 15px;
+}
+.account-transactions__empty {
+  margin: 0;
+  padding: 28px;
+  border-radius: 12px;
+  background: var(--admin-bg-tertiary);
+  color: var(--admin-muted);
+  text-align: center;
+  font-size: 13px;
 }
 .risk-score {
   display: flex;

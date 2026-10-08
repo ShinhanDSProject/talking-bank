@@ -1,10 +1,11 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router'
+import AdminAccountsPage from './accounts/AdminAccountsPage'
 import AdminAuthPage from './AdminAuthPage'
 import AdminDashboardPage from './dashboard/AdminDashboardPage'
 import AdminLayout from './AdminLayout'
 import AdminMembersPage from './members/AdminMembersPage'
 import { Badge, DataTable, PageHeader, Pagination, SearchBar } from './components'
-import { accounts, fdsCases, statusTone, transactions } from './mockData'
+import { fdsCases, statusTone, transactions } from './mockData'
 import './admin.css'
 
 const money = new Intl.NumberFormat('ko-KR')
@@ -24,7 +25,7 @@ export default function AdminApp() {
       <Routes>
         <Route index element={<AdminDashboardPage />} />
         <Route path="members" element={<AdminMembersPage />} />
-        <Route path="accounts" element={<Accounts />} />
+        <Route path="accounts" element={<AdminAccountsPage />} />
         <Route path="transactions" element={<Transactions />} />
         <Route path="fds" element={<Fds />} />
         <Route path="system" element={<System />} />
@@ -34,39 +35,6 @@ export default function AdminApp() {
   )
 }
 
-function Accounts() {
-  return (
-    <ListPage
-      eyebrow="ACCOUNTS"
-      title="계좌 관리"
-      description="전체 계좌의 상품, 잔액 및 상태를 조회합니다."
-      count="전체 31,204개"
-      placeholder="계좌번호, 예금주, 상품명 검색"
-    >
-      <DataTable headers={['계좌번호', '예금주', '상품명', '잔액', '개설일', '상태', '관리']}>
-        {accounts.map((a) => (
-          <tr key={a.number}>
-            <td className="admin-mono">{a.number}</td>
-            <td>
-              <strong>{a.owner}</strong>
-            </td>
-            <td>{a.product}</td>
-            <td className="admin-num">{money.format(a.balance)}원</td>
-            <td>{a.opened}</td>
-            <td>
-              <Badge tone={statusTone(a.status)}>{a.status}</Badge>
-            </td>
-            <td>
-              <button className="table-action" type="button">
-                상세 보기
-              </button>
-            </td>
-          </tr>
-        ))}
-      </DataTable>
-    </ListPage>
-  )
-}
 function Transactions() {
   return (
     <ListPage
