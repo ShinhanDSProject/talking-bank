@@ -49,20 +49,41 @@ export function PageHeader({
   )
 }
 
-export function SearchBar({ placeholder }: { placeholder: string }) {
+export function SearchBar({
+  placeholder,
+  value,
+  onChange,
+  onSubmit,
+}: {
+  placeholder: string
+  value?: string
+  onChange?: (value: string) => void
+  onSubmit?: () => void
+}) {
   return (
-    <div className="admin-toolbar">
+    <form
+      className="admin-toolbar"
+      onSubmit={(event) => {
+        event.preventDefault()
+        onSubmit?.()
+      }}
+    >
       <label className="admin-search">
         <span aria-hidden="true">⌕</span>
-        <input aria-label="검색" placeholder={placeholder} />
+        <input
+          aria-label="검색"
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange ? (event) => onChange(event.target.value) : undefined}
+        />
       </label>
-      <button className="admin-button admin-button--primary" type="button">
+      <button className="admin-button admin-button--primary" type="submit">
         검색
       </button>
       <button className="admin-button" type="button">
         필터
       </button>
-    </div>
+    </form>
   )
 }
 
@@ -83,20 +104,29 @@ export function DataTable({ headers, children }: { headers: string[]; children: 
   )
 }
 
-export function Pagination() {
+export function Pagination({
+  page = 1,
+  pageCount = 24,
+  onChange,
+}: {
+  page?: number
+  pageCount?: number
+  onChange?: (page: number) => void
+}) {
+  const pages = Array.from({ length: Math.min(pageCount, 3) }, (_, index) => index + 1)
   return (
     <nav className="admin-pagination" aria-label="페이지 이동">
-      <button type="button" aria-label="이전 페이지">
+      <button type="button" aria-label="이전 페이지" disabled={page === 1} onClick={() => onChange?.(page - 1)}>
         ‹
       </button>
-      <button type="button" className="active">
-        1
-      </button>
-      <button type="button">2</button>
-      <button type="button">3</button>
-      <span>…</span>
-      <button type="button">24</button>
-      <button type="button" aria-label="다음 페이지">
+      {pages.map((item) => (
+        <button key={item} type="button" className={item === page ? 'active' : undefined} onClick={() => onChange?.(item)}>
+          {item}
+        </button>
+      ))}
+      {pageCount > 3 && <span>…</span>}
+      {pageCount > 3 && <button type="button" onClick={() => onChange?.(pageCount)}>{pageCount}</button>}
+      <button type="button" aria-label="다음 페이지" disabled={page === pageCount} onClick={() => onChange?.(page + 1)}>
         ›
       </button>
     </nav>
