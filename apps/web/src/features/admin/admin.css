@@ -6,6 +6,9 @@
   --admin-text: #191f28;
   --admin-muted: #7b8694;
   --admin-brand: #0046ff;
+  --admin-overlay: rgba(0, 0, 0, 0.6);
+  --admin-bg-tertiary: #eef1f5;
+  --admin-shadow-modal: 0 8px 24px rgba(0, 0, 0, 0.12);
   min-height: 100vh;
   background: var(--admin-bg);
   color: var(--admin-text);
@@ -523,8 +526,86 @@
   color: var(--admin-brand);
   font-weight: 700;
 }
+.admin-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
 .admin-pagination span {
   color: #a3adbb;
+}
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--admin-overlay);
+}
+.admin-modal {
+  width: min(560px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border-radius: 16px;
+  background: var(--admin-card);
+  box-shadow: var(--admin-shadow-modal);
+  padding: 28px;
+}
+.admin-modal > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--admin-border);
+}
+.admin-modal > header span {
+  color: var(--admin-brand);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.admin-modal > header h2 {
+  margin: 5px 0 0;
+  font-size: 20px;
+}
+.admin-icon-button {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--admin-muted);
+  font-size: 24px;
+}
+.admin-icon-button:hover {
+  background: var(--admin-bg-tertiary);
+}
+.member-detail-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+  margin: 8px 0 24px;
+}
+.member-detail-list > div {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--admin-border);
+}
+.member-detail-list dt {
+  margin-bottom: 6px;
+  color: var(--admin-muted);
+  font-size: 12px;
+}
+.member-detail-list dd {
+  margin: 0;
+  color: var(--admin-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.member-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 .risk-score {
   display: flex;
@@ -690,6 +771,13 @@
   .admin-search {
     flex: 1;
     min-width: 240px;
+  }
+  .member-detail-list {
+    grid-template-columns: 1fr;
+  }
+  .member-detail-actions {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
 @media (max-width: 760px) {

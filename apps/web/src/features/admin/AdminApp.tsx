@@ -2,8 +2,9 @@ import { Navigate, Route, Routes, useLocation } from 'react-router'
 import AdminAuthPage from './AdminAuthPage'
 import AdminDashboardPage from './dashboard/AdminDashboardPage'
 import AdminLayout from './AdminLayout'
+import AdminMembersPage from './members/AdminMembersPage'
 import { Badge, DataTable, PageHeader, Pagination, SearchBar } from './components'
-import { accounts, fdsCases, members, statusTone, transactions } from './mockData'
+import { accounts, fdsCases, statusTone, transactions } from './mockData'
 import './admin.css'
 
 const money = new Intl.NumberFormat('ko-KR')
@@ -21,51 +22,18 @@ export default function AdminApp() {
   return (
     <AdminLayout>
       <Routes>
-        <Route path="/admin" element={<AdminDashboardPage />} />
-        <Route path="/admin/members" element={<Members />} />
-        <Route path="/admin/accounts" element={<Accounts />} />
-        <Route path="/admin/transactions" element={<Transactions />} />
-        <Route path="/admin/fds" element={<Fds />} />
-        <Route path="/admin/system" element={<System />} />
-        <Route path="*" element={<Navigate to="/admin" replace />} />
+        <Route index element={<AdminDashboardPage />} />
+        <Route path="members" element={<AdminMembersPage />} />
+        <Route path="accounts" element={<Accounts />} />
+        <Route path="transactions" element={<Transactions />} />
+        <Route path="fds" element={<Fds />} />
+        <Route path="system" element={<System />} />
+        <Route path="*" element={<Navigate to="." replace />} />
       </Routes>
     </AdminLayout>
   )
 }
 
-function Members() {
-  return (
-    <ListPage
-      eyebrow="CUSTOMERS"
-      title="회원 관리"
-      description="가입 회원의 상태와 기본 정보를 조회합니다."
-      count="전체 24,891명"
-      placeholder="이름, 이메일, 회원번호 검색"
-    >
-      <DataTable headers={['회원번호', '이름', '이메일', '휴대폰', '가입일', '상태', '관리']}>
-        {members.map((m) => (
-          <tr key={m.id}>
-            <td className="admin-mono">{m.id}</td>
-            <td>
-              <strong>{m.name}</strong>
-            </td>
-            <td>{m.email}</td>
-            <td>{m.phone}</td>
-            <td>{m.joined}</td>
-            <td>
-              <Badge tone={statusTone(m.status)}>{m.status}</Badge>
-            </td>
-            <td>
-              <button className="table-action" type="button">
-                상세 보기
-              </button>
-            </td>
-          </tr>
-        ))}
-      </DataTable>
-    </ListPage>
-  )
-}
 function Accounts() {
   return (
     <ListPage

@@ -1,5 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router'
+import userEvent from '@testing-library/user-event'
+import { MemoryRouter, Route, Routes } from 'react-router'
 import { afterEach, describe, expect, it } from 'vitest'
 import AdminApp from './AdminApp'
 
@@ -8,9 +9,7 @@ afterEach(cleanup)
 describe('AdminApp', () => {
   it('관리자 대시보드의 핵심 지표와 메뉴를 보여준다', () => {
     render(
-      <MemoryRouter initialEntries={['/admin']}>
-        <AdminApp />
-      </MemoryRouter>,
+      <AdminTestRouter path="/admin" />,
     )
     expect(screen.getByRole('heading', { name: '관리자 Dashboard' })).toBeInTheDocument()
     expect(screen.getByText('전체 회원')).toBeInTheDocument()
@@ -20,16 +19,25 @@ describe('AdminApp', () => {
     expect(screen.getByRole('link', { name: /이상 거래 관리/ })).toBeInTheDocument()
   })
 
-  it('회원 관리 경로에서 회원 목록을 보여준다', () => {
+  it('회원 관리 경로에서 회원 검색과 상세 정보를 제공한다', async () => {
+    const user = userEvent.setup()
     render(
-      <MemoryRouter initialEntries={['/admin/members']}>
-        <AdminApp />
-      </MemoryRouter>,
+      <AdminTestRouter path="/admin/members" />,
     )
     expect(screen.getByRole('heading', { name: '회원 관리' })).toBeInTheDocument()
     expect(screen.getByText('jiwoo.kim@example.com')).toBeInTheDocument()
     expect(screen.getAllByRole('button', { name: '상세 보기' })).toHaveLength(5)
     expect(screen.getByRole('link', { name: /회원 관리/ })).toHaveAttribute('aria-current', 'page')
+
+    await user.type(screen.getByRole('textbox', { name: '검색' }), '박서준')
+    expect(screen.getByText('seojun.park@example.com')).toBeInTheDocument()
+    expect(screen.queryByText('jiwoo.kim@example.com')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '상세 보기' }))
+    expect(screen.getByRole('dialog', { name: '박서준 회원 정보' })).toBeInTheDocument()
+    expect(screen.getByText('2026.10.08 13:52')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '회원 상세 닫기' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
   it.each([
@@ -39,12 +47,20 @@ describe('AdminApp', () => {
     ['/admin/session-expired', '관리자 세션이 만료되었습니다'],
   ])('%s 인증 화면을 보여준다', (path, title) => {
     render(
-      <MemoryRouter initialEntries={[path]}>
-        <AdminApp />
-      </MemoryRouter>,
+      <AdminTestRouter path={path} />,
     )
     expect(screen.getByRole('heading', { name: title })).toBeInTheDocument()
     expect(screen.getByText('Talking BANK')).toBeInTheDocument()
     expect(screen.queryByLabelText('관리자 사이드바')).not.toBeInTheDocument()
   })
 })
+
+function AdminTestRouter({ path }: { path: string }) {
+  return (
+    <MemoryRouter initialEntries={[path]}>
+      <Routes>
+        <Route path="/admin/*" element={<AdminApp />} />
+      </Routes>
+    </MemoryRouter>
+  )
+}

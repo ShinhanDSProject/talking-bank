@@ -40,3 +40,7 @@
 ## 대시보드
 
 `dashboard/AdminDashboardPage.tsx`는 운영 요약, 최근 거래, 이상거래, 시스템 지표를 표시한다. Mock 데이터는 `dashboard/dashboardData.ts`에 분리되어 있으며 이후 통계 API 응답으로 교체할 수 있다. 페이지는 `ready`, `loading`, `empty`, `error` 상태 UI를 지원한다.
+
+## 회원 관리
+
+`members/AdminMembersPage.tsx`는 회원 목록 검색, 상태 표시, 페이지 이동, 상세 정보 모달을 제공한다. Mock 데이터와 타입은 `members/membersData.ts`에 분리했으며 회원 API 연결 시 페이지의 `data` 입력을 서버 응답으로 교체할 수 있다. 비밀번호와 인증 토큰 등 민감한 정보는 표시하지 않는다.
