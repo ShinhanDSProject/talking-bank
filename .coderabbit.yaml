@@ -1,0 +1,35 @@
+language: ko-KR
+
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    auto_pause_after_reviewed_commits: 5
+    base_branches:
+      - ".*"
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+      - "[skip review]"
+  path_instructions:
+    - path: "apps/api/**"
+      instructions: |
+        AGENTS.md의 API 규칙을 기준으로 검토한다.
+        금액은 BigDecimal인지, 트랜잭션은 Service에 선언됐는지, 엔티티 생성과 상태 변경 규칙을 지켰는지 확인한다.
+        인증 정보와 개인정보가 로그 또는 응답에 노출되지 않는지 중점적으로 확인한다.
+    - path: "apps/web/**"
+      instructions: |
+        AGENTS.md의 Web 규칙과 DESIGN.md 토큰을 기준으로 검토한다.
+        서버 상태는 TanStack Query를 사용하고 API 호출은 apiFetch를 통하는지 확인한다.
+        기존 화면 골격과 공통 컴포넌트 호환성, 접근성, Loading/Empty/Error 상태, 사용자 흐름 테스트를 확인한다.
+    - path: "**/*.{test,spec}.{ts,tsx,js,jsx,java}"
+      instructions: |
+        정상 흐름뿐 아니라 빈 결과와 오류 경로를 검증하는지 확인한다.
+        구현 세부사항보다 사용자가 관찰할 수 있는 동작을 테스트하는지 확인한다.
+    - path: "docs/**"
+      instructions: |
+        구현과 문서가 일치하는지, 민감 정보나 확정되지 않은 정책을 사실처럼 기록하지 않았는지 확인한다.
+
