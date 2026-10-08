@@ -25,3 +25,14 @@
 | 시스템 상태     | `/admin/system`          |
 
 현재 화면 데이터는 `apps/web/src/features/admin/mockData.ts`에 분리되어 있다. 관리자 API가 준비되면 UI 컴포넌트를 유지한 채 TanStack Query 기반 데이터 계층으로 교체한다.
+
+## 공통 레이아웃
+
+`AdminLayout.tsx`에서 관리자 화면의 공통 구조를 제공한다.
+
+- `AdminLayout`: Sidebar, Header, 페이지 콘텐츠 영역 조합
+- `AdminSidebar`: 메뉴 목록과 현재 경로의 Active 상태 표시
+- `AdminHeader`: 관리자 센터 정보, 알림, 관리자 프로필 표시
+- `adminMenus`: 관리자 메뉴 구성을 한 곳에서 관리
+
+로그인, 로그인 실패, 권한 없음, 세션 만료 화면에는 관리자 공통 레이아웃을 적용하지 않는다.
