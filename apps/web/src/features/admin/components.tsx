@@ -26,6 +26,28 @@ export function StatCard({
   )
 }
 
+export function MetricBarChart({
+  label,
+  unit,
+  points,
+}: {
+  label: string
+  unit: string
+  points: { label: string; value: number }[]
+}) {
+  const max = Math.max(...points.map((point) => point.value), 1)
+  return (
+    <div className="metric-chart" role="img" aria-label={`${label} 추이 차트`}>
+      {points.map((point) => (
+        <div key={point.label}>
+          <span title={`${point.value}${unit}`} style={{ height: `${Math.max((point.value / max) * 100, 4)}%` }} />
+          <small>{point.label}</small>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function PageHeader({
   eyebrow,
   title,

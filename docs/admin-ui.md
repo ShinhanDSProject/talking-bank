@@ -56,3 +56,7 @@
 ## 이상 거래 관리
 
 `fds/AdminFdsPage.tsx`는 FDS 탐지 거래 검색, 위험도·처리 상태 필터, 위험 점수 시각화를 제공한다. 상세 화면은 복수 탐지 사유와 원본 거래의 계좌·회원·금액 정보를 표시한다. Mock 데이터와 타입은 `fds/fdsData.ts`에 분리했으며 원본 거래는 조회만 가능하다.
+
+## 시스템 상태
+
+`system/AdminSystemPage.tsx`는 CPU·Memory·API 응답시간 요약과 추이 Chart, Spring Boot API·FastAPI·MariaDB·Redis의 상태, 최근 장애 이력을 표시한다. 서비스 상세 화면에는 공개 가능한 상태·버전·가동률만 표시하고 내부 주소와 인증 정보는 노출하지 않는다. Mock 데이터와 타입은 `system/systemData.ts`에 분리했다.
