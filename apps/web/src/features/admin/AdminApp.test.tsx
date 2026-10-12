@@ -95,6 +95,25 @@ describe('AdminApp', () => {
     expect(within(dialog).getByText('단시간 고액 반복 송금')).toBeInTheDocument()
   })
 
+  it('시스템 상태 경로에서 서비스와 장애 정보를 제공한다', async () => {
+    const user = userEvent.setup()
+    render(<AdminTestRouter path="/admin/system" />)
+
+    expect(screen.getByRole('heading', { name: '시스템 상태' })).toBeInTheDocument()
+    expect(screen.getByText('Spring Boot API')).toBeInTheDocument()
+    expect(screen.getByText('MariaDB')).toBeInTheDocument()
+    expect(screen.getAllByText('Redis')).toHaveLength(2)
+    expect(screen.getByRole('heading', { name: '최근 장애 및 이상 상태' })).toBeInTheDocument()
+    expect(screen.getByText('응답시간 임계치 초과')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'CPU 사용률 추이 차트' })).toBeInTheDocument()
+
+    const fastApiRow = screen.getAllByText('FastAPI')[0].closest('tr')
+    expect(fastApiRow).not.toBeNull()
+    await user.click(within(fastApiRow!).getByRole('button', { name: '상세 보기' }))
+    expect(screen.getByRole('dialog', { name: 'FastAPI 상태' })).toBeInTheDocument()
+    expect(screen.getByText('AI 대화와 FDS 추론 요청을 처리합니다.')).toBeInTheDocument()
+  })
+
   it.each([
     ['/admin/login', '관리자 로그인'],
     ['/admin/login-error', '로그인할 수 없습니다'],
